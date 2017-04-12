@@ -21,7 +21,7 @@ Pandora Java SDK 包含七牛大数据服务平台Pipeline服务的数据打点A
 #### 使用范例
 
 1. [顺次发送数据点](https://github.com/qiniu/pandora-java-sdk/blob/master/example/sender/src/main/java/SequenceSender.java)
-2. [并发发送数据点](https://github.com/qiniu/pandora-java-sdk/blob/master/example/sender/src/main/java/ParallelSender.java
+2. [并发发送数据点](https://github.com/qiniu/pandora-java-sdk/blob/master/example/sender/src/main/java/ParallelSender.java)
 3. [使用底层接口，攒成一批数据发送数据](https://github.com/qiniu/pandora-java-sdk/blob/master/example/sender/src/main/java/BatchPointsSender.java)
 4. [迭代生成数据点进行发送，避免把所有数据点缓存到内存中](https://github.com/qiniu/pandora-java-sdk/blob/master/example/sender/src/main/java/LazyPointsSender.java)
 5. [从数据文件中读取内容进行发送](https://github.com/qiniu/pandora-java-sdk/blob/master/example/sender/src/main/java/FileSender.java)
