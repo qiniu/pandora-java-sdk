@@ -1,5 +1,7 @@
 package com.qiniu.pandora.pipeline.points;
 
+import com.qiniu.pandora.util.StringUtils;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -22,11 +24,24 @@ public class Point {
      */
     public static Point fromPointString(String pstr) {
         Point p = new Point();
-        String[] parts = pstr.trim().split("\t");
+        String ptrim = pstr.trim();
+        if (ptrim.length() <= 0) {
+            return p;
+        }
+        String[] parts = ptrim.split("\t");
         for (String part : parts) {
-            int i = part.indexOf('=');
-            String key = part.substring(0, i);
-            String value = part.substring(i + 1, part.length());
+            String partTrim = part.trim();
+            if (partTrim.length() <= 0) {
+                // 空字段
+                continue;
+            }
+            int i = partTrim.indexOf('=');
+            if (i <= 0) {
+                // 首字符是 = 或者不包含 =
+                continue;
+            }
+            String key = partTrim.substring(0, i);
+            String value = partTrim.substring(i + 1, part.length());
             p.append(key, value);
         }
         return p;
@@ -34,8 +49,14 @@ public class Point {
 
     public static List<Point> fromPointsString(String points) {
         List<Point> ret = new ArrayList<Point>();
+        if (StringUtils.isBlank(points)) {
+            return ret;
+        }
         String[] ps = points.trim().split("\n");
         for (String line : ps) {
+            if (StringUtils.isBlank(line)) {
+                continue;
+            }
             ret.add(fromPointString(line));
         }
         return ret;
