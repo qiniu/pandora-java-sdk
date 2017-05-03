@@ -1,7 +1,7 @@
 package com.qiniu.pandora.pipeline.points;
 
+import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringUtils;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -117,7 +117,36 @@ public class Point {
         Field field = new Field(key, value);
         append(field);
     }
-
+    /**
+     * 增加数组字段
+     *
+     * @param key
+     * @param value
+     */
+    public <V> void append(String key, List<V> value) {
+        Field field = new Field(key, Json.encode(value));
+        append(field);
+    }
+    /**
+     * 增加map字段
+     *
+     * @param key
+     * @param value
+     */
+    public <K,V> void append(String key, Map<K,V> value) {
+        Field field = new Field(key, Json.encode(value));
+        append(field);
+    }
+    /**
+     * 增加bool字段
+     *
+     * @param key
+     * @param value
+     */
+    public void append(String key, Boolean value) {
+        Field field = new Field(key, value);
+        append(field);
+    }
     /**
      * 增加时间字段
      *
