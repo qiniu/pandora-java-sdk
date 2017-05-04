@@ -1,9 +1,13 @@
 package com.qiniu.pandora.pipeline.points;
 
+import com.qiniu.pandora.util.Json;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wenzhengcui on 2017/4/10.
@@ -49,5 +53,22 @@ public class PointTest {
         String str = "\n\n\n";
         List<Point> point = Point.fromPointsString(str);
         Assert.assertEquals(point.size(), 0);
+    }
+
+    @Test
+    public void complexDataType() throws Exception{
+        Map<String,Integer> mapData = new HashMap<>();
+        mapData.put("t1",1);
+        mapData.put("t2",2);
+        List<Integer> arrayData = new ArrayList<>(2);
+        arrayData.add(1);
+        arrayData.add(2);
+        Point point = new Point();
+        point.append("integerKey",2);
+        point.append("boolKey",Boolean.TRUE);
+        point.append("mapKey",mapData);
+        point.append("arrayKey", arrayData);
+        String expected = "integerKey=2\tboolKey=true\tmapKey="+ Json.encode(mapData) + "\tarrayKey="+Json.encode(arrayData) +"\n";
+        Assert.assertEquals(point.toString(),expected);
     }
 }
