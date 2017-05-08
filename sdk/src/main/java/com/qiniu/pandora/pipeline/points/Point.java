@@ -20,7 +20,7 @@ public class Point {
      * 从文本中读取数据点
      *
      * @param pstr 类似 "a=1"
-     * @return
+     * @return Point 解析数据点
      */
     public static Point fromPointString(String pstr) {
         Point p = new Point();
@@ -47,6 +47,12 @@ public class Point {
         return p;
     }
 
+    /**
+     * 从多行文本中读取多数据点
+     *
+     * @param points 类似 "a=1\na=3\na=5"
+     * @return ret 数据点列表
+     */
     public static List<Point> fromPointsString(String points) {
         List<Point> ret = new ArrayList<Point>();
         if (StringUtils.isBlank(points)) {
@@ -65,8 +71,8 @@ public class Point {
     /**
      * 增加整数字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value 整数字段值
      */
     public void append(String key, Integer value) {
         Field field = new Field(key, value);
@@ -76,8 +82,8 @@ public class Point {
     /**
      * 增加整数字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value 长整数字段值
      */
     public void append(String key, Long value) {
         Field field = new Field(key, value);
@@ -87,8 +93,8 @@ public class Point {
     /**
      * 增加字符串字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value 字符串字段值
      */
     public void append(String key, String value) {
         String escapeValue = value.replace("\n", "\\n").replace("\t", "\\t");
@@ -99,8 +105,8 @@ public class Point {
     /**
      * 增加浮点数字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value 双精度字段值
      */
     public void append(String key, Double value) {
         Field field = new Field(key, value);
@@ -110,28 +116,33 @@ public class Point {
     /**
      * 增加浮点数字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value 浮点型字段值
      */
     public void append(String key, Float value) {
         Field field = new Field(key, value);
         append(field);
     }
+
     /**
      * 增加数组字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value 数组型字段值
+     * @param <V> 数组元素类型
      */
     public <V> void append(String key, List<V> value) {
         Field field = new Field(key, Json.encode(value));
         append(field);
     }
+
     /**
-     * 增加map字段
+     * 添加Map字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value Map型字段值
+     * @param <K> Map 键类型
+     * @param <V> Map 值类型
      */
     public <K,V> void append(String key, Map<K,V> value) {
         Field field = new Field(key, Json.encode(value));
@@ -140,8 +151,8 @@ public class Point {
     /**
      * 增加bool字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value 布尔型字段值
      */
     public void append(String key, Boolean value) {
         Field field = new Field(key, value);
@@ -150,8 +161,8 @@ public class Point {
     /**
      * 增加时间字段
      *
-     * @param key
-     * @param value
+     * @param key 字段名
+     * @param value Date型字段值
      */
     public void append(String key, Date value) {
         DateFormat formatter = new SimpleDateFormat(rfc3339format);
@@ -169,7 +180,7 @@ public class Point {
     /**
      * 获得数据点的byte大小
      *
-     * @return
+     * @return 数据点byte大小，整型
      */
     public int getSize() {
         return size;
@@ -178,7 +189,7 @@ public class Point {
     /**
      * 判断数据点是否超过单点最大限制
      *
-     * @return
+     * @return 单个数据点大小大于阈值
      */
     public boolean isTooLarge() {
         return size >= MAX_POINT_SIZE;
@@ -187,7 +198,7 @@ public class Point {
     /**
      * 生成数据点
      *
-     * @return
+     * @return 序列化数据点
      */
     public String toString() {
         StringBuilder buff = new StringBuilder();

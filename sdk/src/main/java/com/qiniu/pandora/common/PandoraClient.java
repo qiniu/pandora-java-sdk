@@ -10,22 +10,22 @@ public interface PandoraClient {
     /**
      * POST 请求
      *
-     * @param url
-     * @param content
-     * @param headers
-     * @param bodyType
-     * @return
-     * @throws QiniuException
+     * @param url 请求url
+     * @param content POST请求内容
+     * @param headers 请求HEAD
+     * @param bodyType 数据类型
+     * @return 请求响应
+     * @throws QiniuException 请求失败
      */
     Response post(String url, byte[] content, StringMap headers, String bodyType) throws QiniuException;
 
     /**
      * GET 请求
      *
-     * @param url
-     * @param headers
-     * @return
-     * @throws QiniuException
+     * @param url 请求url
+     * @param headers 请求HEAD
+     * @return 请求响应
+     * @throws QiniuException 请求失败
      */
     Response get(String url, StringMap headers) throws QiniuException;
 }

@@ -38,9 +38,9 @@ public class DataSender implements Sender {
     /**
      * 发送Batch数据
      *
-     * @param points
+     * @param points Batch数据点
      * @return null 没有发送数据，Response 发送结果
-     * @throws QiniuException
+     * @throws QiniuException 发送失败
      */
     @Override
     public Response send(Batch points) throws QiniuException {
@@ -56,9 +56,8 @@ public class DataSender implements Sender {
      * 传入数据点，自动分批发送
      * 注意，该接口不能保证原子性
      *
-     * @param points
+     * @param points 点迭代器
      * @return SendPointError 所有失败数据点和错误异常信息
-     * @Experimental
      */
     @Override
     public SendPointError send(Iterable<Point> points) {
