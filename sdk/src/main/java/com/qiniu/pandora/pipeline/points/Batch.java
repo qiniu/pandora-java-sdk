@@ -16,7 +16,7 @@ public class Batch {
     /**
      * 获得Batch中所有数据点
      *
-     * @return
+     * @return 所有数据点
      */
     public List<Point> getPoints() {
         return points;
@@ -25,7 +25,7 @@ public class Batch {
     /**
      * 增加数据点
      *
-     * @param p
+     * @param p 数据点
      */
     public void add(Point p) {
         points.add(p);
@@ -35,7 +35,7 @@ public class Batch {
     /**
      * 获得当前batch的byte 大小
      *
-     * @return
+     * @return 所有数据点大小总和
      */
     public int getSize() {
         return size;
@@ -44,7 +44,7 @@ public class Batch {
     /**
      * 获得最大的Batch大小
      *
-     * @param maxSize
+     * @param maxSize 最大Batch大小
      */
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
@@ -53,7 +53,7 @@ public class Batch {
     /**
      * Batch是否已经满了
      *
-     * @return
+     * @return Batch是否已经填满
      */
     public boolean isFull() {
         return size >= maxSize;
@@ -62,8 +62,8 @@ public class Batch {
     /**
      * 判断加入当前数据点之后，Batch是否会超出限制
      *
-     * @param p
-     * @return
+     * @param p 数据点
+     * @return 加入数据点则超出限制
      */
     public boolean canAdd(Point p) {
         return size + p.getSize() <= maxSize;
@@ -80,7 +80,7 @@ public class Batch {
     /**
      * 生成数据点
      *
-     * @return
+     * @return 数据点
      */
     public String toString() {
         StringBuilder buff = new StringBuilder();

@@ -40,12 +40,11 @@ public class ParallelDataSender extends DataSender {
     }
 
     /**
-     * 传入数据点，自动并发分批发送
+     * 【Experimental接口】传入数据点，自动并发分批发送
      * 注意，该接口不能保证原子性
      *
      * @param points 数据点迭代器
      * @return SendPointError 所有失败数据点和错误异常信息（不保证顺序）
-     * @Experimental
      */
     @Override
     public SendPointError send(final Iterable<Point> points) {
