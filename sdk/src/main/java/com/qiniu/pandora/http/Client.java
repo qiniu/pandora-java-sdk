@@ -27,6 +27,7 @@ public final class Client {
     public static final String ContentTypeHeader = "Content-Type";
     public static final String DefaultMime = "application/octet-stream";
     public static final String JsonMime = "application/json";
+    public static final String TextMime = "text/plain";
     public static final String FormMime = "application/x-www-form-urlencoded";
     private final OkHttpClient httpClient;
 
