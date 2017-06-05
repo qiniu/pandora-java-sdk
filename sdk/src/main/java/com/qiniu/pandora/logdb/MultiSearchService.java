@@ -82,16 +82,16 @@ public class MultiSearchService {
             private int total;
             private List<SearchHit> hits;
             public static class SearchHit {
-                private Map<String,String> _source;
+                private Map<String,Object> _source;
                 private Map<String,List<String>> highlight;
                 public SearchHit() {
                 }
 
-                public Map<String, String> get_source() {
+                public Map<String, Object> get_source() {
                     return _source;
                 }
 
-                public void set_source(Map<String, String> _source) {
+                public void set_source(Map<String, Object> _source) {
                     this._source = _source;
                 }
 
