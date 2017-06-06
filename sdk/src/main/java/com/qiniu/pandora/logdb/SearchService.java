@@ -2,30 +2,30 @@ package com.qiniu.pandora.logdb;
 
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
+import com.qiniu.pandora.http.Client;
 import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
 import com.qiniu.pandora.util.UrlSafeBase64;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tuo on 2017/6/3.
  */
+
 public class SearchService {
     private LogDBClient logDBClient;
     private final String path = Constant.GET_SEARCH;
 
     private String repo;
-    private String querystring;
-    private String sort;
-    private int from;
-    private int size;
-    private boolean highlight;
-    private String scroll;
-    private String fields;
+
+    private SearchRequest sr;
+
     public SearchService(LogDBClient logDBClient) {
         this.logDBClient = logDBClient;
     }
@@ -36,62 +36,134 @@ public class SearchService {
     }
 
     public SearchService setQuerystring(String querystring) {
-        this.querystring = querystring;
+        this.sr.setQuery(querystring);
         return this;
     }
 
     public SearchService setFrom(int from) {
-        this.from = from;
+        this.sr.setFrom(from);
         return this;
     }
 
     public SearchService setSize(int size) {
-        this.size = size;
+        this.sr.setSize(size);
         return this;
     }
 
-    public SearchService setHighlight(boolean highlight) {
-        this.highlight = highlight;
+    public SearchService setHighlight(Highlight highlight) {
+        this.sr.setHighlight(highlight);
         return this;
     }
 
     public SearchService setScroll(String scroll) {
-        this.scroll = scroll;
+        this.sr.setScroll(scroll);
         return this;
     }
 
     public SearchService setFields(String fields) {
-        this.fields = fields;
+        this.sr.setFields(fields);
         return this;
     }
 
     public SearchRet action() throws QiniuException{
         List<String> parts = new ArrayList<>();
-        if (!StringUtils.isBlank(this.querystring)) {
-            parts.add("q=" + UrlSafeBase64.urlEscape(this.querystring));
-        }
-        if (!StringUtils.isBlank(this.sort)) {
-            parts.add("sort=" + UrlSafeBase64.urlEscape(sort));
-        }
-        if (this.from > 0) {
-            parts.add("from=" + String.valueOf(this.from));
-        }
-        if (this.size > 0) {
-            parts.add("size=" + String.valueOf(this.size));
-        }
-        if (!StringUtils.isBlank(this.scroll)) {
-            parts.add("scroll="+ this.scroll);
-        }
-        if (!StringUtils.isBlank(this.fields)){
-            parts.add("fields="+this.fields);
-        }
-        parts.add("highlight=" + String.valueOf(this.highlight));
-        String queryParams = StringUtils.join(parts, "&");
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
-        String url = this.logDBClient.getHost() +
-                String.format(this.path,this.repo)+"?"+queryParams;
-        Response resp = pandoraClient.get(url,new StringMap());
+        String url = this.logDBClient.getHost() + String.format(this.path,this.repo);
+        Response resp =pandoraClient.post(url,this.sr.ToJsonBytes(),new StringMap(), Client.JsonMime);
         return Json.decode(resp.bodyString(), SearchRet.class);
+    }
+
+
+
+    static class SearchRequest {
+        public String getQuery() {
+            return query;
+        }
+
+        public void setQuery(String query) {
+            this.query = query;
+        }
+
+        public String getSort() {
+            return sort;
+        }
+
+        public void setSort(String sort) {
+            this.sort = sort;
+        }
+
+        public int getFrom() {
+            return from;
+        }
+
+        public void setFrom(int from) {
+            this.from = from;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public void setSize(int size) {
+            this.size = size;
+        }
+
+        public String getHas_parent() {
+            return has_parent;
+        }
+
+        public void setHas_parent(String has_parent) {
+            this.has_parent = has_parent;
+        }
+
+        public String getHas_child() {
+            return has_child;
+        }
+
+        public void setHas_child(String has_child) {
+            this.has_child = has_child;
+        }
+
+        public String getScroll() {
+            return scroll;
+        }
+
+        public void setScroll(String scroll) {
+            this.scroll = scroll;
+        }
+
+        public String getFields() {
+            return fields;
+        }
+
+        public void setFields(String fields) {
+            this.fields = fields;
+        }
+        public Highlight getHighlight() {
+            return highlight;
+        }
+
+        public void setHighlight(Highlight highlight) {
+            this.highlight = highlight;
+        }
+
+        private String query;
+        private String sort;
+        private int from;
+        private int size;
+        private String has_parent;
+        private String has_child;
+        private String scroll;
+        private String fields;
+        private Highlight highlight;
+
+
+        public SearchRequest() {
+        }
+
+        public byte[] ToJsonBytes(){
+            return StringUtils.utf8Bytes(Json.encode(this));
+        }
     }
 
     public static class SearchRet {

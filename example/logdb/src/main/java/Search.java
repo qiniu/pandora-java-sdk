@@ -1,20 +1,32 @@
 
 import com.google.gson.Gson;
 import com.qiniu.pandora.common.QiniuException;
+import com.qiniu.pandora.logdb.Highlight;
 import com.qiniu.pandora.logdb.LogDBClient;
 import com.qiniu.pandora.logdb.MultiSearchService;
 import com.qiniu.pandora.logdb.SearchService;
 import com.qiniu.pandora.util.Json;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Search {
   public static void main(String[] args) {
     String repo = "repo";
     LogDBClient logDBClient = LogDBClient.NewLogDBClient(Config.ACCESS_KEY,Config.SECRET_KEY);
-    // logdb get search
+    // logdb search
+
+    ArrayList<String> pre_tags = new ArrayList<String>();
+    pre_tags.add( "<em>");
+    ArrayList<String> post_tags = new ArrayList<String>();
+    post_tags.add( "</em>");
+    HashMap<String,HashMap<String,String>> fields = new HashMap<String,HashMap<String,String>>();
+    fields.put("a",new HashMap<String, String>());
+    Highlight hl = new Highlight(pre_tags,post_tags, fields, false, 100);
     try {
       SearchService searchService = logDBClient.NewSearchService();
       SearchService.SearchRet searchRet = searchService.setFrom(0).setSize(1).
-              setQuerystring("*").setRepo(repo)
+              setQuerystring("*").setRepo(repo).setHighlight(hl)
               .action();
       System.out.println(searchRet);
     } catch (QiniuException e) {
