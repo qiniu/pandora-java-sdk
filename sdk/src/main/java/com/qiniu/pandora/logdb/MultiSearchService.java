@@ -7,17 +7,13 @@ import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
-import jdk.internal.dynalink.beans.StaticClass;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by tuo on 2017/6/3.
- */
-public class MultiSearchService {
+
+public class MultiSearchService implements Reusable {
     private LogDBClient logDBClient;
     private String path = Constant.POST_MSEARCH;
     private List<SearchRequest> searchRequestList = new ArrayList<>();
@@ -43,6 +39,12 @@ public class MultiSearchService {
         Response response = pandoraClient.post(this.logDBClient.getHost() + this.path, StringUtils.utf8Bytes(bodybuffer.toString()), new StringMap(), Client.TextMime);
         return Json.decode(response.bodyString(), MultiSearchResult.class);
     }
+
+    @Override
+    public void reset() {
+        this.searchRequestList = new ArrayList<>();
+    }
+
     public static class SearchRequest {
         private String source;
         private String repo;

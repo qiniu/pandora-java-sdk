@@ -7,18 +7,13 @@ import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
-import com.qiniu.pandora.util.UrlSafeBase64;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Created by tuo on 2017/6/3.
- */
 
-public class SearchService {
+public class SearchService implements Reusable {
     private LogDBClient logDBClient;
     private final String path = Constant.GET_SEARCH;
 
@@ -73,6 +68,11 @@ public class SearchService {
         return Json.decode(resp.bodyString(), SearchRet.class);
     }
 
+    @Override
+    public void reset() {
+        this.repo = null;
+        this.sr = new SearchRequest();
+    }
 
 
     static class SearchRequest {

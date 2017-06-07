@@ -8,10 +8,8 @@ import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
 
-/**
- * Created by tuo on 2017/6/3.
- */
-public class ScrollService {
+
+public class ScrollService  implements Reusable {
     private LogDBClient logDBClient;
     private String path = Constant.POST_SCROLL;
     private ScrollRequest scrollRequest = new ScrollRequest();
@@ -34,6 +32,11 @@ public class ScrollService {
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
         Response response = pandoraClient.post(this.logDBClient.getHost() + this.path, this.scrollRequest.ToJsonBytes(), new StringMap(), Client.JsonMime);
         return Json.decode(response.bodyString(), SearchService.SearchRet.class);
+    }
+
+    @Override
+    public void reset() {
+        this.scrollRequest = new ScrollRequest();
     }
 
     static class ScrollRequest {
