@@ -24,7 +24,7 @@ public class SearchService {
 
     private String repo;
 
-    private SearchRequest sr;
+    private SearchRequest sr = new SearchRequest();
 
     public SearchService(LogDBClient logDBClient) {
         this.logDBClient = logDBClient;
