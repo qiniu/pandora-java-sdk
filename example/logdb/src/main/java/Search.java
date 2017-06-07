@@ -1,6 +1,7 @@
 
 import com.google.gson.Gson;
 import com.qiniu.pandora.common.QiniuException;
+import com.qiniu.pandora.common.QiniuRequestException;
 import com.qiniu.pandora.logdb.Highlight;
 import com.qiniu.pandora.logdb.LogDBClient;
 import com.qiniu.pandora.logdb.MultiSearchService;
@@ -42,6 +43,12 @@ public class Search {
       MultiSearchService.MultiSearchResult searchResult = multiSearchService
               .add(searchRequest1)
               .add(searchRequest2).action();
+
+      System.out.println(Json.encode(searchResult.getResponses()));
+
+      multiSearchService.reset();
+      searchResult = multiSearchService.add(searchRequest1).action();
+
       System.out.println(Json.encode(searchResult.getResponses()));
     } catch (QiniuException e) {
       e.printStackTrace();
@@ -59,7 +66,6 @@ public class Search {
         searchRet = logDBClient.NewScrollService().setScroll_id(searchRet.getScroll_id()).action();
         System.out.println(searchRet);
       }
-
     } catch (QiniuException e) {
       e.printStackTrace();
     }
