@@ -1,20 +1,14 @@
 
-import com.google.gson.Gson;
 import com.qiniu.pandora.common.QiniuException;
-import com.qiniu.pandora.common.QiniuRequestException;
-import com.qiniu.pandora.logdb.Highlight;
-import com.qiniu.pandora.logdb.LogDBClient;
-import com.qiniu.pandora.logdb.MultiSearchService;
-import com.qiniu.pandora.logdb.SearchService;
+import com.qiniu.pandora.logdb.*;
 import com.qiniu.pandora.util.Json;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class Search {
   public static void main(String[] args) {
     String repo = "repo";
-    LogDBClient logDBClient = LogDBClient.NewLogDBClient(Config.ACCESS_KEY,Config.SECRET_KEY);
+    LogDBClient logDBClient = LogDBClient.NewLogDBClient(Config.ACCESS_KEY, Config.SECRET_KEY);
     // logdb search
 
     ArrayList<String> pre_tags = new ArrayList<String>();
@@ -67,6 +61,53 @@ public class Search {
         System.out.println(searchRet);
       }
     } catch (QiniuException e) {
+      e.printStackTrace();
+    }
+    // partial search
+    /*
+    如果数据特别大的时候，logdb会对查询进行优化，用户可以持续调用该接口用来获得更加完整的结果。
+    SearchRet.process 来了解查询进度.
+    SearchRet.partialSuccess 来了解查询是否结束。
+     */
+    PartialSearchService partialSearchService = logDBClient.NewPartialSearchService();
+    try {
+      Calendar instance = Calendar.getInstance();
+      long endTime = instance.getTimeInMillis();
+      instance.add(Calendar.HOUR,-24*30);
+      long startTime = instance.getTimeInMillis();
+      PartialSearchService.SearchRet searchRet = partialSearchService.setSize(1)
+              .setQueryString("Reqid:dfsfsd")
+              .setRepo(repo)
+              .setSort("timestamp")
+              .setStartTime(startTime)
+              .setEndTime(endTime)
+              .setPre_tag("@hello@")
+              .setPost_tag("@hello/@")
+              .action();
+      Object highlight = searchRet.getHits().get(0).get("highlight");
+      if(highlight!=null){
+        Map<String,List<String>> highlightMap  = (Map<String,List<String>>)highlight;
+        for (Map.Entry<String, List<String>> entry : highlightMap.entrySet()) {
+          System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
+      }
+      System.out.println(searchRet);
+      while(searchRet.isPartialSuccess() == true){
+        searchRet = partialSearchService.action();
+        Object highlight = searchRet.getHits().get(0).get("highlight");
+        if(highlight!=null){
+          Map<String,List<String>> highlightMap  = (Map<String,List<String>>)highlight;
+          for (Map.Entry<String, List<String>> entry : highlightMap.entrySet()) {
+            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+          }
+        }
+        System.out.println(searchRet);
+        Thread.sleep(5000);
+      }
+
+    } catch (QiniuException e) {
+      e.printStackTrace();
+    } catch (InterruptedException e) {
       e.printStackTrace();
     }
   }
