@@ -34,6 +34,9 @@ public class LogDBClient {
     public SearchService NewSearchService(){
         return new SearchService(this);
     }
+    public PartialSearchService NewPartialSearchService(){
+        return new PartialSearchService(this);
+    }
     public ScrollService NewScrollService(){
         return new ScrollService(this);
     }
