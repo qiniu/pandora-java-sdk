@@ -1,5 +1,7 @@
 package com.qiniu.pandora.logdb;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Client;
@@ -78,22 +80,22 @@ public class MultiSearchService implements Reusable {
     }
     public static class SearchResponse{
         private SearchHits hits;
-        private Map<String,Object> aggregations;
+        private Map<String,JsonElement> aggregations;
 
         public static class SearchHits{
             private int total;
             private List<SearchHit> hits;
             public static class SearchHit {
-                private Map<String,Object> _source;
+                private Map<String,JsonElement> _source;
                 private Map<String,List<String>> highlight;
                 public SearchHit() {
                 }
 
-                public Map<String, Object> get_source() {
+                public Map<String, JsonElement> get_source() {
                     return _source;
                 }
 
-                public void set_source(Map<String, Object> _source) {
+                public void set_source(Map<String, JsonElement> _source) {
                     this._source = _source;
                 }
 
@@ -118,11 +120,11 @@ public class MultiSearchService implements Reusable {
             this.hits = hits;
         }
 
-        public Map<String, Object> getAggregations() {
+        public Map<String, JsonElement> getAggregations() {
             return aggregations;
         }
 
-        public void setAggregations(Map<String, Object> aggregations) {
+        public void setAggregations(Map<String, JsonElement> aggregations) {
             this.aggregations = aggregations;
         }
     }
