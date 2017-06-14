@@ -65,7 +65,9 @@ public class SearchService implements Reusable {
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
         String url = this.logDBClient.getHost() + String.format(this.path,this.repo);
         Response resp =pandoraClient.post(url,this.sr.ToJsonBytes(),new StringMap(), Client.JsonMime);
-        return Json.decode(resp.bodyString(), SearchRet.class);
+        SearchRet ret = Json.decode(resp.bodyString(), SearchRet.class);
+        ret.setResponse(resp);
+        return ret;
     }
 
     @Override
@@ -172,6 +174,27 @@ public class SearchService implements Reusable {
         private boolean partialSuccess;
         private List<Row> data;
         private String scroll_id;
+        private Response response;
+
+        public Response getResponse() {
+            return response;
+        }
+
+        public void setResponse(Response response) {
+            this.response = response;
+        }
+
+        /**
+         *  RequestId 用来返回该次请求的ID，用来查询相关问题。
+         * @return  requestId
+         */
+        public String getRequestId() {
+            if(response == null){
+                return  "";
+            }
+            return response.reqId;
+        }
+
 
         /**
          * 如果该字段为true，代表这次查询提前结束，只返回了部分命中结果
@@ -224,6 +247,7 @@ public class SearchService implements Reusable {
             sb.append(", partialSuccess=").append(partialSuccess);
             sb.append(", data=").append(data);
             sb.append(", scroll_id=").append(scroll_id);
+            sb.append(", requestId=").append(getRequestId());
             sb.append('}');
             return sb.toString();
         }

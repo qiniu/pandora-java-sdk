@@ -31,7 +31,9 @@ public class ScrollService  implements Reusable {
     public SearchService.SearchRet action()throws QiniuException{
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
         Response response = pandoraClient.post(this.logDBClient.getHost() + this.path, this.scrollRequest.ToJsonBytes(), new StringMap(), Client.JsonMime);
-        return Json.decode(response.bodyString(), SearchService.SearchRet.class);
+        SearchService.SearchRet searchRet =  Json.decode(response.bodyString(), SearchService.SearchRet.class);
+        searchRet.setResponse(response);
+        return searchRet;
     }
 
     @Override

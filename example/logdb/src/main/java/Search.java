@@ -43,6 +43,7 @@ public class Search {
       multiSearchService.reset();
       searchResult = multiSearchService.add(searchRequest1).action();
 
+
       System.out.println(Json.encode(searchResult.getResponses()));
     } catch (QiniuException e) {
       e.printStackTrace();
@@ -94,9 +95,9 @@ public class Search {
       System.out.println(searchRet);
       while(searchRet.isPartialSuccess() == true){
         searchRet = partialSearchService.action();
-        Object highlight = searchRet.getHits().get(0).get("highlight");
-        if(highlight!=null){
-          Map<String,List<String>> highlightMap  = (Map<String,List<String>>)highlight;
+        Object h = searchRet.getHits().get(0).get("highlight");
+        if(h!=null){
+          Map<String,List<String>> highlightMap  = (Map<String,List<String>>)h;
           for (Map.Entry<String, List<String>> entry : highlightMap.entrySet()) {
             System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
           }

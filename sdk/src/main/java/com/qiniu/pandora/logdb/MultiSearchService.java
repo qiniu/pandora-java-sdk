@@ -1,7 +1,6 @@
 package com.qiniu.pandora.logdb;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Client;
@@ -39,7 +38,10 @@ public class MultiSearchService implements Reusable {
         }
 
         Response response = pandoraClient.post(this.logDBClient.getHost() + this.path, StringUtils.utf8Bytes(bodybuffer.toString()), new StringMap(), Client.TextMime);
-        return Json.decode(response.bodyString(), MultiSearchResult.class);
+        MultiSearchResult multiSearchResult = Json.decode(response.bodyString(), MultiSearchResult.class);
+        multiSearchResult.setResponse(response);
+        return multiSearchResult;
+
     }
 
     @Override
@@ -81,6 +83,7 @@ public class MultiSearchService implements Reusable {
     public static class SearchResponse{
         private SearchHits hits;
         private Map<String,JsonElement> aggregations;
+
 
         public static class SearchHits{
             private int total;
@@ -127,10 +130,14 @@ public class MultiSearchService implements Reusable {
         public void setAggregations(Map<String, JsonElement> aggregations) {
             this.aggregations = aggregations;
         }
+
+
     }
 
     public static class MultiSearchResult {
         List<SearchResponse> responses;
+
+        private Response response;
 
         public MultiSearchResult() {
         }
@@ -145,6 +152,25 @@ public class MultiSearchService implements Reusable {
 
         public void setResponses(List<SearchResponse> responses) {
             this.responses = responses;
+        }
+
+        public Response getResponse() {
+            return response;
+        }
+
+        public void setResponse(Response response) {
+            this.response = response;
+        }
+
+        /**
+         *  得到本次请求的ID，用来定位相关问题
+         * @return multiSearchResult request id
+         */
+        public String getRequestId(){
+            if(response==null){
+                return "";
+            }
+            return response.reqId;
         }
     }
 
