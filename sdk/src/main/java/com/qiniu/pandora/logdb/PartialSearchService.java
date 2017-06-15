@@ -67,7 +67,9 @@ public class PartialSearchService implements Reusable {
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
         String url = this.logDBClient.getHost() + String.format(this.path,this.repo);
         Response resp =pandoraClient.post(url,this.sr.ToJsonBytes(),new StringMap(), Client.JsonMime);
-        return Json.decode(resp.bodyString(), SearchRet.class);
+        SearchRet searchRet =  Json.decode(resp.bodyString(), SearchRet.class);
+        searchRet.setResponse(resp);
+        return searchRet;
     }
 
     @Override
@@ -176,8 +178,17 @@ public class PartialSearchService implements Reusable {
         private long total;
         private boolean partialSuccess = true;
         private long took; //查询耗时
-        private List<Row> hits;
+        private List<Row> hits = new ArrayList<>();
         private String process; //查询进度，范围0~1
+        private Response response;
+
+        public Response getResponse() {
+            return response;
+        }
+
+        public void setResponse(Response response) {
+            this.response = response;
+        }
 
         public String getProcess() {
             return process;
@@ -218,6 +229,9 @@ public class PartialSearchService implements Reusable {
             sb.append(", partialSuccess=").append(partialSuccess);
             sb.append(", data=").append(hits);
             sb.append(", took=").append(took);
+            if(null!=response){
+                sb.append(", requestId=").append(response.reqId);
+            }
             sb.append('}');
             return sb.toString();
         }

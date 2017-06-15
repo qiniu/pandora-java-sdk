@@ -7,10 +7,10 @@ import java.util.*;
 
 public class Search {
   public static void main(String[] args) {
-    String repo = "repo";
+    String repo = "YOUR_REPO_NAME";
     LogDBClient logDBClient = LogDBClient.NewLogDBClient(Config.ACCESS_KEY, Config.SECRET_KEY);
-    // logdb search
 
+    // logdb search
     ArrayList<String> pre_tags = new ArrayList<String>();
     pre_tags.add( "<em>");
     ArrayList<String> post_tags = new ArrayList<String>();
@@ -27,7 +27,7 @@ public class Search {
     } catch (QiniuException e) {
       e.printStackTrace();
     }
-//    // logdb post msearch
+   // logdb post msearch
     try {
       MultiSearchService multiSearchService = logDBClient.NewMultiSearchService();
       MultiSearchService.SearchRequest searchRequest1 = new MultiSearchService.SearchRequest("{\"size\":1,\"sort\":[{\"timestamp\":{\"order\":\"desc\",\"unmapped_type\":\"boolean\"}}],\"query\":{\"filtered\":{\"query\":{\"query_string\":{\"query\":\"Appid: 1380665431\",\"analyze_wildcard\":true}},\"filter\":{\"bool\":{\"must\":[{\"range\":{\"timestamp\":{\"gte\":1496644491486,\"lte\":1496644791486,\"format\":\"epoch_millis\"}}}],\"must_not\":[]}}}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647},\"aggs\":{\"2\":{\"date_histogram\":{\"field\":\"timestamp\",\"interval\":\"60s\",\"time_zone\":\"Asia/Shanghai\",\"min_doc_count\":0,\"extended_bounds\":{\"min\":1496644491486,\"max\":1496644791486}}}},\"fields\":[\"*\",\"_source\"],\"script_fields\":{},\"fielddata_fields\":[\"timestamp\"]}"
@@ -77,7 +77,7 @@ public class Search {
       instance.add(Calendar.HOUR,-24*30);
       long startTime = instance.getTimeInMillis();
       PartialSearchService.SearchRet searchRet = partialSearchService.setSize(1)
-              .setQueryString("Reqid:dfsfsd")
+              .setQueryString("*")
               .setRepo(repo)
               .setSort("timestamp")
               .setStartTime(startTime)
@@ -85,13 +85,17 @@ public class Search {
               .setPre_tag("@hello@")
               .setPost_tag("@hello/@")
               .action();
-      Object highlight = searchRet.getHits().get(0).get("highlight");
-      if(highlight!=null){
-        Map<String,List<String>> highlightMap  = (Map<String,List<String>>)highlight;
-        for (Map.Entry<String, List<String>> entry : highlightMap.entrySet()) {
-          System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+      for(PartialSearchService.SearchRet.Row r:searchRet.getHits()){
+        Object highlight = r.get("highlight");
+        if(highlight!=null){
+          Map<String,List<String>> highlightMap  = (Map<String,List<String>>)highlight;
+          for (Map.Entry<String, List<String>> entry : highlightMap.entrySet()) {
+            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+          }
         }
+        break;
       }
+
       System.out.println(searchRet);
       while(searchRet.isPartialSuccess() == true){
         searchRet = partialSearchService.action();
