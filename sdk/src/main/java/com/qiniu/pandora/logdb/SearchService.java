@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-
+/**
+ * 单个repo的搜索，可重用。
+ */
 public class SearchService implements Reusable {
     private LogDBClient logDBClient;
     private final String path = Constant.GET_SEARCH;
@@ -61,10 +63,8 @@ public class SearchService implements Reusable {
     }
 
     public SearchRet action() throws QiniuException{
-        List<String> parts = new ArrayList<>();
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
-        String url = this.logDBClient.getHost() + String.format(this.path,this.repo);
-        Response resp =pandoraClient.post(url,this.sr.ToJsonBytes(),new StringMap(), Client.JsonMime);
+        Response resp =pandoraClient.post(this.url(),StringUtils.utf8Bytes(this.source()),new StringMap(), Client.JsonMime);
         SearchRet ret = Json.decode(resp.bodyString(), SearchRet.class);
         ret.setResponse(resp);
         return ret;
@@ -76,6 +76,12 @@ public class SearchService implements Reusable {
         this.sr = new SearchRequest();
     }
 
+    private String source(){
+        return Json.encode(this.sr);
+    }
+    private String url(){
+        return this.logDBClient.getHost() + String.format(this.path,this.repo);
+    }
 
     static class SearchRequest {
         public String getQuery() {
@@ -163,9 +169,6 @@ public class SearchService implements Reusable {
         public SearchRequest() {
         }
 
-        public byte[] ToJsonBytes(){
-            return StringUtils.utf8Bytes(Json.encode(this));
-        }
     }
 
     public static class SearchRet {

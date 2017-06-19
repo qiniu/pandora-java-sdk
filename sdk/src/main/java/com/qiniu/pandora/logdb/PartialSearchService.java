@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * 对于超大规模且带有时间戳的单个repo，建议使用{@link #PartialSearchService}，可重用。
+ */
 public class PartialSearchService implements Reusable {
     private LogDBClient logDBClient;
     private final String path = Constant.PARTIAL_SEARCH;
@@ -65,19 +68,22 @@ public class PartialSearchService implements Reusable {
     }
     public SearchRet action() throws QiniuException{
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
-        String url = this.logDBClient.getHost() + String.format(this.path,this.repo);
-        Response resp =pandoraClient.post(url,this.sr.ToJsonBytes(),new StringMap(), Client.JsonMime);
+        Response resp =pandoraClient.post(this.url(),StringUtils.utf8Bytes(this.source()),new StringMap(), Client.JsonMime);
         SearchRet searchRet =  Json.decode(resp.bodyString(), SearchRet.class);
         searchRet.setResponse(resp);
         return searchRet;
     }
-
+    private String url(){
+        return this.logDBClient.getHost() + String.format(this.path,this.repo);
+    }
+    private String source(){
+        return Json.encode(this.sr);
+    }
     @Override
     public void reset() {
         this.repo = null;
         this.sr = new SearchRequest();
     }
-
 
     public static class SearchRequest {
         public static class Highlight {
@@ -168,9 +174,6 @@ public class PartialSearchService implements Reusable {
             this.searchType = searchType;
         }
 
-        public byte[] ToJsonBytes(){
-            return StringUtils.utf8Bytes(Json.encode(this));
-        }
     }
 
     public static class SearchRet {
