@@ -1,7 +1,7 @@
 package com.qiniu.pandora.logdb;
 
 /**
- * Created by tuo on 2017/6/3.
+ * LogDB常量
  */
 public class Constant {
     public final static String HOST = "https://logdb.qiniu.com";

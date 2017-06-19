@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-
+/**
+ * 单个repo的搜索，可重用。
+ */
 public class SearchService implements Reusable {
     private LogDBClient logDBClient;
     private final String path = Constant.GET_SEARCH;

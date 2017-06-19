@@ -8,7 +8,9 @@ import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
 
-
+/**
+ *  可以使用该接口对logdb的数据进行Dump。需要配合{@link #SearchService}服务，可重用。
+ */
 public class ScrollService  implements Reusable {
     private LogDBClient logDBClient;
     private String path = Constant.POST_SCROLL;
@@ -22,7 +24,11 @@ public class ScrollService  implements Reusable {
         return this;
     }
 
-
+    /**
+     *
+     * @param scroll_id 使用上次返回的scroll_id来持续查询
+     * @return
+     */
     public ScrollService setScroll_id(String scroll_id) {
         this.scrollRequest.setScroll_id(scroll_id);
         return this;

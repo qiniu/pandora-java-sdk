@@ -8,12 +8,13 @@ import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * 在一次http请求中搜索多个repo，通过工厂方法{@link #LogDBClient.NewSearchService}构建，可重用。
+ */
 public class MultiSearchService implements Reusable {
     private LogDBClient logDBClient;
     private String path = Constant.POST_MSEARCH;
@@ -31,17 +32,22 @@ public class MultiSearchService implements Reusable {
     }
     public MultiSearchResult action() throws QiniuException{
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
+        Response response = pandoraClient.post(this.url(), StringUtils.utf8Bytes(this.source()), new StringMap(), Client.TextMime);
+        MultiSearchResult multiSearchResult = Json.decode(response.bodyString(), MultiSearchResult.class);
+        multiSearchResult.setResponse(response);
+        return multiSearchResult;
+
+    }
+    private String source() {
         StringBuffer bodybuffer = new StringBuffer();
         for (SearchRequest searchRequest :searchRequestList){
             bodybuffer.append(searchRequest.GetIndexHeader()+"\n");
             bodybuffer.append(searchRequest.getSource()+"\n");
         }
-
-        Response response = pandoraClient.post(this.logDBClient.getHost() + this.path, StringUtils.utf8Bytes(bodybuffer.toString()), new StringMap(), Client.TextMime);
-        MultiSearchResult multiSearchResult = Json.decode(response.bodyString(), MultiSearchResult.class);
-        multiSearchResult.setResponse(response);
-        return multiSearchResult;
-
+        return bodybuffer.toString();
+    }
+    private String url(){
+        return this.logDBClient.getHost() + this.path;
     }
 
     @Override
