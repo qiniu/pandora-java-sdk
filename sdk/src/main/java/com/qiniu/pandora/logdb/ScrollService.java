@@ -8,6 +8,8 @@ import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
 
+import java.net.URL;
+
 /**
  *  可以使用该接口对logdb的数据进行Dump。需要配合{@link #SearchService}服务，可重用。
  */
@@ -36,10 +38,18 @@ public class ScrollService  implements Reusable {
 
     public SearchService.SearchRet action()throws QiniuException{
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
-        Response response = pandoraClient.post(this.logDBClient.getHost() + this.path, this.scrollRequest.ToJsonBytes(), new StringMap(), Client.JsonMime);
+        Response response = pandoraClient.post(this.url(), StringUtils.utf8Bytes(this.source()), new StringMap(), Client.JsonMime);
         SearchService.SearchRet searchRet =  Json.decode(response.bodyString(), SearchService.SearchRet.class);
         searchRet.setResponse(response);
         return searchRet;
+    }
+
+    private String source(){
+        return Json.encode(this.scrollRequest);
+    }
+
+    private String url(){
+        return this.logDBClient.getHost() + this.path;
     }
 
     @Override
@@ -70,8 +80,5 @@ public class ScrollService  implements Reusable {
             this.scroll_id = scroll_id;
         }
 
-        public byte[] ToJsonBytes(){
-            return StringUtils.utf8Bytes(Json.encode(this));
-        }
     }
 }
