@@ -57,8 +57,11 @@ public class Search {
       System.out.println(searchRet);
       int count = 1;
       while (searchRet.getData().size()>0&& searchRet.getScroll_id()!=""){
+        if (count > 100){
+          break;
+        }
         System.out.println("count"+count+++"----------------------------------");
-        searchRet = logDBClient.NewScrollService().setScroll_id(searchRet.getScroll_id()).action();
+        searchRet = logDBClient.NewScrollService().setRepo(repo).setScroll_id(searchRet.getScroll_id()).action();
         System.out.println(searchRet);
       }
     } catch (QiniuException e) {
