@@ -8,7 +8,6 @@ import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
 
-import java.net.URL;
 
 /**
  *  可以使用该接口对logdb的数据进行Dump。需要配合{@link #SearchService}服务，可重用。
@@ -17,12 +16,25 @@ public class ScrollService  implements Reusable {
     private LogDBClient logDBClient;
     private String path = Constant.POST_SCROLL;
     private ScrollRequest scrollRequest = new ScrollRequest();
+    private String repo;
+
 
     public ScrollService(LogDBClient logDBClient) {
         this.logDBClient = logDBClient;
     }
+
+    public ScrollService(LogDBClient logDBClient,String repo) {
+        this.logDBClient = logDBClient;
+        this.repo = repo;
+    }
     public ScrollService setScroll(String scroll) {
         this.scrollRequest.setScroll(scroll);
+        return this;
+    }
+
+
+    public ScrollService setRepo(String repo){
+        this.repo = repo;
         return this;
     }
 
@@ -49,7 +61,7 @@ public class ScrollService  implements Reusable {
     }
 
     private String url(){
-        return this.logDBClient.getHost() + this.path;
+        return this.logDBClient.getHost() + String.format(this.path,this.repo);
     }
 
     @Override
