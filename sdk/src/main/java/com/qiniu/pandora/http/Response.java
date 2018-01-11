@@ -49,7 +49,7 @@ public final class Response {
     public final String address;
 
     private byte[] body;
-    private okhttp3.Response response;
+    public okhttp3.Response response;
 
     private Response(okhttp3.Response response, int statusCode, String reqId, String xlog, String xvia,
                      String address, double duration, String error, byte[] body) {
