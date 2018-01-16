@@ -47,6 +47,11 @@ public class SearchService implements Reusable {
         return this;
     }
 
+    public SearchService setSort(String sort) {
+        this.sr.setSort(sort);
+        return this;
+    }
+
     public SearchService setHighlight(Highlight highlight) {
         this.sr.setHighlight(highlight);
         return this;
