@@ -21,7 +21,7 @@ public class Search {
     try {
       SearchService searchService = logDBClient.NewSearchService();
       SearchService.SearchRet searchRet = searchService.setFrom(0).setSize(1).
-              setQuerystring("*").setRepo(repo).setHighlight(hl)
+              setQuerystring("*").setRepo(repo).setSort("field").setHighlight(hl)
               .action();
       System.out.println(searchRet);
     } catch (QiniuException e) {
