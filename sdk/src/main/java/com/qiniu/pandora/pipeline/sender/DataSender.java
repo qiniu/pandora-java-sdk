@@ -27,7 +27,7 @@ public class DataSender implements Sender {
 
     public DataSender(String repoName, Auth auth) {
         url = url(repoName);
-        this.pandoraClient = new PandoraClientImpl(auth, url);
+        this.pandoraClient = new PandoraClientImpl(auth);
     }
 
     public DataSender(String repoName, PandoraClient pandoraClient) {

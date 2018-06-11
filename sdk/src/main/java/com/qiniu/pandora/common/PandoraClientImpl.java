@@ -17,11 +17,9 @@ import java.util.TimeZone;
 public class PandoraClientImpl implements PandoraClient {
     private final Client client = Client.getInstance();
     protected Auth auth;
-    protected String url;
 
-    public PandoraClientImpl(Auth auth, String url) {
+    public PandoraClientImpl(Auth auth) {
         this.auth = auth;
-        this.url = url;
     }
 
     protected String signAuth(String url, StringMap headers, String method) throws QiniuException {

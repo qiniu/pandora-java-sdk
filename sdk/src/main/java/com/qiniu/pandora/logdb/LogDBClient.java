@@ -34,7 +34,7 @@ public class LogDBClient {
      */
     public static LogDBClient NewLogDBClient(String ak,String sk){
         Auth auth = Auth.create(ak, sk);
-        PandoraClientImpl pandoraClient = new PandoraClientImpl(auth, null);
+        PandoraClientImpl pandoraClient = new PandoraClientImpl(auth);
         LogDBClient logDBClient = new LogDBClient(pandoraClient);
         return logDBClient;
     }
@@ -48,7 +48,7 @@ public class LogDBClient {
      */
     public static LogDBClient NewLogDBClient(String ak,String sk,String host){
         Auth auth = Auth.create(ak, sk);
-        PandoraClientImpl pandoraClient = new PandoraClientImpl(auth, null);
+        PandoraClientImpl pandoraClient = new PandoraClientImpl(auth);
         LogDBClient logDBClient = new LogDBClient(pandoraClient,host);
         return logDBClient;
     }

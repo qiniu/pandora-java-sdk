@@ -26,7 +26,7 @@ public class QueryManager {
 
     public QueryManager(String repoName, Auth auth, String timezone) throws QiniuRuntimeException {
         this.url = url(repoName, timezone);
-        this.pandoraClient = new PandoraClientImpl(auth, url);
+        this.pandoraClient = new PandoraClientImpl(auth);
     }
 
     public QueryManager(String repoName, String timezone, PandoraClient pandoraClient) throws QiniuRuntimeException {
