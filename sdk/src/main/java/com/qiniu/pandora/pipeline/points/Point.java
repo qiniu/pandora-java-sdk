@@ -1,5 +1,6 @@
 package com.qiniu.pandora.pipeline.points;
 
+import com.qiniu.pandora.common.Config;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringUtils;
 import java.text.DateFormat;
@@ -221,7 +222,7 @@ public class Point {
         public Field(String key, Object value) {
             this.key = key;
             this.value = value;
-            this.size = toString().getBytes().length;
+            this.size = toString().getBytes(Config.UTF_8).length;
         }
 
         public int getSize() {

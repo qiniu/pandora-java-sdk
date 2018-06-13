@@ -48,7 +48,7 @@ public class DataSender implements Sender {
             return null;
         }
         StringMap headers = new StringMap();
-        return pandoraClient.post(url, points.toString().getBytes(), headers, HttpCommon.TEXT_PLAIN);
+        return pandoraClient.post(url, points.toString().getBytes(Config.UTF_8), headers, HttpCommon.TEXT_PLAIN);
     }
 
 
