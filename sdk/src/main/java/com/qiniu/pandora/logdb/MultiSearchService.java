@@ -8,6 +8,7 @@ import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class MultiSearchService implements Reusable {
     private String source() {
         StringBuffer bodybuffer = new StringBuffer();
         for (SearchRequest searchRequest :searchRequestList){
-            bodybuffer.append(searchRequest.GetIndexHeader()+"\n");
+            bodybuffer.append(searchRequest.getIndexHeader()+"\n");
             bodybuffer.append(searchRequest.getSource()+"\n");
         }
         return bodybuffer.toString();
@@ -82,7 +83,7 @@ public class MultiSearchService implements Reusable {
         public void setRepo(String repo) {
             this.repo = repo;
         }
-        public String GetIndexHeader(){
+        public String getIndexHeader(){
             return "{\"index\":[\""+repo+"\"]}";
         }
     }

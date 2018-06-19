@@ -1,5 +1,6 @@
 package com.qiniu.pandora.pipeline.sender;
 
+import com.qiniu.pandora.common.Config;
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Response;
@@ -21,7 +22,7 @@ public class MockPandoraClient implements PandoraClient {
 
     @Override
     public Response post(String url, byte[] content, StringMap headers, String bodyType) throws QiniuException {
-        List<Point> ps = Point.fromPointsString(new String(content));
+        List<Point> ps = Point.fromPointsString(new String(content, Config.UTF_8));
         synchronized (this) {
             pointSize += ps.size();
         }

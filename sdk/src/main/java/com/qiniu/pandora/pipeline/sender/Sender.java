@@ -2,9 +2,9 @@ package com.qiniu.pandora.pipeline.sender;
 
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Response;
+import com.qiniu.pandora.pipeline.error.SendPointError;
 import com.qiniu.pandora.pipeline.points.Batch;
 import com.qiniu.pandora.pipeline.points.Point;
-import com.qiniu.pandora.pipeline.error.SendPointError;
 
 /**
  * 数据发送接口.

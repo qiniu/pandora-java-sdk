@@ -1,8 +1,7 @@
 package com.qiniu.pandora.logdb;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Highlight{
 

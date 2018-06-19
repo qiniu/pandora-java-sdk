@@ -104,7 +104,7 @@ public class DataSender implements Sender {
 
     @Override
     public SendPointError sendFromBytes(byte[] points) throws QiniuException {
-        String ps = new String(points);
+        String ps = new String(points, Config.UTF_8);
         return sendFromString(ps);
     }
 
@@ -116,7 +116,7 @@ public class DataSender implements Sender {
         File f = new File(filePath);
         final Scanner scanner;
         try {
-            scanner = new Scanner(f);
+            scanner = new Scanner(f, "utf-8");
         } catch (FileNotFoundException e) {
             throw new QiniuRuntimeException(e);
         }
