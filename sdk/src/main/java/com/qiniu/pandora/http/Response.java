@@ -16,9 +16,6 @@ import java.util.Locale;
  * 定义HTTP请求的日志信息和常规方法
  */
 public final class Response {
-    public static final int InvalidArgument = -4;
-    public static final int InvalidFile = -3;
-    public static final int Cancelled = -2;
     public static final int NetworkError = -1;
     /**
      * 回复状态码
