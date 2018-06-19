@@ -1,5 +1,6 @@
 package com.qiniu.pandora.http;
 
+import com.qiniu.pandora.common.Config;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.common.QiniuRuntimeException;
 import com.qiniu.pandora.util.Json;
@@ -15,9 +16,6 @@ import java.util.Locale;
  * 定义HTTP请求的日志信息和常规方法
  */
 public final class Response {
-    public static final int InvalidArgument = -4;
-    public static final int InvalidFile = -3;
-    public static final int Cancelled = -2;
     public static final int NetworkError = -1;
     /**
      * 回复状态码
@@ -76,7 +74,7 @@ public final class Response {
             try {
                 body = response.body().bytes();
                 if (response.code() >= 400 && !StringUtils.isNullOrEmpty(reqId) && body != null) {
-                    ErrorBody errorBody = Json.decode(new String(body), ErrorBody.class);
+                    ErrorBody errorBody = Json.decode(new String(body,Config.UTF_8), ErrorBody.class);
                     error = errorBody.error;
                 }
             } catch (Exception e) {
@@ -103,7 +101,7 @@ public final class Response {
             try {
                 body = response.body().bytes();
                 if (response.code() >= 400 && !StringUtils.isNullOrEmpty(reqId) && body != null) {
-                    ErrorBody errorBody = Json.decode(new String(body), ErrorBody.class);
+                    ErrorBody errorBody = Json.decode(new String(body, Config.UTF_8), ErrorBody.class);
                     error = errorBody.error;
                 }
             } catch (Exception e) {
@@ -184,15 +182,15 @@ public final class Response {
     }
 
     public synchronized byte[] body() throws QiniuException {
-        if (body != null) {
-            return body;
+        if (this.body != null) {
+            return this.body;
         }
         try {
             this.body = response.body().bytes();
         } catch (IOException e) {
             throw new QiniuRuntimeException(e);
         }
-        return body;
+        return this.body;
     }
 
     public String bodyString() throws QiniuException {
@@ -220,5 +218,11 @@ public final class Response {
 
     public static class ErrorBody {
         public String error;
+    }
+
+    public void close() {
+        if (this.response != null) {
+            this.response.close();
+        }
     }
 }

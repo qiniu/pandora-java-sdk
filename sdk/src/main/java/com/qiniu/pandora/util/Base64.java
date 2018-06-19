@@ -1,5 +1,7 @@
 package com.qiniu.pandora.util;
 
+import com.qiniu.pandora.common.Config;
+
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -75,7 +77,7 @@ public final class Base64 {
      *                                  incorrect padding
      */
     public static byte[] decode(String str, int flags) {
-        return decode(str.getBytes(), flags);
+        return decode(str.getBytes(Config.UTF_8), flags);
     }
 
     /**

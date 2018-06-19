@@ -36,7 +36,7 @@ public class QueryManager {
 
     public QueryRet query(String sql) throws QiniuException {
         StringMap headers = new StringMap();
-        Response resp = pandoraClient.post(url, sql.getBytes(), headers, HttpCommon.TEXT_PLAIN);
+        Response resp = pandoraClient.post(url, sql.getBytes(Config.UTF_8), headers, HttpCommon.TEXT_PLAIN);
         QueryRet ret;
         try {
             ret = Json.decode(resp.bodyString(), QueryRet.class);
