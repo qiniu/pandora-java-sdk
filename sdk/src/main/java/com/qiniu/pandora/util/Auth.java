@@ -1,7 +1,8 @@
 package com.qiniu.pandora.util;
 
 
-import com.qiniu.pandora.common.Config;
+import com.qiniu.pandora.common.Configuration;
+import com.qiniu.pandora.common.Constants;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.crypto.Mac;
@@ -173,13 +174,13 @@ public final class Auth {
         String contentMD5 = "";
         String contentType = "";
         if (headers != null && headers.size() != 0) {
-            contentMD5 = (headers.containsKey(ContentMD5) == true) ? (headers.get(ContentMD5).toString()) : "";
-            contentType = (headers.containsKey(ContentType) == true) ? (headers.get(ContentType).toString()) : "";
+            contentMD5 = headers.containsKey(ContentMD5) ? (headers.get(ContentMD5).toString()) : "";
+            contentType = headers.containsKey(ContentType) ? (headers.get(ContentType).toString()) : "";
         }
 
         Token token = new Token(resource, expires, contentMD5, contentType, headersStr, method.toUpperCase());
         String tokenJson = mapper.writeValueAsString(token);
-        String encodedTokenDesc = UrlSafeBase64.encodeToString(tokenJson.getBytes(Config.UTF_8));
+        String encodedTokenDesc = UrlSafeBase64.encodeToString(tokenJson.getBytes(Constants.UTF_8));
         mac.update(StringUtils.utf8Bytes(encodedTokenDesc));
         String encodedSign = UrlSafeBase64.encodeToString(mac.doFinal());
         return (Pandora + accessKey + ":" + encodedSign + ":" + encodedTokenDesc);

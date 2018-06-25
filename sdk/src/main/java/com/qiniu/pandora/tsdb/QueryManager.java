@@ -4,6 +4,7 @@ import com.google.gson.JsonSyntaxException;
 import com.qiniu.pandora.common.*;
 import com.qiniu.pandora.http.HttpCommon;
 import com.qiniu.pandora.http.Response;
+import com.qiniu.pandora.logdb.Constant;
 import com.qiniu.pandora.util.Auth;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
@@ -36,7 +37,7 @@ public class QueryManager {
 
     public QueryRet query(String sql) throws QiniuException {
         StringMap headers = new StringMap();
-        Response resp = pandoraClient.post(url, sql.getBytes(Config.UTF_8), headers, HttpCommon.TEXT_PLAIN);
+        Response resp = pandoraClient.post(url, sql.getBytes(Constants.UTF_8), headers, HttpCommon.TEXT_PLAIN);
         QueryRet ret;
         try {
             ret = Json.decode(resp.bodyString(), QueryRet.class);
@@ -52,7 +53,7 @@ public class QueryManager {
     }
 
     protected String url(String repoName, String timezone) throws QiniuRuntimeException {
-        return Config.TSDB_HOST + "/v4/repos/" + repoName + "/query?timezone=" + UrlSafeBase64.urlEscape(timezone);
+        return Constants.TSDB_HOST + "/v4/repos/" + repoName + "/query?timezone=" + UrlSafeBase64.urlEscape(timezone);
     }
 
 }

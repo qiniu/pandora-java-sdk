@@ -1,6 +1,8 @@
 package com.qiniu.pandora.util;
 
-import com.qiniu.pandora.common.Config;
+import com.qiniu.pandora.common.Configuration;
+import com.qiniu.pandora.common.Constants;
+import com.qiniu.pandora.logdb.Constant;
 
 import java.security.MessageDigest;
 
@@ -33,7 +35,7 @@ public class Md5 {
     }
 
     public static String getMd5(String str) {
-        return getMd5(str.getBytes(Config.UTF_8));
+        return getMd5(str.getBytes(Constants.UTF_8));
     }
 
 }

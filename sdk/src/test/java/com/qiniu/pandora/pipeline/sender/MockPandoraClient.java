@@ -1,9 +1,11 @@
 package com.qiniu.pandora.pipeline.sender;
 
-import com.qiniu.pandora.common.Config;
+import com.qiniu.pandora.common.Configuration;
+import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Response;
+import com.qiniu.pandora.logdb.Constant;
 import com.qiniu.pandora.pipeline.points.Point;
 import com.qiniu.pandora.util.StringMap;
 
@@ -22,7 +24,7 @@ public class MockPandoraClient implements PandoraClient {
 
     @Override
     public Response post(String url, byte[] content, StringMap headers, String bodyType) throws QiniuException {
-        List<Point> ps = Point.fromPointsString(new String(content, Config.UTF_8));
+        List<Point> ps = Point.fromPointsString(new String(content, Constants.UTF_8));
         synchronized (this) {
             pointSize += ps.size();
         }
@@ -37,6 +39,16 @@ public class MockPandoraClient implements PandoraClient {
 
     @Override
     public Response get(String url, StringMap headers) throws QiniuException {
+        return null;
+    }
+
+    @Override
+    public Response put(String url, byte[] content, StringMap headers, String bodyType) throws QiniuException {
+        return null;
+    }
+
+    @Override
+    public Response delete(String url, StringMap headers) throws QiniuException {
         return null;
     }
 }

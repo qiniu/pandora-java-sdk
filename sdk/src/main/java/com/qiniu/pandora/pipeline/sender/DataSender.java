@@ -48,7 +48,7 @@ public class DataSender implements Sender {
             return null;
         }
         StringMap headers = new StringMap();
-        return pandoraClient.post(url, points.toString().getBytes(Config.UTF_8), headers, HttpCommon.TEXT_PLAIN);
+        return pandoraClient.post(url, points.toString().getBytes(Constants.UTF_8), headers, HttpCommon.TEXT_PLAIN);
     }
 
 
@@ -104,7 +104,7 @@ public class DataSender implements Sender {
 
     @Override
     public SendPointError sendFromBytes(byte[] points) throws QiniuException {
-        String ps = new String(points, Config.UTF_8);
+        String ps = new String(points, Constants.UTF_8);
         return sendFromString(ps);
     }
 
@@ -129,7 +129,7 @@ public class DataSender implements Sender {
     }
 
     protected String url(String repoName) {
-        return Config.PIPELINE_HOST + "/v2/repos/" + repoName + "/data";
+        return Constants.PIPELINE_HOST + "/v2/repos/" + repoName + "/data";
     }
 
 }
