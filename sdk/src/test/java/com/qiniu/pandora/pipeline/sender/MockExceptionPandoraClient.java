@@ -19,4 +19,14 @@ public class MockExceptionPandoraClient implements PandoraClient {
     public Response get(String url, StringMap headers) throws QiniuException {
         throw new QiniuRuntimeException("test error");
     }
+
+    @Override
+    public Response put(String url, byte[] content, StringMap headers, String bodyType) throws QiniuException {
+        throw new QiniuRuntimeException("test error");
+    }
+
+    @Override
+    public Response delete(String url, StringMap headers) throws QiniuException {
+        throw new QiniuRuntimeException("test error");
+    }
 }

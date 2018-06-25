@@ -1,6 +1,7 @@
 package com.qiniu.pandora.pipeline.points;
 
-import com.qiniu.pandora.common.Config;
+import com.qiniu.pandora.common.Configuration;
+import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.util.Json;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,12 +19,12 @@ public class PointTest {
     public void fromPointString() throws Exception {
         String str = "a=1\tb=2\tc=4=4\td=1\n";
         Point point = Point.fromPointString(str);
-        Assert.assertEquals(str.getBytes(Config.UTF_8).length, point.getSize());
+        Assert.assertEquals(str.getBytes(Constants.UTF_8).length, point.getSize());
         Assert.assertEquals(str, point.toString());
 
         str = "a=1\tb=2\tc=4=4\td=1";
         point = Point.fromPointString(str);
-        Assert.assertEquals(str.getBytes(Config.UTF_8).length + 1, point.getSize());
+        Assert.assertEquals(str.getBytes(Constants.UTF_8).length + 1, point.getSize());
         Assert.assertEquals(str + "\n", point.toString());
     }
 
