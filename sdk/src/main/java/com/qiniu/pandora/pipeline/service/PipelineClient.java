@@ -13,6 +13,7 @@ import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 
 import java.nio.charset.Charset;
+import java.util.List;
 
 
 public class PipelineClient {
@@ -39,6 +40,7 @@ public class PipelineClient {
         String postBody = Json.encode(workflowInput);
         this.client.post(postUrl, postBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
     }
+
 
     //update workflow
     // TODO: 2018/6/25
@@ -178,4 +180,25 @@ public class PipelineClient {
         }
         return exists;
     }
+
+    /**
+     * Transform client
+     *
+     */
+
+//    public void createTransfrom(){
+//        String postUrl =String.format("%s/v2/repos/%s/transforms/%s/to/%s",this.pipelineHost,);
+//
+//
+//    }
+
+    public String ListTransfrom(String RepoName) throws  QiniuException {
+        String getUrl = String.format("%s/v2/repos/%s/transforms", this.pipelineHost, RepoName);
+        Response response = this.client.get(getUrl, new StringMap());
+        return response.bodyString();
+    }
+
+
+
+
 }
