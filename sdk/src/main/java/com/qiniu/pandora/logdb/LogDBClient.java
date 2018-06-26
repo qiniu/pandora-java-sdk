@@ -3,6 +3,10 @@ package com.qiniu.pandora.logdb;
 import com.qiniu.pandora.common.*;
 import com.qiniu.pandora.http.Client;
 import com.qiniu.pandora.logdb.repo.*;
+import com.qiniu.pandora.logdb.search.MultiSearchService;
+import com.qiniu.pandora.logdb.search.PartialSearchService;
+import com.qiniu.pandora.logdb.search.ScrollSearchService;
+import com.qiniu.pandora.logdb.search.SearchService;
 import com.qiniu.pandora.util.Auth;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
@@ -12,7 +16,7 @@ public class LogDBClient implements ValueType, Analyser {
     private String host;
 
     public LogDBClient(PandoraClient pandoraClient) {
-        this(pandoraClient, Constant.HOST);
+        this(pandoraClient, Constants.LOGDB_HOST);
     }
 
     public LogDBClient(PandoraClient pandoraClient, String host) {
@@ -49,8 +53,9 @@ public class LogDBClient implements ValueType, Analyser {
 
     /**
      * SearchService工厂方法
+     * /v5/repos/<RepoName>/search
      *
-     * @return
+     * @return SearchService
      */
     public SearchService NewSearchService() {
         return new SearchService(this);
@@ -59,7 +64,7 @@ public class LogDBClient implements ValueType, Analyser {
     /**
      * PartialSearchService工厂方法
      *
-     * @return
+     * @return PartialSearchService
      */
     public PartialSearchService NewPartialSearchService() {
         return new PartialSearchService(this);
@@ -68,16 +73,16 @@ public class LogDBClient implements ValueType, Analyser {
     /**
      * ScrollService工厂方法
      *
-     * @return
+     * @return ScrollSearchService
      */
-    public ScrollService NewScrollService() {
-        return new ScrollService(this);
+    public ScrollSearchService NewScrollSearchService() {
+        return new ScrollSearchService(this);
     }
 
     /**
      * MultiSearchService工厂方法
      *
-     * @return
+     * @return MultiSearchService
      */
     public MultiSearchService NewMultiSearchService() {
         return new MultiSearchService(this);
@@ -94,7 +99,7 @@ public class LogDBClient implements ValueType, Analyser {
     /**
      * 可以随时再次自定义LogDB Host
      *
-     * @param host
+     * @param host LogDB host
      */
     public void setHost(String host) {
         this.host = host;
@@ -102,6 +107,9 @@ public class LogDBClient implements ValueType, Analyser {
 
     /**
      * 创建 LogDB 的 Repo
+     *
+     * @param repoName  repo name
+     * @param repoInput create repo extra params
      */
 
     public void createRepo(String repoName, CreateRepoInput repoInput) throws QiniuException {
@@ -120,6 +128,9 @@ public class LogDBClient implements ValueType, Analyser {
 
     /**
      * 更新 LogDB 的 Repo
+     *
+     * @param repoName  repo name
+     * @param repoInput update repo extra params
      */
     public void updateRepo(String repoName, UpdateRepoInput repoInput) throws QiniuException {
         String putUrl = String.format("%s/v5/repos/%s", this.host, repoName);
@@ -130,6 +141,9 @@ public class LogDBClient implements ValueType, Analyser {
 
     /**
      * 获取 LogDB 的信息
+     *
+     * @param repoName repo name
+     * @return GetRepoOutput
      */
     public GetRepoOutput getRepo(String repoName) throws QiniuException {
         String getUrl = String.format("%s/v5/repos/%s", this.host, repoName);
@@ -139,6 +153,8 @@ public class LogDBClient implements ValueType, Analyser {
 
     /**
      * 获取 LogDB 列表
+     *
+     * @return ListRepoOutput
      */
     public ListRepoOutput listRepos() throws QiniuException {
         String getUrl = String.format("%s/v5/repos", this.host);

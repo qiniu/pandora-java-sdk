@@ -6,4 +6,5 @@ package com.qiniu.pandora.pipeline.common;
 public class TestConfig {
     public static final String ACCESS_KEY = "";
     public static final String SECRET_KEY = "";
+    public static final String LOGDB_REPO = "logdb1";
 }
