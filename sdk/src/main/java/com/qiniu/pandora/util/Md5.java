@@ -1,8 +1,6 @@
 package com.qiniu.pandora.util;
 
-import com.qiniu.pandora.common.Configuration;
 import com.qiniu.pandora.common.Constants;
-import com.qiniu.pandora.logdb.Constant;
 
 import java.security.MessageDigest;
 

@@ -1,7 +1,6 @@
 package com.qiniu.pandora.pipeline.logdb;
 
 import com.qiniu.pandora.common.*;
-import com.qiniu.pandora.logdb.Analyser;
 import com.qiniu.pandora.logdb.LogDBClient;
 import com.qiniu.pandora.logdb.repo.*;
 import com.qiniu.pandora.pipeline.common.TestConfig;
@@ -11,9 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class LogDBTest {
-    protected String repo0 = "repo0";
-    protected String repo1 = "repo1";
-
     protected LogDBClient logDBClient;
 
     @Before
