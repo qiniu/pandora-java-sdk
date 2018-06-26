@@ -71,7 +71,7 @@ public class PandoraClientImpl implements PandoraClient {
         // TODO 由用户选择是否可以启动md5
         // headers.put(Auth.ContentMD5, Md5.getMd5(content));
 
-        String token = signAuth(url, headers, HttpCommon.METHOD_POST);
+        String token = signAuth(url, headers, HttpCommon.METHOD_PUT);
         headers.put(Auth.HTTPHeaderAuthorization, token);
         return client.put(url, content, headers, bodyType);
     }
