@@ -1,4 +1,4 @@
-package com.qiniu.pandora.pipeline.InputOutput;
+package com.qiniu.pandora.pipeline.repo;
 
 
 import com.google.gson.annotations.SerializedName;
@@ -12,4 +12,8 @@ public class NodeMetadata {
     @SerializedName("type")
     public String Type;
 
+    public NodeMetadata(String name, String type) {
+        Name = name;
+        Type = type;
+    }
 }

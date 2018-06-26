@@ -1,8 +1,7 @@
-package com.qiniu.pandora.pipeline.InputOutput;
+package com.qiniu.pandora.pipeline.repo;
 
 import java.util.Map;
 import com.google.gson.annotations.SerializedName;
-import com.qiniu.pandora.util.StringMap;
 
 
 public class UpdateWorkflowInput {
@@ -15,5 +14,9 @@ public class UpdateWorkflowInput {
     @SerializedName("nodes")
     public Map<String,Node> Nodes;
 
-
+    public UpdateWorkflowInput(String workflowName, String region, Map<String, Node> nodes) {
+        this.workflowName = workflowName;
+        this.region = region;
+        Nodes = nodes;
+    }
 }
