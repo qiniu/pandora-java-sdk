@@ -1,4 +1,4 @@
-package com.qiniu.pandora.logdb;
+package com.qiniu.pandora.logdb.repo;
 
 /**
  * Created by jemy on 2018/6/25.

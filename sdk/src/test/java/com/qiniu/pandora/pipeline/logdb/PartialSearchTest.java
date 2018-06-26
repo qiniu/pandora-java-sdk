@@ -1,70 +1,49 @@
 package com.qiniu.pandora.pipeline.logdb;
-import com.qiniu.pandora.logdb.PartialSearchService;
+
+import com.qiniu.pandora.common.PandoraClient;
+import com.qiniu.pandora.common.PandoraClientImpl;
+import com.qiniu.pandora.common.QiniuException;
+import com.qiniu.pandora.logdb.LogDBClient;
+import com.qiniu.pandora.logdb.search.MultiSearchService;
+import com.qiniu.pandora.logdb.search.PartialSearchService;
+import com.qiniu.pandora.pipeline.common.TestConfig;
+import com.qiniu.pandora.util.Auth;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PartialSearchTest extends LogDBTest{
-    @Test
-    public void source() throws Exception{
-        PartialSearchService partialSearchService = logDBClient.NewPartialSearchService();
-        partialSearchService = partialSearchService.setSize(1)
-                .setQueryString("*")
-                .setRepo(super.repo0)
-                .setSort("timestamp")
-                .setStartTime(Long.valueOf("1495261354595"))
-                .setEndTime(Long.valueOf("1497853354595"))
-                .setPre_tag("@hello@")
-                .setPost_tag("@hello/@");
-        Method sourceMethod = partialSearchService.getClass().getDeclaredMethod("source");
-        sourceMethod.setAccessible(true);
-        Object source = sourceMethod.invoke(partialSearchService);
-        String expectedSource = "{\"query_String\":\"*\",\"sort\":\"timestamp\",\"size\":1,\"startTime\":1495261354595,\"endTime\":1497853354595,\"searchType\":1,\"highlight\":{\"pre_tag\":\"@hello@\",\"post_tag\":\"@hello/@\"}}";
-        Assert.assertEquals(source,expectedSource);
+public class PartialSearchTest {
 
-        partialSearchService.reset();
+    private PartialSearchService partialSearchService;
+    private String repoName;
 
-        partialSearchService = partialSearchService.setSize(1)
-                .setQueryString("*")
-                .setRepo(super.repo0)
-                .setSort("dd")
-                .setStartTime(Long.valueOf("1495261354595"))
-                .setEndTime(Long.valueOf("1497853354595"))
-                .setPre_tag("@aa@")
-                .setPost_tag("@aa/@");
-        sourceMethod = partialSearchService.getClass().getDeclaredMethod("source");
-        sourceMethod.setAccessible(true);
-        source = sourceMethod.invoke(partialSearchService);
-        expectedSource = "{\"query_String\":\"*\",\"sort\":\"dd\",\"size\":1,\"startTime\":1495261354595,\"endTime\":1497853354595,\"searchType\":1,\"highlight\":{\"pre_tag\":\"@aa@\",\"post_tag\":\"@aa/@\"}}";
-        Assert.assertEquals(source,expectedSource);
+    @Before
+    public void setUp() {
+        Auth auth = Auth.create(TestConfig.ACCESS_KEY, TestConfig.SECRET_KEY);
+        PandoraClient client = new PandoraClientImpl(auth);
+        LogDBClient logDBClient = new LogDBClient(client);
+        this.partialSearchService = logDBClient.NewPartialSearchService();
+        this.repoName = TestConfig.LOGDB_REPO;
     }
+
     @Test
-    public void url() throws Exception{
-        PartialSearchService partialSearchService = logDBClient.NewPartialSearchService();
-
-        Method urlMethod = partialSearchService.getClass().getDeclaredMethod("url");
-        urlMethod.setAccessible(true);
-        Object url = urlMethod.invoke(partialSearchService);
-        String expectedUrl = "https://logdb.qiniu.com/v5/repos/null/s";
-        Assert.assertEquals(url,expectedUrl);
-
-        partialSearchService.setRepo(super.repo0);
-        urlMethod = partialSearchService.getClass().getDeclaredMethod("url");
-        urlMethod.setAccessible(true);
-        url = urlMethod.invoke(partialSearchService);
-        expectedUrl = "https://logdb.qiniu.com/v5/repos/repo0/s";
-        Assert.assertEquals(url,expectedUrl);
-
-
-        logDBClient.setHost("https://test.com");
-        partialSearchService = logDBClient.NewPartialSearchService();
-        urlMethod = partialSearchService.getClass().getDeclaredMethod("url");
-        urlMethod.setAccessible(true);
-        url = urlMethod.invoke(partialSearchService);
-        expectedUrl = "https://test.com/v5/repos/null/s";
-        Assert.assertEquals(url,expectedUrl);
-
-        logDBClient.setHost("https://logdb.qiniu.com");
+    public void testSearchWithPartial() {
+        int maxSize = 10;
+        PartialSearchService.PartialSearchRequest request = new PartialSearchService.PartialSearchRequest();
+        request.queryString = "level: WARN";
+        request.size = maxSize;
+        request.sort = "timestamp";
+        request.endTime = 1529653974002L;
+        request.startTime = 1529653968692L;
+        try {
+            PartialSearchService.PartialSearchResult result = this.partialSearchService.search(repoName, request);
+            Assert.assertNotNull(result.requestId);
+            System.out.println(result.requestId);
+        } catch (QiniuException e) {
+            e.printStackTrace();
+        }
     }
 }
