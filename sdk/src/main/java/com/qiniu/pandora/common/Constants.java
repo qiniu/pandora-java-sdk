@@ -38,13 +38,13 @@ public class Constants {
      */
     public static final int WRITE_TIMEOUT = 0;
     /**
-     * 回复超时时间 单位秒(默认30s)
+     * 回复超时时间 单位秒(默认60s)
      */
-    public static final int READ_TIMEOUT = 30;
+    public static final int READ_TIMEOUT = 60;
     /**
-     * 回复超时时间 单位秒(默认30s)
+     * 回复超时时间 单位秒(默认60s)
      */
-    public static int RESPONSE_TIMEOUT = 30;
+    public static int RESPONSE_TIMEOUT = 60;
 
 
     /**

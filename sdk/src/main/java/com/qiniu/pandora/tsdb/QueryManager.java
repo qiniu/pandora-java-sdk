@@ -4,7 +4,6 @@ import com.google.gson.JsonSyntaxException;
 import com.qiniu.pandora.common.*;
 import com.qiniu.pandora.http.HttpCommon;
 import com.qiniu.pandora.http.Response;
-import com.qiniu.pandora.logdb.Constant;
 import com.qiniu.pandora.util.Auth;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
