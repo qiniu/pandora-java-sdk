@@ -144,9 +144,7 @@ public class TSDBClient {
             throw new QiniuException("repo name should not be empty");
         }
         String url = String.format("%s/v4/repos/%s/series", this.host, repoName);
-
         Response resp = client.get(url, new StringMap());
-
         return resp.jsonToObject(SeriesDesc[].class);
     }
 
@@ -164,7 +162,6 @@ public class TSDBClient {
             throw new QiniuException("repo name or series name or metadata should not be empty");
         }
         String url = String.format("%s/v4/repos/%s/series/%s/meta", this.host, repoName, seriesName);
-
         byte[] content = Json.encode(metadata).getBytes(Constants.UTF_8);
         client.post(url, content, new StringMap(), Client.JsonMime).close();
     }

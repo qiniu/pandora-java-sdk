@@ -18,10 +18,10 @@ import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TSDBClientTest {
-    private static final String accessKey = "ovymbEgxJhGHymvgLgIxurnfjmlvyjsnDbAtohmt";
-    private static final String secretKey = "rIEmzFqvuIqqHhBwxxIFuFbMeFEGAnGhlejHunNo";
-    private static final String repoName = "javasdk_tsdb_repo";
-    private static final String seriesName = "javasdk_tsdb_series";
+    private static final String accessKey = "";
+    private static final String secretKey = "";
+    private static final String repoName = "";
+    private static final String seriesName = "";
 
     public TSDBClient manager;
 
@@ -29,7 +29,7 @@ public class TSDBClientTest {
     public void setUp() {
         Auth auth = Auth.create(accessKey, secretKey);
         PandoraClient client = new PandoraClientImpl(auth);
-        manager = new TSDBClient(client, "http://tsdb-pdex.qiniu.io");
+        manager = new TSDBClient(client);
     }
 
     @Test
