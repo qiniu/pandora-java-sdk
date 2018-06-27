@@ -24,6 +24,12 @@ public class QiniuException extends IOException {
         this.error = msg;
     }
 
+    public QiniuException(String msg) {
+        super(msg);
+        this.response = null;
+        this.error = msg;
+    }
+
     public String url() {
         return response.url();
     }
