@@ -30,7 +30,7 @@ public class PartialSearchService {
     public PartialSearchResult search(String repoName, PartialSearchRequest searchRequest) throws QiniuException {
         String postUrl = String.format("%s/v5/repos/%s/s", this.logDBClient.getHost(), repoName);
         String postBody = Json.encode(searchRequest);
-System.out.println(postBody);
+
         Response response = this.logDBClient.getPandoraClient().post(postUrl,
                 postBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime);
         PartialSearchResult result = response.jsonToObject(PartialSearchResult.class);

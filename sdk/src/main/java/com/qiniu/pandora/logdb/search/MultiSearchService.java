@@ -38,7 +38,6 @@ public class MultiSearchService {
                     .append(searchRequest.source).append("\n");
         }
 
-        System.out.println(postBody.toString());
         String postUrl = String.format("%s/v5/logdbkibana/msearch", this.logDBClient.getHost());
 
         Response response = this.logDBClient.getPandoraClient().post(postUrl,
