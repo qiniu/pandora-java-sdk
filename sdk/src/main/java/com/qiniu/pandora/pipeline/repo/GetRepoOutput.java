@@ -2,41 +2,26 @@ package com.qiniu.pandora.pipeline.repo;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Arrays;
 
 public class GetRepoOutput {
-
     @SerializedName("region")
-    public String Region;
+    public String region;
     @SerializedName("Schema")
-    public RepoSchemaEntry[] Schema;
+    public RepoSchemaEntry[] schema;
     @SerializedName("group")
-    public String GroupName;
+    public String groupName;
     @SerializedName("options")
-    public RepoOptions Options;
+    public RepoOptions options;
     @SerializedName("derivedFrom")
-    public String DerivedFrom;
+    public String derivedFrom;
     @SerializedName("fronDag")
-    public boolean FromDag;
+    public boolean fromDag;
     @SerializedName("workflow")
-    public String Workflow;
+    public String workflow;
     @SerializedName("ruleNames")
-    public String[] RuleNames;
+    public String[] ruleNames;
     @SerializedName("description")
-    public String Description;
+    public String description;
 
-    @Override
-    public String toString() {
-        return "GetRepoOutput{" +
-                "Region='" + Region + '\'' +
-                ", Schema=" + Arrays.toString(Schema) +
-                ", GroupName='" + GroupName + '\'' +
-                ", Options=" + Options +
-                ", DerivedFrom='" + DerivedFrom + '\'' +
-                ", FromDag=" + FromDag +
-                ", Workflow='" + Workflow + '\'' +
-                ", RuleNames=" + Arrays.toString(RuleNames) +
-                ", Description='" + Description + '\'' +
-                '}';
-    }
+
 }

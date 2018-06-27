@@ -10,12 +10,4 @@ public class CreateWorkflowInput {
     @SerializedName("comment")
     public String comment;
 
-    public CreateWorkflowInput() {
-    }
-
-    public CreateWorkflowInput(String workflowName, String region, String comment) {
-        this.workflowName = workflowName;
-        this.region = region;
-        this.comment = comment;
-    }
 }

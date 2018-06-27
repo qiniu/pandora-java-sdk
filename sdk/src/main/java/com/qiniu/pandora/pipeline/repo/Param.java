@@ -2,13 +2,13 @@ package com.qiniu.pandora.pipeline.repo;
 
 import com.google.gson.annotations.SerializedName;
 
-public class NodeStatus {
+public class Param {
+
+    @SerializedName("default")
+    public String defaultName;
     @SerializedName("name")
     public String name;
-    @SerializedName("type")
-    public String type;
-    @SerializedName("status")
-    public String status;
-
+    @SerializedName("value")
+    public String value;
 
 }

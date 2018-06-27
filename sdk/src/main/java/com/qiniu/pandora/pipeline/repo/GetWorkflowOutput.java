@@ -1,38 +1,26 @@
 package com.qiniu.pandora.pipeline.repo;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
-
 public class GetWorkflowOutput {
     @SerializedName("name")
-    public String Name;
+    public String name;
     @SerializedName("region")
-    public String Region;
+    public String region;
     @SerializedName("nodes")
-    public Map<String,Node>  Nodes;
+    public Map<String, Node> nodes;
     @SerializedName("comment")
-    public String Comment;
+    public String comment;
     @SerializedName("creaTime")
-    public  String Createtime;
+    public String createtime;
     @SerializedName("updateTime")
-    public String UpdateTime;
+    public String updateTime;
     @SerializedName("status")
-    public  String Status;
+    public String status;
     @SerializedName("canStaty")
-    public  String Canstart;
+    public String canstart;
     @SerializedName("isManualWorkflow")
-    public String IsManualWorkflow;
-
-    public GetWorkflowOutput(String name, String region, Map<String, Node> nodes, String comment, String createtime, String updateTime, String status, String canstart, String isManualWorkflow) {
-        Name = name;
-        Region = region;
-        Nodes = nodes;
-        Comment = comment;
-        Createtime = createtime;
-        UpdateTime = updateTime;
-        Status = status;
-        Canstart = canstart;
-        IsManualWorkflow = isManualWorkflow;
-    }
+    public String isManualWorkflow;
 }

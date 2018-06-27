@@ -3,28 +3,17 @@ package com.qiniu.pandora.pipeline.repo;
 import com.google.gson.annotations.SerializedName;
 
 
-
 public class Node {
     @SerializedName("name")
-    String  Name;
+    public String name;
     @SerializedName("Type")
-    String type;
+    public String type;
     @SerializedName("parents")
-    NodeMetadata [] Parents;
+    public NodeMetadata[] parents;
     @SerializedName("Children")
-    NodeMetadata [] Children;
-
-    public Node(String name, String type, NodeMetadata[] parents, NodeMetadata[] children, Object data) {
-        Name = name;
-        this.type = type;
-        Parents = parents;
-        Children = children;
-        Data = data;
-    }
-
+    public NodeMetadata[] children;
     @SerializedName("data")
-
-    Object Data;
+    public Object data;
 
 
 }

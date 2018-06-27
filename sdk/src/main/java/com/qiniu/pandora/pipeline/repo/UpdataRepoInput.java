@@ -2,32 +2,19 @@ package com.qiniu.pandora.pipeline.repo;
 
 import com.google.gson.annotations.SerializedName;
 
-
 public class UpdataRepoInput {
 
-//    PipelineGetRepoToken PandoraToken
-//    RepoName             string
-//    workflow             string
-//    Schema               []RepoSchemaEntry `json:"schema"`
-//    Option               *SchemaFreeOption
-//    RepoOptions          *RepoOptions `json:"options"`
-//    RuleNames            *[]string    `json:"ruleNames"`
-//    Description          *string      `json:"description"`
-
-    public String RepoName;
-    public String Workflow;
+    public String repoName;
+    public String workflow;
+    public String schemaFreeOption;
 
     @SerializedName("schema")
-    RepoSchemaEntry[] Schema;
-
-    String   schemaFreeOption;
-
+    public RepoSchemaEntry[] schema;
     @SerializedName("options")
-    RepoOptions repoOptions;
+    public RepoOptions repoOptions;
     @SerializedName("ruleNames")
-    String[] RuleNames;
+    public String[] ruleNames;
     @SerializedName("description")
-    String Description;
-
+    public String description;
 
 }

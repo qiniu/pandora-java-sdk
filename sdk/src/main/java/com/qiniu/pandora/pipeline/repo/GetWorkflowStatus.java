@@ -3,22 +3,13 @@ package com.qiniu.pandora.pipeline.repo;
 import com.google.gson.annotations.SerializedName;
 
 
-
 public class GetWorkflowStatus {
-
     @SerializedName("name")
-    public  String Name;
+    public String name;
     @SerializedName("region")
-    public String Region;
+    public String region;
     @SerializedName("status")
     public String status;
     @SerializedName("nodes")
-    public NodeStatus[] NodesStatus;
-
-    public GetWorkflowStatus(String name, String region, String status, NodeStatus[] nodesStatus) {
-        Name = name;
-        Region = region;
-        this.status = status;
-        NodesStatus = nodesStatus;
-    }
+    public NodeStatus[] nodesStatus;
 }

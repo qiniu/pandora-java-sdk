@@ -1,18 +1,9 @@
 package com.qiniu.pandora.pipeline.repo;
 
-
-
-
-
 public class CreateTransformInput {
+    public String srcRepoNmae;
+    public String destRepoName;
+    public String transfornName;
+    public TransformSpec spec;
 
-    public String SrcRepoNmae;
-    public String DestRepoName;
-    public String TransfornName;
-
-    public CreateTransformInput(String srcRepoNmae, String destRepoName, String transfornName) {
-        SrcRepoNmae = srcRepoNmae;
-        DestRepoName = destRepoName;
-        TransfornName = transfornName;
-    }
 }

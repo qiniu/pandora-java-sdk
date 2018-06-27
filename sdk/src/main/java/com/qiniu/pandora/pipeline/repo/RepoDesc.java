@@ -6,21 +6,21 @@ import com.google.gson.annotations.SerializedName;
 public class RepoDesc {
 
     @SerializedName("name")
-    public String Reponame;
+    public String reponame;
     @SerializedName("region")
-    public String Region;
+    public String region;
     @SerializedName("group")
-    public String GroupName;
+    public String groupName;
     @SerializedName("derivedFrom")
-    public String DerivedFrom;
+    public String derivedFrom;
     @SerializedName("fronDag")
-    public boolean FromDag;
+    public boolean fromDag;
     @SerializedName("workflow")
-    public String Workflow;
+    public String workflow;
     @SerializedName("ruleNames")
-    public String[] RuleNames;
+    public String[] ruleNames;
     @SerializedName("description")
-    public String Description;
+    public String description;
 
 
 }

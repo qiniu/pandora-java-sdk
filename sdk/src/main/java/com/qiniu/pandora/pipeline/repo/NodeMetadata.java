@@ -7,13 +7,9 @@ import com.google.gson.annotations.SerializedName;
 public class NodeMetadata {
 
     @SerializedName("name")
-    public String Name;
-
+    public String name;
     @SerializedName("type")
-    public String Type;
+    public String type;
 
-    public NodeMetadata(String name, String type) {
-        Name = name;
-        Type = type;
-    }
+
 }
