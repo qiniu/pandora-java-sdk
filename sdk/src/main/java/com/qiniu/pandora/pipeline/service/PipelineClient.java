@@ -1,12 +1,10 @@
 package com.qiniu.pandora.pipeline.service;
 
-
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Client;
 import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.pipeline.repo.*;
-
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 
@@ -26,9 +24,6 @@ public class PipelineClient {
         this.client = client;
     }
 
-    /**
-     * workflowclinet
-     */
 
     /***
      * 创建工作流
@@ -147,10 +142,6 @@ public class PipelineClient {
         return exists;
     }
 
-/**
- * repoclient
- */
-
 
     /**
      * 创建repo
@@ -159,7 +150,7 @@ public class PipelineClient {
      * @throws Exception
      */
     public void createRepo(CreateRepoInput repoInput) throws Exception {
-        String postUrl = String.format("%s/v2/repos/%s", this.pipelineHost, repoInput.RepoName);
+        String postUrl = String.format("%s/v2/repos/%s", this.pipelineHost, repoInput.repoName);
         String postBody = Json.encode(repoInput);
         this.client.post(postUrl, postBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
     }
@@ -171,9 +162,8 @@ public class PipelineClient {
      * @param updataRepoInput
      * @throws QiniuException
      */
-    //@todo UpdataRepoInput
     public void updateRepo(UpdataRepoInput updataRepoInput) throws QiniuException {
-        String putUrl = String.format("%s/v2/repos/%s", this.pipelineHost, updataRepoInput.RepoName);
+        String putUrl = String.format("%s/v2/repos/%s", this.pipelineHost, updataRepoInput.repoName);
         String putBody = Json.encode(updataRepoInput);
         this.client.put(putUrl, putBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
     }
@@ -185,9 +175,8 @@ public class PipelineClient {
      * @return
      * @throws QiniuException
      */
-    //@todo   Need to be test , need json
     public ListWorkflowOutput listRepos(ListReposInput listReposInput) throws QiniuException {
-        if (listReposInput.WithDag) {
+        if (listReposInput.withDag) {
             this.listRepoWithDag(listReposInput);
         }
         String getUrl = String.format("%s/v2/repos", this.pipelineHost);
@@ -202,7 +191,7 @@ public class PipelineClient {
      * @throws QiniuException
      */
     public ListWorkflowOutput listRepoWithDag(ListReposInput listReposInput) throws QiniuException {
-        String getUrl = String.format("%s/v2/repos", this.pipelineHost);
+        String getUrl = String.format("%s/v2/repos?withDag=true", this.pipelineHost);
         Response response = this.client.get(getUrl, new StringMap());
         return response.jsonToObject(ListWorkflowOutput.class);
     }
@@ -217,7 +206,6 @@ public class PipelineClient {
     public void deleteRepo(String repoName) throws QiniuException {
         String deleteUrl = String.format("%s/v2/repos/%s", this.pipelineHost, repoName);
         this.client.delete(deleteUrl, new StringMap()).close();
-
     }
 
     /**
@@ -251,9 +239,8 @@ public class PipelineClient {
         return exists;
     }
 
-
     /**
-     * 查看队列数据 上限10条
+     * 查看数据 上限10条
      *
      * @param repoName
      * @param count
@@ -268,12 +255,226 @@ public class PipelineClient {
     }
 
 
-    public String listGroups() throws QiniuException {
-        String geturl = String.format("%s/v2/groups");
-        Response response = this.client.get(geturl, new StringMap());
-        return response.bodyString();
-
+    /**
+     * 创建 transform
+     *
+     * @param createTransformInput
+     * @throws QiniuException
+     */
+    public void createTransform(CreateTransformInput createTransformInput) throws QiniuException {
+        String postUrl = String.format("%s/v2/repos/%s/transforms/%s/to/%s", this.pipelineHost,
+                createTransformInput.srcRepoNmae,
+                createTransformInput.transfornName,
+                createTransformInput.destRepoName);
+        String postBody = Json.encode(createTransformInput.spec);
+        this.client.post(postUrl, postBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
     }
+
+    /**
+     * 更新 transform
+     *
+     * @param updateTransformInput
+     * @throws QiniuException
+     */
+    public void updateTransform(UpdateTransformInput updateTransformInput) throws QiniuException {
+        String putUrl = String.format("%s/v2/repos/%s/transforms/%s", this.pipelineHost,
+                updateTransformInput.srcRepoName,
+                updateTransformInput.transformName);
+        String putBody = Json.encode(updateTransformInput.spec);
+        this.client.put(putUrl, putBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
+    }
+
+    /**
+     * 获取transform信息
+     * @param  repoName
+     * @param transformName
+     * @return
+     * @throws QiniuException
+     */
+
+    public TransformSpec getTransform(String repoName, String transformName) throws QiniuException {
+        String getUrl = String.format("%s/v2/repos/%s/transforms/%s", this.pipelineHost, repoName, transformName);
+        Response response = this.client.get(getUrl, new StringMap());
+        return response.jsonToObject(TransformSpec.class);
+    }
+
+    /**
+     * 获取 transform 列表
+     *
+     * @param repoName
+     * @return
+     * @throws QiniuException
+     */
+    public ListTransformsOutput listTransform(String repoName) throws QiniuException {
+        String getUrl = String.format("%s/v2/repos/%s/transforms", this.pipelineHost, repoName);
+        Response response = this.client.get(getUrl, new StringMap());
+        return response.jsonToObject(ListTransformsOutput.class);
+    }
+
+    /**
+     * 删除 transform
+     *
+     * @param repoName
+     * @param transformName
+     * @throws QiniuException
+     */
+
+    public void deleteRepo(String repoName, String transformName) throws QiniuException {
+        String deleteUrl = String.format("%s/v2/repos/%s/transforms/%s", this.pipelineHost, repoName, transformName);
+        this.client.delete(deleteUrl, new StringMap());
+    }
+
+    /**
+     * transform 是否存在
+     *
+     * @param repoName
+     * @param transformName
+     * @return
+     */
+    public boolean transformExists(String repoName, String transformName) {
+        boolean exists = false;
+        String getUrl = String.format("%s/v2/repos/%s/transforms/%s/exists", this.pipelineHost, repoName, transformName);
+        try {
+            this.client.get(getUrl, new StringMap()).close();
+            exists = true;
+        } catch (QiniuException e) {
+            //pass
+        }
+        return exists;
+    }
+
+
+    /**
+     * 创建 export
+     *
+     * @param createExportInput
+     * @throws QiniuException
+     */
+    public void createExport(CreateExportInput createExportInput) throws QiniuException {
+        String postUrl = String.format("%s/v2/repos/%s/exports/%s", this.pipelineHost,
+                createExportInput.repoName,
+                createExportInput.exportName);
+        String postBody = Json.encode(createExportInput.spec);
+        this.client.post(postUrl, postBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
+    }
+
+    /**
+     * 更新export
+     * @param updateExportInput
+     * @throws QiniuException
+     */
+    public void updateExport(UpdateExportInput updateExportInput) throws QiniuException {
+        String putUrl = String.format("%s/v2/repos/%s/exports/%s", this.pipelineHost,
+                updateExportInput.repoName,
+                updateExportInput.exportName);
+        String putBody = Json.encode(updateExportInput.spec);
+        this.client.put(putUrl, putBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
+    }
+
+    /**
+     * 列举export信息
+     * @param repoName
+     * @return
+     * @throws QiniuException
+     */
+    public ListExportsOutput listExports(String repoName) throws QiniuException {
+        String getUrl = String.format("%s/v2/repos/%s/exports", this.pipelineHost, repoName);
+        Response response = this.client.get(getUrl, new StringMap());
+        return response.jsonToObject(ListExportsOutput.class);
+    }
+
+    /**
+     * 获取 export信息
+     *
+     * @param repoName
+     * @param exportName
+     * @return
+     * @throws QiniuException
+     */
+    public ExportDesc getExport(String repoName, String exportName) throws QiniuException {
+        String getUrl = String.format("%s/v2/repos/%s/exports/%s", this.pipelineHost, repoName, exportName);
+        Response response = this.client.get(getUrl, new StringMap());
+        return response.jsonToObject(ExportDesc.class);
+    }
+
+    /**
+     * 删除 export
+     *
+     * @param repoName
+     * @param exportName
+     * @throws QiniuException
+     */
+    public void deleteExport(String repoName, String exportName) throws QiniuException {
+        String deleteUrl = String.format("%s/v2/repos/%s/exports/%s", this.pipelineHost, repoName, exportName);
+        this.client.delete(deleteUrl, new StringMap());
+    }
+
+    /**
+     * 创建 Datasource
+     *
+     * @param createDatasourceInput
+     * @throws QiniuException
+     */
+    public void createDatasource(CreateDatasourceInput createDatasourceInput) throws QiniuException {
+        String postUrl = String.format("%s/v2/datasources/%s", this.pipelineHost, createDatasourceInput.datasourcename);
+        String postBody = Json.encode(createDatasourceInput);
+        this.client.post(postUrl, postBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
+    }
+
+    /**
+     * 获取 Datasource 信息
+     *
+     * @param datasourceName
+     * @return
+     * @throws QiniuException
+     */
+    public GetDatasourceOutput getDatasource(String datasourceName) throws QiniuException {
+        String getUrl = String.format("%s/v2/datasources/%s", this.pipelineHost, datasourceName);
+        Response response = this.client.get(getUrl, new StringMap());
+        return response.jsonToObject(GetDatasourceOutput.class);
+    }
+
+    /**
+     * 查看 Datasource 是否存在
+     *
+     * @param datasourceName
+     * @return
+     */
+    public boolean datesourceExists(String datasourceName) {
+        boolean exists = false;
+        String getUrl = String.format("%s/v2/datasources/%s/exists", this.pipelineHost, datasourceName);
+        try {
+            this.client.get(getUrl, new StringMap()).close();
+            exists = true;
+        } catch (QiniuException e) {
+            //pass
+        }
+        return exists;
+    }
+
+    /**
+     * 列举Datasource 信息
+     *
+     * @return
+     * @throws QiniuException
+     */
+    public ListDatasourcesOutput listDatasources() throws QiniuException {
+        String getUrl = String.format("%s/v2/datasources", this.pipelineHost);
+        Response response = this.client.get(getUrl, new StringMap());
+        return response.jsonToObject(ListDatasourcesOutput.class);
+    }
+
+    /**
+     * 删除Datasource
+     *
+     * @param datasourceName
+     * @throws QiniuException
+     */
+    public void deleteDatasource(String datasourceName) throws QiniuException {
+        String deleteUrl = String.format("%s/v2/datasources/%s", this.pipelineHost, datasourceName);
+        this.client.delete(deleteUrl, new StringMap());
+    }
+
 
 
 }
