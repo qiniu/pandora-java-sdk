@@ -9,5 +9,4 @@ public class CreateWorkflowInput {
     public String region;
     @SerializedName("comment")
     public String comment;
-
 }

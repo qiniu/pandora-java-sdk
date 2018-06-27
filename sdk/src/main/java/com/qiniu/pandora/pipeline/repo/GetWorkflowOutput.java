@@ -10,17 +10,32 @@ public class GetWorkflowOutput {
     @SerializedName("region")
     public String region;
     @SerializedName("nodes")
-    public Map<String, Node> nodes;
+    public Map<String,Object> nodes;
     @SerializedName("comment")
     public String comment;
-    @SerializedName("creaTime")
+    @SerializedName("createTime")
     public String createtime;
     @SerializedName("updateTime")
     public String updateTime;
     @SerializedName("status")
     public String status;
-    @SerializedName("canStaty")
-    public String canstart;
+    @SerializedName("canStart")
+    public boolean canStart;
     @SerializedName("isManualWorkflow")
-    public String isManualWorkflow;
+    public boolean isManualWorkflow;
+
+    @Override
+    public String toString() {
+        return "GetWorkflowOutput{" +
+                "name='" + name + '\'' +
+                ", region='" + region + '\'' +
+                ", nodes=" + nodes +
+                ", comment='" + comment + '\'' +
+                ", createtime='" + createtime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                ", status='" + status + '\'' +
+                ", canStart=" + canStart +
+                ", isManualWorkflow=" + isManualWorkflow +
+                '}';
+    }
 }

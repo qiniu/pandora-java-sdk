@@ -10,5 +10,12 @@ public class NodeStatus {
     @SerializedName("status")
     public String status;
 
-
+    @Override
+    public String toString() {
+        return "NodeStatus{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

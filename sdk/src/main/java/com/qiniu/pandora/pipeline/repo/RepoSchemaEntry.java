@@ -10,5 +10,4 @@ public class RepoSchemaEntry {
     public String valType;
     @SerializedName("required")
     public boolean required;
-
 }

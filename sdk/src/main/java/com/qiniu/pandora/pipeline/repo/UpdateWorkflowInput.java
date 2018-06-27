@@ -12,5 +12,4 @@ public class UpdateWorkflowInput {
     public String region;
     @SerializedName("nodes")
     public Map<String, Node> nodes;
-
 }

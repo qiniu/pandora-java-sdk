@@ -15,5 +15,4 @@ public class Node {
     @SerializedName("data")
     public Object data;
 
-
 }
