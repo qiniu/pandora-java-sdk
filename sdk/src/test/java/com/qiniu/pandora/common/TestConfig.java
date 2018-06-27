@@ -1,4 +1,4 @@
-package com.qiniu.pandora.pipeline.common;
+package com.qiniu.pandora.common;
 
 /**
  * Created by jemy on 2018/6/25.

@@ -1,11 +1,10 @@
-package com.qiniu.pandora.pipeline.logdb;
+package com.qiniu.pandora.logdb;
 
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.PandoraClientImpl;
 import com.qiniu.pandora.common.QiniuException;
-import com.qiniu.pandora.logdb.LogDBClient;
 import com.qiniu.pandora.logdb.search.MultiSearchService;
-import com.qiniu.pandora.pipeline.common.TestConfig;
+import com.qiniu.pandora.common.TestConfig;
 import com.qiniu.pandora.util.Auth;
 import org.junit.Assert;
 import org.junit.Before;
