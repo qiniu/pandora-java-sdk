@@ -7,5 +7,4 @@ public class NodeMetadata {
     public String name;
     @SerializedName("type")
     public String type;
-
 }
