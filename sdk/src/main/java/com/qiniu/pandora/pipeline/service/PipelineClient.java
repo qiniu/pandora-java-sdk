@@ -24,7 +24,6 @@ public class PipelineClient {
         this.client = client;
     }
 
-
     /***
      * 创建 workflow
      * @param workflowInput  create workflow params
@@ -46,7 +45,6 @@ public class PipelineClient {
         this.client.put(putUrl, putBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
     }
 
-
     /**
      * 删除 workflow
      * @param workflowName workflow name
@@ -55,7 +53,6 @@ public class PipelineClient {
         String deleteUrl = String.format("%s/v2/workflows/%s", this.pipelineHost, workflowName);
         this.client.delete(deleteUrl, new StringMap()).close();
     }
-
 
     /**
      * 获取 workflow 信息
@@ -70,7 +67,6 @@ public class PipelineClient {
         return response.jsonToObject(GetWorkflowOutput.class);
     }
 
-
     /**
      * 获取 workflow 状态
      * @param workflowName workflow name
@@ -81,7 +77,6 @@ public class PipelineClient {
         Response response = this.client.get(getUrl, new StringMap());
         return response.jsonToObject(GetWorkflowStatus.class);
     }
-
 
     /**
      * 获取 workflow 列表
