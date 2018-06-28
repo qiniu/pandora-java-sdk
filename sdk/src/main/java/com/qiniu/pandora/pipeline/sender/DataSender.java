@@ -37,6 +37,19 @@ public class DataSender implements Sender {
 
     /**
      * 发送Batch数据
+     */
+    public Response send(byte[] postBody) throws QiniuException {
+        if (postBody.length <= 0) {
+            return null;
+        }
+        StringMap headers = new StringMap();
+        return pandoraClient.post(url, postBody, headers, HttpCommon.TEXT_PLAIN);
+
+    }
+
+
+    /**
+     * 发送Batch数据
      *
      * @param points Batch数据点
      * @return null 没有发送数据，Response 发送结果
@@ -44,11 +57,7 @@ public class DataSender implements Sender {
      */
     @Override
     public Response send(Batch points) throws QiniuException {
-        if (points.getSize() <= 0) {
-            return null;
-        }
-        StringMap headers = new StringMap();
-        return pandoraClient.post(url, points.toString().getBytes(Constants.UTF_8), headers, HttpCommon.TEXT_PLAIN);
+        return this.send(points.toString().getBytes(Constants.UTF_8));
     }
 
 
