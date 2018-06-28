@@ -15,7 +15,7 @@ public class CreateExportInput<T> {
     @SerializedName("whence")
     public String whence;
 
-    public class ExportLogDBSpec {
+    public static class ExportLogDBSpec {
         @SerializedName("destRepoName")
         public String destRepoName;
         @SerializedName("doc")
@@ -36,7 +36,7 @@ public class CreateExportInput<T> {
         }
     }
 
-    public class ExportTSDBSpec {
+    public static class ExportTSDBSpec {
         @SerializedName("destRepoName")
         public String destRepoName;
         @SerializedName("series")
@@ -76,7 +76,7 @@ public class CreateExportInput<T> {
         }
     }
 
-    public class ExportHTTPSpec {
+    public static class ExportHTTPSpec {
         @SerializedName("host")
         public String host;
         @SerializedName("uri")

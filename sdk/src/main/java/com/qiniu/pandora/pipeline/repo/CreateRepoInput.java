@@ -19,7 +19,7 @@ public class CreateRepoInput {
     @SerializedName("options")
     public RepoOptions options;
 
-    public class RepoOptions {
+    public static class RepoOptions {
         @SerializedName("withIP")
         public String withIP;
         @SerializedName("withTimestamp")
