@@ -14,42 +14,43 @@ public class CreateExportInput<T> {
     public T spec;
     @SerializedName("whence")
     public String whence;
+
+    public class ExportLogDBSpec {
+        @SerializedName("destRepoName")
+        public String destRepoName;
+        @SerializedName("doc")
+        public Map<String, Object> doc;
+        @SerializedName("omitInvalid")
+        public boolean omitInvalid;
+        @SerializedName("omitEmpty")
+        public boolean omitEmpty;
+    }
+
+    public class ExportTSDBSpec {
+        @SerializedName("destRepoName")
+        public String destRepoName;
+        @SerializedName("series")
+        public String seriesName;
+        @SerializedName("tags")
+        public Map<String, String> tags;
+        @SerializedName("fields")
+        public Map<String, String> fields;
+        @SerializedName("omitInvalid")
+        public boolean omitInvalid;
+        @SerializedName("omitEmpty")
+        public boolean omitEmpty;
+        @SerializedName("timestamp")
+        public String timestamp;
+    }
+
+    public class ExportHTTPSpec {
+        @SerializedName("host")
+        public String host;
+        @SerializedName("uri")
+        public String uri;
+        @SerializedName("format")
+        public String format;
+    }
 }
 
 
-class ExportLogDBSpec {
-    @SerializedName("destRepoName")
-    public String destRepoName;
-    @SerializedName("doc")
-    public Map<String, Object> doc;
-    @SerializedName("omitInvalid")
-    public boolean omitInvalid;
-    @SerializedName("omitEmpty")
-    public boolean omitEmpty;
-}
-
-class ExportTSDBSpec {
-    @SerializedName("destRepoName")
-    public String destRepoName;
-    @SerializedName("series")
-    public String seriesName;
-    @SerializedName("tags")
-    public Map<String, String> tags;
-    @SerializedName("fields")
-    public Map<String, String> fields;
-    @SerializedName("omitInvalid")
-    public boolean omitInvalid;
-    @SerializedName("omitEmpty")
-    public boolean omitEmpty;
-    @SerializedName("timestamp")
-    public String timestamp;
-}
-
-class ExportHTTPSpec {
-    @SerializedName("host")
-    public String host;
-    @SerializedName("uri")
-    public String uri;
-    @SerializedName("format")
-    public String format;
-}

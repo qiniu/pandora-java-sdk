@@ -19,13 +19,14 @@ public class CreateRepoInput {
     @SerializedName("options")
     public RepoOptions options;
 
+    public class RepoOptions {
+        @SerializedName("withIP")
+        public String withIP;
+        @SerializedName("withTimestamp")
+        public String withTimestamp;
+        @SerializedName("unescapeLine")
+        public boolean unescapeLine;
+    }
+
 }
 
-  class RepoOptions{
-    @SerializedName("withIP")
-    public String withIP;
-    @SerializedName("withTimestamp")
-    public String withTimestamp;
-    @SerializedName("unescapeLine")
-    public boolean unescapeLine;
-}
