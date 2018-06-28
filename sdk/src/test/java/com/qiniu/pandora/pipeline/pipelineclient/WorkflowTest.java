@@ -4,13 +4,11 @@ import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.PandoraClientImpl;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.common.TestConfig;
-import com.qiniu.pandora.pipeline.service.PipelineClient;
+import com.qiniu.pandora.pipeline.PipelineClient;
 import com.qiniu.pandora.pipeline.repo.*;
 import com.qiniu.pandora.util.Auth;
 import org.junit.runners.MethodSorters;
 import org.junit.FixMethodOrder;
-
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,10 +39,9 @@ public class WorkflowTest {
         UpdateWorkflowInput updateWorkflowInput = new UpdateWorkflowInput();
         updateWorkflowInput.region = "nb";
         updateWorkflowInput.workflowName = "javasdk";
-        updateWorkflowInput.nodes=null;
+        updateWorkflowInput.nodes = null;
         pipelineClient.updateWorkflow(updateWorkflowInput);
     }
-
 
 
     @Test

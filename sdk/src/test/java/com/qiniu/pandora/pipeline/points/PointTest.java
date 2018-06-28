@@ -58,19 +58,19 @@ public class PointTest {
     }
 
     @Test
-    public void complexDataType() throws Exception{
-        Map<String,Integer> mapData = new HashMap<>();
-        mapData.put("t1",1);
-        mapData.put("t2",2);
+    public void complexDataType() throws Exception {
+        Map<String, Integer> mapData = new HashMap<>();
+        mapData.put("t1", 1);
+        mapData.put("t2", 2);
         List<Integer> arrayData = new ArrayList<>(2);
         arrayData.add(1);
         arrayData.add(2);
         Point point = new Point();
-        point.append("integerKey",2);
-        point.append("boolKey",Boolean.TRUE);
-        point.append("mapKey",mapData);
+        point.append("integerKey", 2);
+        point.append("boolKey", Boolean.TRUE);
+        point.append("mapKey", mapData);
         point.append("arrayKey", arrayData);
-        String expected = "integerKey=2\tboolKey=true\tmapKey="+ Json.encode(mapData) + "\tarrayKey="+Json.encode(arrayData) +"\n";
-        Assert.assertEquals(point.toString(),expected);
+        String expected = "integerKey=2\tboolKey=true\tmapKey=" + Json.encode(mapData) + "\tarrayKey=" + Json.encode(arrayData) + "\n";
+        Assert.assertEquals(point.toString(), expected);
     }
 }
