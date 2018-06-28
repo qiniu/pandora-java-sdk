@@ -10,7 +10,6 @@ import com.qiniu.pandora.util.StringMap;
 
 import java.nio.charset.Charset;
 
-
 public class PipelineClient {
     private PandoraClient client;
     private String pipelineHost;
@@ -123,6 +122,5 @@ public class PipelineClient {
         }
         return exists;
     }
-
 
 }
