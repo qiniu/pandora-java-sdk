@@ -30,5 +30,3 @@ public class FilePointsGenerator extends AbstractPointsGenerator implements Clos
         scanner.close();
     }
 }
-
-
