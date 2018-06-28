@@ -24,6 +24,16 @@ public class CreateExportInput<T> {
         public boolean omitInvalid;
         @SerializedName("omitEmpty")
         public boolean omitEmpty;
+
+        public ExportLogDBSpec() {
+        }
+
+        public ExportLogDBSpec(String destRepoName, Map<String, Object> doc, boolean omitInvalid, boolean omitEmpty) {
+            this.destRepoName = destRepoName;
+            this.doc = doc;
+            this.omitInvalid = omitInvalid;
+            this.omitEmpty = omitEmpty;
+        }
     }
 
     public class ExportTSDBSpec {
@@ -41,6 +51,29 @@ public class CreateExportInput<T> {
         public boolean omitEmpty;
         @SerializedName("timestamp")
         public String timestamp;
+
+        public ExportTSDBSpec() {
+        }
+
+        public ExportTSDBSpec(String destRepoName, String seriesName, Map<String, String> tags,
+                              Map<String, String> fields, String timestamp) {
+            this.destRepoName = destRepoName;
+            this.seriesName = seriesName;
+            this.tags = tags;
+            this.fields = fields;
+            this.timestamp = timestamp;
+        }
+
+        public ExportTSDBSpec(String destRepoName, String seriesName, Map<String, String> tags,
+                              Map<String, String> fields, boolean omitInvalid, boolean omitEmpty, String timestamp) {
+            this.destRepoName = destRepoName;
+            this.seriesName = seriesName;
+            this.tags = tags;
+            this.fields = fields;
+            this.omitInvalid = omitInvalid;
+            this.omitEmpty = omitEmpty;
+            this.timestamp = timestamp;
+        }
     }
 
     public class ExportHTTPSpec {
@@ -50,6 +83,20 @@ public class CreateExportInput<T> {
         public String uri;
         @SerializedName("format")
         public String format;
+
+        public ExportHTTPSpec() {
+        }
+
+        public ExportHTTPSpec(String host, String uri) {
+            this.host = host;
+            this.uri = uri;
+        }
+
+        public ExportHTTPSpec(String host, String uri, String format) {
+            this.host = host;
+            this.uri = uri;
+            this.format = format;
+        }
     }
 }
 
