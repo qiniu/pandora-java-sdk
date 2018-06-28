@@ -7,5 +7,4 @@ import java.util.Arrays;
 public class ListWorkflowOutput {
     @SerializedName("workflowLists")
     public GetWorkflowOutput[] workflowLists;
-
 }

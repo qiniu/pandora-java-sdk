@@ -13,5 +13,4 @@ public class Node {
     public NodeMetadata[] children;
     @SerializedName("data")
     public Object data;
-
 }

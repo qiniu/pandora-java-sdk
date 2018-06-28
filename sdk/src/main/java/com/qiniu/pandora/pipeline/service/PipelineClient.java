@@ -87,7 +87,6 @@ public class PipelineClient {
         return response.jsonToObject(GetWorkflowOutput[].class);
     }
 
-
     /**
      * 启动 workflow
      * @param workflowName workflow name
