@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Arrays;
 
-
 public class GetWorkflowStatus {
     @SerializedName("name")
     public String name;
