@@ -11,7 +11,8 @@ import com.qiniu.pandora.util.Auth;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 
-public class LogDBClient implements ValueType, Analyser {
+
+public class LogDBClient implements ValueType, Analyzer {
     private PandoraClient pandoraClient;
     private String host;
 
