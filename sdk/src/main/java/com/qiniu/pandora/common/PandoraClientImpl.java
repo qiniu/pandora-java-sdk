@@ -1,7 +1,6 @@
 package com.qiniu.pandora.common;
 
 import com.qiniu.pandora.http.Client;
-import com.qiniu.pandora.http.HttpCommon;
 import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.util.Auth;
 import com.qiniu.pandora.util.StringMap;
@@ -12,7 +11,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * 七牛请求基础库
+ * 七牛请求基础库，提供 PandoraClient 的默认实现
  */
 public class PandoraClientImpl implements PandoraClient {
     private Client client;
@@ -47,7 +46,7 @@ public class PandoraClientImpl implements PandoraClient {
         // TODO 由用户选择是否可以启动md5
         // headers.put(Auth.ContentMD5, Md5.getMd5(content));
 
-        String token = signAuth(url, headers, HttpCommon.METHOD_POST);
+        String token = signAuth(url, headers, Client.METHOD_POST);
         headers.put(Auth.HTTPHeaderAuthorization, token);
         return client.post(url, content, headers, bodyType);
     }
@@ -57,7 +56,7 @@ public class PandoraClientImpl implements PandoraClient {
         String date = getServerTime();
         headers.put(Auth.Date, date);
 
-        String token = signAuth(url, headers, HttpCommon.METHOD_GET);
+        String token = signAuth(url, headers, Client.METHOD_GET);
         headers.put(Auth.HTTPHeaderAuthorization, token);
         return client.get(url, headers);
     }
@@ -71,7 +70,7 @@ public class PandoraClientImpl implements PandoraClient {
         // TODO 由用户选择是否可以启动md5
         // headers.put(Auth.ContentMD5, Md5.getMd5(content));
 
-        String token = signAuth(url, headers, HttpCommon.METHOD_PUT);
+        String token = signAuth(url, headers, Client.METHOD_PUT);
         headers.put(Auth.HTTPHeaderAuthorization, token);
         return client.put(url, content, headers, bodyType);
     }
@@ -81,7 +80,7 @@ public class PandoraClientImpl implements PandoraClient {
         String date = getServerTime();
         headers.put(Auth.Date, date);
 
-        String token = signAuth(url, headers, HttpCommon.METHOD_DELETE);
+        String token = signAuth(url, headers, Client.METHOD_DELETE);
         headers.put(Auth.HTTPHeaderAuthorization, token);
         return client.delete(url, headers);
     }

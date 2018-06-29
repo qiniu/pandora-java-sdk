@@ -1,6 +1,5 @@
 package com.qiniu.pandora.pipeline.points;
 
-import com.qiniu.pandora.common.Configuration;
 import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.util.Json;
 import org.junit.Assert;

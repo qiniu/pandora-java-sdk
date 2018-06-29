@@ -1,7 +1,7 @@
 package com.qiniu.pandora.common;
 
 /**
- * Created by jemy on 2018/6/25.
+ * 定义 Pipeline Repo 中的数据类型
  */
 public interface ValueType {
     String TypeString = "string";

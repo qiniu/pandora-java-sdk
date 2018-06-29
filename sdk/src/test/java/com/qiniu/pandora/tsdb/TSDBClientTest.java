@@ -15,7 +15,7 @@ import org.junit.runners.MethodSorters;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TSDBClientTest {

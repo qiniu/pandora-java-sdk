@@ -3,11 +3,17 @@ package com.qiniu.pandora.common;
 import java.nio.charset.Charset;
 
 /**
- * Created by jemy on 2018/6/25.
+ * 相关参数的常量
  */
 public class Constants {
+    /**
+     * 版本号
+     */
     public static final String VERSION = "2.0.0";
 
+    /**
+     * 服务默认编码
+     */
     public static final Charset UTF_8 = Charset.forName("UTF-8");
 
     /**
@@ -30,9 +36,9 @@ public class Constants {
      */
     public static String region = "nb";
     /**
-     * 连接超时时间 单位秒(默认10s)
+     * 连接超时时间 单位秒(默认60s)
      */
-    public static final int CONNECT_TIMEOUT = 10;
+    public static final int CONNECT_TIMEOUT = 60;
     /**
      * 写超时时间 单位秒(默认 0 , 不超时)
      */
@@ -41,11 +47,6 @@ public class Constants {
      * 回复超时时间 单位秒(默认60s)
      */
     public static final int READ_TIMEOUT = 60;
-    /**
-     * 回复超时时间 单位秒(默认60s)
-     */
-    public static int RESPONSE_TIMEOUT = 60;
-
 
     /**
      * 底层HTTP库所有的并发执行的请求数量
@@ -68,10 +69,4 @@ public class Constants {
      * 写点失败重试次数
      */
     public static int RETRY_MAX = 5;
-
-    /**
-     * token 过期时间(默认900s)
-     */
-    public static int TokenExpireTime = 900;
-
 }

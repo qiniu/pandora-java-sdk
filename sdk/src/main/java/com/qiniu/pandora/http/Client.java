@@ -22,11 +22,22 @@ import java.util.concurrent.TimeUnit;
  * 定义HTTP请求管理相关方法，单例，jvm内共享连接池
  */
 public class Client {
-    public static final String ContentTypeHeader = "Content-Type";
+    /**
+     * 常用 HTTP Content-Type
+     */
     public static final String DefaultMime = "application/octet-stream";
     public static final String JsonMime = "application/json";
     public static final String FormMime = "application/x-www-form-urlencoded";
     public static final String TextMime = "text/plain";
+
+    /**
+     * 常用 HTTP 方法
+     */
+    public static final String METHOD_GET = "GET";
+    public static final String METHOD_POST = "POST";
+    public static final String METHOD_DELETE = "DELETE";
+    public static final String METHOD_PUT = "PUT";
+
     private final OkHttpClient httpClient;
 
     /**

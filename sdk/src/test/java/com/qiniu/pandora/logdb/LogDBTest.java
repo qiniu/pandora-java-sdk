@@ -2,7 +2,6 @@ package com.qiniu.pandora.logdb;
 
 import com.qiniu.pandora.common.*;
 import com.qiniu.pandora.logdb.repo.*;
-import com.qiniu.pandora.common.TestConfig;
 import com.qiniu.pandora.util.Auth;
 import org.junit.Assert;
 import org.junit.Before;

@@ -25,20 +25,20 @@ public class PartialSearchService {
     }
 
 
-    public PartialSearchResult search(String repoName, PartialSearchRequest searchRequest) throws QiniuException {
+    public SearchResult search(String repoName, SearchRequest searchRequest) throws QiniuException {
         String postUrl = String.format("%s/v5/repos/%s/s", this.logDBClient.getHost(), repoName);
         String postBody = Json.encode(searchRequest);
 
         Response response = this.logDBClient.getPandoraClient().post(postUrl,
                 postBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime);
-        PartialSearchResult result = response.jsonToObject(PartialSearchResult.class);
+        SearchResult result = response.jsonToObject(SearchResult.class);
         if (result != null) {
             result.requestId = response.reqId;
         }
         return result;
     }
 
-    public static class PartialSearchRequest {
+    public static class SearchRequest {
         @SerializedName("query_string")
         public String queryString = "*";
         @SerializedName("sort")
@@ -62,7 +62,7 @@ public class PartialSearchService {
         }
     }
 
-    public static class PartialSearchResult {
+    public static class SearchResult {
         @SerializedName("total")
         public long total;
         @SerializedName("partialSuccess")

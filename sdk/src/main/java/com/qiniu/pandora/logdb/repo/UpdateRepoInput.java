@@ -3,7 +3,7 @@ package com.qiniu.pandora.logdb.repo;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by jemy on 2018/6/25.
+ * 定义更新 LogDB Repo 的请求参数
  */
 public class UpdateRepoInput {
     @SerializedName("retention")

@@ -29,7 +29,7 @@ public class ScrollSearchService {
      */
     public SearchService.SearchResult scroll(String repoName, String scroll, String scrollID) throws QiniuException {
         String postUrl = String.format("%s/v5/repos/%s/scroll", this.logDBClient.getHost(), repoName);
-        ScrollSearchRequest request = new ScrollSearchRequest(scroll, scrollID);
+        SearchRequest request = new SearchRequest(scroll, scrollID);
         String postBody = Json.encode(request);
         Response response = this.logDBClient.getPandoraClient().post(postUrl, postBody.getBytes(Constants.UTF_8),
                 new StringMap(), Client.JsonMime);
@@ -40,13 +40,13 @@ public class ScrollSearchService {
         return result;
     }
 
-    public static class ScrollSearchRequest {
+    public static class SearchRequest {
         @SerializedName("scroll")
         public String scroll;
         @SerializedName("scroll_id")
         public String scrollID;
 
-        public ScrollSearchRequest(String scroll, String scrollID) {
+        public SearchRequest(String scroll, String scrollID) {
             this.scroll = scroll;
             this.scrollID = scrollID;
         }

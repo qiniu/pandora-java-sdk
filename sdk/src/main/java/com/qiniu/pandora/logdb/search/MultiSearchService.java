@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 在一次http请求中搜索多个repo
+ *
  */
 public class MultiSearchService {
     private LogDBClient logDBClient;
@@ -23,13 +23,13 @@ public class MultiSearchService {
     }
 
     /**
-     * Multi Search - over multiple repos
+     * Multi Search - 跨越多个 Repo 进行搜索
      *
      * @param searchRequestList request list
      */
-    public MultiSearchResult search(List<MultiSearchRequest> searchRequestList) throws QiniuException {
+    public SearchResult search(List<SearchRequest> searchRequestList) throws QiniuException {
         StringBuilder postBody = new StringBuilder();
-        for (MultiSearchRequest searchRequest : searchRequestList) {
+        for (SearchRequest searchRequest : searchRequestList) {
             postBody.append(searchRequest.getIndexHeader()).append("\n")
                     .append(searchRequest.source).append("\n");
         }
@@ -38,7 +38,7 @@ public class MultiSearchService {
 
         Response response = this.logDBClient.getPandoraClient().post(postUrl,
                 postBody.toString().getBytes(Constants.UTF_8), new StringMap(), Client.TextMime);
-        MultiSearchResult result = response.jsonToObject(MultiSearchResult.class);
+        SearchResult result = response.jsonToObject(SearchResult.class);
         if (result != null) {
             result.requestId = response.reqId;
         }
@@ -46,7 +46,7 @@ public class MultiSearchService {
     }
 
 
-    public static class MultiSearchRequest {
+    public static class SearchRequest {
         public String source;
         public String repo;
 
@@ -76,7 +76,7 @@ public class MultiSearchService {
         }
     }
 
-    public static class MultiSearchResult {
+    public static class SearchResult {
         @SerializedName("responses")
         public List<SearchResponse> responses;
         /**

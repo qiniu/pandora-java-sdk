@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
+/**
+ * 定义获取 Workflow 的输出内容
+ */
 public class GetWorkflowOutput {
     @SerializedName("name")
     public String name;
@@ -14,7 +17,7 @@ public class GetWorkflowOutput {
     @SerializedName("comment")
     public String comment;
     @SerializedName("createTime")
-    public String createtime;
+    public String createTime;
     @SerializedName("updateTime")
     public String updateTime;
     @SerializedName("status")
@@ -31,7 +34,7 @@ public class GetWorkflowOutput {
                 ", region='" + region + '\'' +
                 ", nodes=" + nodes +
                 ", comment='" + comment + '\'' +
-                ", createtime='" + createtime + '\'' +
+                ", createTime='" + createTime + '\'' +
                 ", updateTime='" + updateTime + '\'' +
                 ", status='" + status + '\'' +
                 ", canStart=" + canStart +

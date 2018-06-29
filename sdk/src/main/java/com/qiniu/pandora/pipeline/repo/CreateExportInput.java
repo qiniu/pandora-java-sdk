@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Map;
 
 /**
- * Created by jemy on 2018/6/28.
+ * 定义创建 Pipeline Repo 导出的请求参数
  */
 public class CreateExportInput<T> {
     @SerializedName("type")
@@ -15,6 +15,9 @@ public class CreateExportInput<T> {
     @SerializedName("whence")
     public String whence;
 
+    /**
+     * 定义导出到 LogDB 的请求参数
+     */
     public static class ExportLogDBSpec {
         @SerializedName("destRepoName")
         public String destRepoName;
@@ -36,6 +39,9 @@ public class CreateExportInput<T> {
         }
     }
 
+    /**
+     * 定义导出到 TSDB 的请求参数
+     */
     public static class ExportTSDBSpec {
         @SerializedName("destRepoName")
         public String destRepoName;
@@ -76,6 +82,9 @@ public class CreateExportInput<T> {
         }
     }
 
+    /**
+     * 定义导出到 HTTP 的请求参数
+     */
     public static class ExportHTTPSpec {
         @SerializedName("host")
         public String host;

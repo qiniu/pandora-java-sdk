@@ -2,7 +2,7 @@ package com.qiniu.pandora.pipeline.sender;
 
 
 import com.qiniu.pandora.common.*;
-import com.qiniu.pandora.http.HttpCommon;
+import com.qiniu.pandora.http.Client;
 import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.pipeline.error.SendPointError;
 import com.qiniu.pandora.pipeline.points.Batch;
@@ -43,7 +43,7 @@ public class DataSender implements Sender {
             return null;
         }
         StringMap headers = new StringMap();
-        return pandoraClient.post(url, postBody, headers, HttpCommon.TEXT_PLAIN);
+        return pandoraClient.post(url, postBody, headers, Client.TextMime);
 
     }
 

@@ -2,6 +2,9 @@ package com.qiniu.pandora.pipeline.repo;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * 定义 Node 的状态
+ */
 public class NodeStatus {
     @SerializedName("name")
     public String name;

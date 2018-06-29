@@ -1,18 +1,13 @@
 package com.qiniu.pandora.logdb.repo;
 
 /**
- * Created by jemy on 2018/6/25.
+ * 定义 LogDB 常用的分词器
  */
 public interface Analyzer {
-    String StandardAnalyzer = "standard";
-    String SimpleAnalyzer = "simple";
-    String WhitespaceAnalyzer = "whitespace";
-    String NoAnalyzer = "no";
-    String AnsjAnalyzer = "index_ansj";
-    String DicAnajAnalyzer = "dic_ansj";
-    String SearchAnsjAnalyzer = "search_ansj";
-    String ToAnsjAnalyzer = "to_ansj";
-    String UserAnsjAnalyzer = "user_ansj";
-    String KeyWordAnalyzer = "keyword";
-    String PathAnalyzer = "path";
+    String StandardAnalyzer = "standard";       // 标准分词
+    String WhitespaceAnalyzer = "whitespace";   // 空白分词
+    String NoAnalyzer = "no";                   // 不分词不索引
+    String AnsjAnalyzer = "index_ansj";         // 中文分词
+    String KeyWordAnalyzer = "keyword";         // 关键字分词
+    String PathAnalyzer = "path";               // Path分词
 }

@@ -1,6 +1,5 @@
 package com.qiniu.pandora.pipeline.sender;
 
-import com.qiniu.pandora.common.Configuration;
 import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.pipeline.error.SendPointError;

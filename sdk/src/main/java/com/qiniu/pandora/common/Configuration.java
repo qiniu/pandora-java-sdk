@@ -1,10 +1,11 @@
 package com.qiniu.pandora.common;
 
-
 import com.qiniu.pandora.http.ProxyConfiguration;
 import qiniu.happydns.DnsClient;
 
-
+/**
+ * 配置类，定义 Pandora 及 HTTP 各服务参数
+ */
 public class Configuration {
     /**
      * 连接超时时间 单位秒(默认10s)

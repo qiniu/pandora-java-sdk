@@ -3,8 +3,8 @@ package com.qiniu.pandora.logdb;
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.PandoraClientImpl;
 import com.qiniu.pandora.common.QiniuException;
-import com.qiniu.pandora.logdb.search.MultiSearchService;
 import com.qiniu.pandora.common.TestConfig;
+import com.qiniu.pandora.logdb.search.MultiSearchService;
 import com.qiniu.pandora.util.Auth;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,15 +29,15 @@ public class MultiSearchServiceTest {
 
     @Test
     public void testSearchWithScroll() {
-        List<MultiSearchService.MultiSearchRequest> requestList = new ArrayList<MultiSearchService.MultiSearchRequest>();
-        MultiSearchService.MultiSearchRequest searchRequest = new MultiSearchService.MultiSearchRequest();
+        List<MultiSearchService.SearchRequest> requestList = new ArrayList<MultiSearchService.SearchRequest>();
+        MultiSearchService.SearchRequest searchRequest = new MultiSearchService.SearchRequest();
         searchRequest.repo = this.repoName;
         searchRequest.source =
                 "{\"size\":1,\"sort\":[{\"timestamp\":{\"order\":\"desc\"}}],\"query\":{\"query_string\":{\"query\":\"*\"}}}";
 
         requestList.add(searchRequest);
         try {
-            MultiSearchService.MultiSearchResult searchResult = this.multiSearchService.search(requestList);
+            MultiSearchService.SearchResult searchResult = this.multiSearchService.search(requestList);
             Assert.assertNotNull(searchResult.requestId);
         } catch (QiniuException e) {
             e.printStackTrace();
