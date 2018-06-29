@@ -43,7 +43,7 @@ public class LogDBClient implements ValueType, Analyzer {
      *
      * @param accessKey 七牛accessKey
      * @param secretKey 七牛secretKey
-     * @param logdbHost      自定义logdb logdbHost
+     * @param logdbHost 自定义logdb logdbHost
      * @return LogDBClient
      */
     public static LogDBClient NewLogDBClient(String accessKey, String secretKey, String logdbHost) {

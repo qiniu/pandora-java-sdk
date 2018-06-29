@@ -1,8 +1,6 @@
 package com.qiniu.pandora.http;
 
-import com.qiniu.pandora.common.Configuration;
 import com.qiniu.pandora.common.QiniuException;
-import com.qiniu.pandora.common.QiniuRuntimeException;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;

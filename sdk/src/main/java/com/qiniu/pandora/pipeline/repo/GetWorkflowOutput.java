@@ -10,7 +10,7 @@ public class GetWorkflowOutput {
     @SerializedName("region")
     public String region;
     @SerializedName("nodes")
-    public Map<String,Object> nodes;
+    public Map<String, Object> nodes;
     @SerializedName("comment")
     public String comment;
     @SerializedName("createTime")

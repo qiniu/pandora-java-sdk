@@ -1,6 +1,8 @@
 package com.qiniu.pandora.tsdb;
 
-import com.qiniu.pandora.common.*;
+import com.qiniu.pandora.common.Constants;
+import com.qiniu.pandora.common.PandoraClient;
+import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Client;
 import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.tsdb.query.QueryDataInput;
@@ -27,8 +29,9 @@ public class TSDBClient {
 
     /**
      * 创建 repo
+     *
      * @param repoName repo 名称
-     * @param input 创建 repo 的参数
+     * @param input    创建 repo 的参数
      * @throws QiniuException
      */
     public void createRepo(String repoName, CreateRepoInput input) throws QiniuException {
@@ -42,6 +45,7 @@ public class TSDBClient {
 
     /**
      * 查询 tsdb repo 信息
+     *
      * @param repoName tsdb repo 名称
      * @return
      * @throws QiniuException

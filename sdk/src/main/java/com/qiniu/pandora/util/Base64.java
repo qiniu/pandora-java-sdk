@@ -1,7 +1,5 @@
 package com.qiniu.pandora.util;
 
-import com.qiniu.pandora.common.Configuration;
-
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
@@ -66,7 +64,7 @@ public final class Base64 {
     /**
      * Decode the Base64-encoded data in input and return the data in
      * a new byte array.
-     *
+     * <p>
      * The padding '=' characters at the end are considered optional, but
      * if any are present, there must be the correct number of them.
      *
@@ -85,7 +83,7 @@ public final class Base64 {
     /**
      * Decode the Base64-encoded data in input and return the data in
      * a new byte array.
-     *
+     * <p>
      * The padding '=' characters at the end are considered optional, but
      * if any are present, there must be the correct number of them.
      *
@@ -103,7 +101,7 @@ public final class Base64 {
     /**
      * Decode the Base64-encoded data in input and return the data in
      * a new byte array.
-     *
+     * <p>
      * The padding '=' characters at the end are considered optional, but
      * if any are present, there must be the correct number of them.
      *

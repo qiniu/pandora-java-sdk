@@ -4,8 +4,6 @@ package com.qiniu.pandora.common;
 import com.qiniu.pandora.http.ProxyConfiguration;
 import qiniu.happydns.DnsClient;
 
-import java.nio.charset.Charset;
-
 
 public class Configuration {
     /**
@@ -53,7 +51,7 @@ public class Configuration {
      */
     public ProxyConfiguration proxy;
 
-    public Configuration(){
+    public Configuration() {
 
     }
 

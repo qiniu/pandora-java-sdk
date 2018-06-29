@@ -1,6 +1,5 @@
 package com.qiniu.pandora.util;
 
-import com.qiniu.pandora.common.Configuration;
 import com.qiniu.pandora.common.Constants;
 
 import java.util.Collection;
