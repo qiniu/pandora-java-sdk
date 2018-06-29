@@ -5,13 +5,15 @@ import com.qiniu.pandora.common.PandoraClientImpl;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.common.TestConfig;
 import com.qiniu.pandora.pipeline.PipelineClient;
-import com.qiniu.pandora.pipeline.repo.*;
+import com.qiniu.pandora.pipeline.repo.CreateWorkflowInput;
+import com.qiniu.pandora.pipeline.repo.GetWorkflowOutput;
+import com.qiniu.pandora.pipeline.repo.GetWorkflowStatus;
+import com.qiniu.pandora.pipeline.repo.UpdateWorkflowInput;
 import com.qiniu.pandora.util.Auth;
-import org.junit.runners.MethodSorters;
-import org.junit.FixMethodOrder;
-
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WorkflowTest {

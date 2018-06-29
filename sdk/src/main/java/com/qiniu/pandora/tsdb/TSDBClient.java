@@ -13,6 +13,9 @@ import com.qiniu.pandora.util.StringMap;
 
 import java.util.Map;
 
+/**
+ * 定义 TSDB Repo 管理，数据查询等功能
+ */
 public class TSDBClient {
     private PandoraClient pandoraClient;
     private String tsdbHost;

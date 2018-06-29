@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 /**
- * Created by jemy on 2018/6/25.
+ * 定义获取 LogDB Repo 的回复
  */
 public class GetRepoOutput {
     @SerializedName("region")

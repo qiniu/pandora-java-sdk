@@ -3,7 +3,7 @@ package com.qiniu.pandora.pipeline.repo;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by jemy on 2018/6/28.
+ * 定义创建 Pipeline Repo 的请求参数
  */
 public class CreateRepoInput {
     @SerializedName("region")
@@ -28,5 +28,15 @@ public class CreateRepoInput {
         public boolean unescapeLine;
     }
 
+    public CreateRepoInput() {
+    }
+
+    public CreateRepoInput(String region, RepoSchemaEntry[] schema,
+                           String workflowName, String description) {
+        this.region = region;
+        this.schema = schema;
+        this.workflowName = workflowName;
+        this.description = description;
+    }
 }
 

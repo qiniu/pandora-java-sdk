@@ -11,7 +11,9 @@ import com.qiniu.pandora.util.Auth;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 
-
+/**
+ * 定义 LogDB 相关方法，包括 Repo 管理，创建搜索服务等
+ */
 public class LogDBClient implements ValueType, Analyzer {
     private PandoraClient pandoraClient;
     private String logdbHost;

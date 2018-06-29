@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * Created by jemy on 2018/6/25.
+ * 定义 LogDB Repo 中 Schema 的属性
  */
 public class RepoSchemaEntry {
     @SerializedName("key")

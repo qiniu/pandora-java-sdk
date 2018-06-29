@@ -3,7 +3,7 @@ package com.qiniu.pandora.logdb.repo;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by jemy on 2018/6/25.
+ * 定义 LogdbRepo List 中的 Repo 属性
  */
 public class RepoDesc {
     @SerializedName("name")

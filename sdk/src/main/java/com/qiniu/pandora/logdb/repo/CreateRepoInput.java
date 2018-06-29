@@ -3,7 +3,7 @@ package com.qiniu.pandora.logdb.repo;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by jemy on 2018/6/11.
+ * 定义创建 LogDB Repo 的请求参数
  */
 public class CreateRepoInput {
     @SerializedName("region")
@@ -18,4 +18,14 @@ public class CreateRepoInput {
     public FullText fullText;
     @SerializedName("description")
     public String description;
+
+    public CreateRepoInput() {
+    }
+
+    public CreateRepoInput(String region, String retention, RepoSchemaEntry[] schema, String description) {
+        this.region = region;
+        this.retention = retention;
+        this.schema = schema;
+        this.description = description;
+    }
 }

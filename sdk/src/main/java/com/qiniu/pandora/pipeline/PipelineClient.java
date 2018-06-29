@@ -9,7 +9,9 @@ import com.qiniu.pandora.pipeline.repo.*;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 
-
+/**
+ * 定义 Workflow 和 Pipeline Repo 的管理功能
+ */
 public class PipelineClient {
     private PandoraClient client;
     private String pipelineHost;
@@ -141,7 +143,7 @@ public class PipelineClient {
     }
 
     /**
-     * 检查repo是否存在
+     * 检查 repo 是否存在
      *
      * @param repoName repo name
      */
@@ -159,7 +161,7 @@ public class PipelineClient {
 
 
     /**
-     * 创建导出到LOGDB，TSDB，HTTP等
+     * 创建到 LogDB，TSDB，HTTP等的导出
      *
      * @param repoName    repo name
      * @param exportName  export name

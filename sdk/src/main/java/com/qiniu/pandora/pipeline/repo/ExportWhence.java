@@ -1,7 +1,7 @@
 package com.qiniu.pandora.pipeline.repo;
 
 /**
- * Created by jemy on 2018/6/25.
+ * 定义导出的起始位置的常量
  */
 public interface ExportWhence {
     String WhenceOldest = "oldest";
