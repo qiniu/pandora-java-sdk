@@ -2,14 +2,12 @@ package com.qiniu.pandora.logdb.search;
 
 import com.google.gson.annotations.SerializedName;
 import com.qiniu.pandora.common.Constants;
-import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Client;
 import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.logdb.LogDBClient;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
-import com.qiniu.pandora.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -30,7 +28,7 @@ public class PartialSearchService {
     public PartialSearchResult search(String repoName, PartialSearchRequest searchRequest) throws QiniuException {
         String postUrl = String.format("%s/v5/repos/%s/s", this.logDBClient.getHost(), repoName);
         String postBody = Json.encode(searchRequest);
-System.out.println(postBody);
+
         Response response = this.logDBClient.getPandoraClient().post(postUrl,
                 postBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime);
         PartialSearchResult result = response.jsonToObject(PartialSearchResult.class);

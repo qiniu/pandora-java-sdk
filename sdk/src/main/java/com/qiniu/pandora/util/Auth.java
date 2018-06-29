@@ -1,7 +1,6 @@
 package com.qiniu.pandora.util;
 
 
-import com.qiniu.pandora.common.Configuration;
 import com.qiniu.pandora.common.Constants;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -52,7 +51,8 @@ public final class Auth {
     }
 
 
-    public String signRequest(String urlString, String method, Map<String, Object> headers, Map<String, String> qiniuSubResource) throws Exception {
+    public String signRequest(String urlString, String method, Map<String, Object> headers,
+                              Map<String, String> qiniuSubResource) throws Exception {
         Mac mac = createMac();
         mac.update(StringUtils.utf8Bytes(signQiniuHeader(headers, method)));
         String headerValues = signQiniuHeader(headers);
@@ -63,7 +63,8 @@ public final class Auth {
     }
 
 
-    public String signAdminRequest(String urlString, String method, Map<String, Object> headers, Map<String, String> qiniuSubResource, String suInfo) throws Exception {
+    public String signAdminRequest(String urlString, String method, Map<String, Object> headers,
+                                   Map<String, String> qiniuSubResource, String suInfo) throws Exception {
         Mac mac = createMac();
         mac.update(StringUtils.utf8Bytes(signQiniuHeader(headers, method)));
         mac.update(StringUtils.utf8Bytes(AuthorizationPandoraAdmin + suInfo));
@@ -118,7 +119,8 @@ public final class Auth {
         return sb.toString();
     }
 
-    public String signQiniuResource(String uriString, Map<String, String> qiniuSubResource) throws UnsupportedEncodingException {
+    public String signQiniuResource(String uriString, Map<String, String> qiniuSubResource)
+            throws UnsupportedEncodingException {
         StringBuffer sb = new StringBuffer();
         URI uri = URI.create(uriString);
         String path = uri.getRawPath();
@@ -127,7 +129,8 @@ public final class Auth {
 
         Map<String, String> queryParameter = splitQuery(query);
         List<String> keys = new ArrayList<String>();
-        if (qiniuSubResource != null && qiniuSubResource.size() != 0 && queryParameter != null && queryParameter.size() != 0) {
+        if (qiniuSubResource != null && qiniuSubResource.size() != 0 && queryParameter != null
+                && queryParameter.size() != 0) {
             Set<Map.Entry<String, String>> entries = qiniuSubResource.entrySet();
             Iterator<Map.Entry<String, String>> it = entries.iterator();
 
@@ -160,12 +163,14 @@ public final class Auth {
         String[] pairs = query.split("&");
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
-            queryParameter.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            queryParameter.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
+                    URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
         }
         return queryParameter;
     }
 
-    public String makeToken(String urlString, String method, Long expires, Map<String, Object> headers, Map<String, String> qiniuSubResource) throws Exception {
+    public String makeToken(String urlString, String method, Long expires, Map<String, Object> headers,
+                            Map<String, String> qiniuSubResource) throws Exception {
         Mac mac = createMac();
 
         ObjectMapper mapper = new ObjectMapper();

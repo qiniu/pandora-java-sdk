@@ -2,6 +2,7 @@ package com.qiniu.pandora.tsdb;
 
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.PandoraClientImpl;
+import com.qiniu.pandora.common.TestConfig;
 import com.qiniu.pandora.tsdb.query.QueryDataInput;
 import com.qiniu.pandora.tsdb.query.QueryDataOutput;
 import com.qiniu.pandora.tsdb.repo.*;
@@ -18,10 +19,10 @@ import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TSDBClientTest {
-    private static final String accessKey = "";
-    private static final String secretKey = "";
-    private static final String repoName = "";
-    private static final String seriesName = "";
+    private static final String accessKey = TestConfig.ACCESS_KEY;
+    private static final String secretKey = TestConfig.SECRET_KEY;
+    private static final String repoName = TestConfig.TSDB_REPO;
+    private static final String seriesName = TestConfig.TSDB_SERIES;
 
     public TSDBClient manager;
 
@@ -36,7 +37,7 @@ public class TSDBClientTest {
     public void test001CreateRepo() throws Exception {
         CreateRepoInput input = new CreateRepoInput();
         input.region = "nb";
-        manager.createRepo(repoName,input);
+        manager.createRepo(repoName, input);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class TSDBClientTest {
         CreateSeriesInput input = new CreateSeriesInput();
         input.retention = "oneDay";
 
-        manager.createSeries(repoName,seriesName,input);
+        manager.createSeries(repoName, seriesName, input);
     }
 
     @Test
@@ -114,7 +115,7 @@ public class TSDBClientTest {
         QueryDataInput input = new QueryDataInput();
         input.sql = sql;
 
-        QueryDataOutput output = manager.queryPoint(repoName,input);
+        QueryDataOutput output = manager.queryPoint(repoName, input);
 
         assertNotNull(output);
     }
@@ -126,7 +127,7 @@ public class TSDBClientTest {
 
     @Test
     public void test010DeleteSeries() throws Exception {
-       manager.deleteSeries(repoName, seriesName);
+        manager.deleteSeries(repoName, seriesName);
     }
 
     @Test

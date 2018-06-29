@@ -11,17 +11,18 @@ import com.qiniu.pandora.util.Auth;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 
-public class LogDBClient implements ValueType, Analyser {
+
+public class LogDBClient implements ValueType, Analyzer {
     private PandoraClient pandoraClient;
-    private String host;
+    private String logdbHost;
 
     public LogDBClient(PandoraClient pandoraClient) {
         this(pandoraClient, Constants.LOGDB_HOST);
     }
 
-    public LogDBClient(PandoraClient pandoraClient, String host) {
+    public LogDBClient(PandoraClient pandoraClient, String logdbHost) {
         this.pandoraClient = pandoraClient;
-        this.host = host;
+        this.logdbHost = logdbHost;
     }
 
     /**
@@ -42,13 +43,13 @@ public class LogDBClient implements ValueType, Analyser {
      *
      * @param accessKey 七牛accessKey
      * @param secretKey 七牛secretKey
-     * @param host      自定义logdb host
+     * @param logdbHost 自定义logdb logdbHost
      * @return LogDBClient
      */
-    public static LogDBClient NewLogDBClient(String accessKey, String secretKey, String host) {
+    public static LogDBClient NewLogDBClient(String accessKey, String secretKey, String logdbHost) {
         Auth auth = Auth.create(accessKey, secretKey);
         PandoraClientImpl pandoraClient = new PandoraClientImpl(auth);
-        return new LogDBClient(pandoraClient, host);
+        return new LogDBClient(pandoraClient, logdbHost);
     }
 
     /**
@@ -93,16 +94,16 @@ public class LogDBClient implements ValueType, Analyser {
     }
 
     public String getHost() {
-        return host;
+        return logdbHost;
     }
 
     /**
      * 可以随时再次自定义LogDB Host
      *
-     * @param host LogDB host
+     * @param logdbHost LogDB logdbHost
      */
-    public void setHost(String host) {
-        this.host = host;
+    public void setHost(String logdbHost) {
+        this.logdbHost = logdbHost;
     }
 
     /**
@@ -121,7 +122,7 @@ public class LogDBClient implements ValueType, Analyser {
             }
         }
 
-        String postUrl = String.format("%s/v5/repos/%s", this.host, repoName);
+        String postUrl = String.format("%s/v5/repos/%s", this.logdbHost, repoName);
         String postBody = Json.encode(repoInput);
         this.pandoraClient.post(postUrl, postBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime).close();
     }
@@ -133,7 +134,7 @@ public class LogDBClient implements ValueType, Analyser {
      * @param repoInput update repo extra params
      */
     public void updateRepo(String repoName, UpdateRepoInput repoInput) throws QiniuException {
-        String putUrl = String.format("%s/v5/repos/%s", this.host, repoName);
+        String putUrl = String.format("%s/v5/repos/%s", this.logdbHost, repoName);
         String putBody = Json.encode(repoInput);
         this.pandoraClient.put(putUrl, putBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime).close();
     }
@@ -146,7 +147,7 @@ public class LogDBClient implements ValueType, Analyser {
      * @return GetRepoOutput
      */
     public GetRepoOutput getRepo(String repoName) throws QiniuException {
-        String getUrl = String.format("%s/v5/repos/%s", this.host, repoName);
+        String getUrl = String.format("%s/v5/repos/%s", this.logdbHost, repoName);
         return this.pandoraClient.get(getUrl, new StringMap()).jsonToObject(GetRepoOutput.class);
     }
 
@@ -157,7 +158,7 @@ public class LogDBClient implements ValueType, Analyser {
      * @return ListRepoOutput
      */
     public ListRepoOutput listRepos() throws QiniuException {
-        String getUrl = String.format("%s/v5/repos", this.host);
+        String getUrl = String.format("%s/v5/repos", this.logdbHost);
         return this.pandoraClient.get(getUrl, new StringMap()).jsonToObject(ListRepoOutput.class);
     }
 
@@ -168,7 +169,22 @@ public class LogDBClient implements ValueType, Analyser {
      * @param repoName repo name
      */
     public void deleteRepo(String repoName) throws QiniuException {
-        String deleteUrl = String.format("%s/v5/repos/%s", this.host, repoName);
+        String deleteUrl = String.format("%s/v5/repos/%s", this.logdbHost, repoName);
         this.pandoraClient.delete(deleteUrl, new StringMap()).close();
+    }
+
+    /**
+     * 检查 LogDB 的 Repo 是否存在
+     */
+    public boolean repoExists(String repoName) {
+        boolean exists = false;
+        String getUrl = String.format("%s/v5/repos/%s", this.logdbHost, repoName);
+        try {
+            this.pandoraClient.get(getUrl, new StringMap()).close();
+            exists = true;
+        } catch (QiniuException e) {
+            //pass
+        }
+        return exists;
     }
 }

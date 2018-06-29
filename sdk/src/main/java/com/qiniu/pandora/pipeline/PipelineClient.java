@@ -1,5 +1,6 @@
-package com.qiniu.pandora.pipeline.service;
+package com.qiniu.pandora.pipeline;
 
+import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Client;
@@ -8,7 +9,6 @@ import com.qiniu.pandora.pipeline.repo.*;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 
-import java.nio.charset.Charset;
 
 public class PipelineClient {
     private PandoraClient client;
@@ -30,7 +30,7 @@ public class PipelineClient {
     public void createWorkflow(CreateWorkflowInput workflowInput) throws QiniuException {
         String postUrl = String.format("%s/v2/workflows/%s", this.pipelineHost, workflowInput.workflowName);
         String postBody = Json.encode(workflowInput);
-        this.client.post(postUrl, postBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
+        this.client.post(postUrl, postBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime).close();
     }
 
     /**
@@ -41,11 +41,12 @@ public class PipelineClient {
     public void updateWorkflow(UpdateWorkflowInput updateWorkflowInput) throws QiniuException {
         String putUrl = String.format("%s/v2/workflows/%s", this.pipelineHost, updateWorkflowInput.workflowName);
         String putBody = Json.encode(updateWorkflowInput);
-        this.client.put(putUrl, putBody.getBytes(Charset.forName("UTF-8")), new StringMap(), Client.JsonMime).close();
+        this.client.put(putUrl, putBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime).close();
     }
 
     /**
      * 删除 workflow
+     *
      * @param workflowName workflow name
      */
     public void deleteWorkflow(String workflowName) throws QiniuException {
@@ -68,6 +69,7 @@ public class PipelineClient {
 
     /**
      * 获取 workflow 状态
+     *
      * @param workflowName workflow name
      * @return WorkflowStatus
      */
@@ -79,6 +81,7 @@ public class PipelineClient {
 
     /**
      * 获取 workflow 列表
+     *
      * @return GetWorkflowOutput[]
      */
     public GetWorkflowOutput[] listWorkflows() throws QiniuException {
@@ -89,6 +92,7 @@ public class PipelineClient {
 
     /**
      * 启动 workflow
+     *
      * @param workflowName workflow name
      */
     public void startWorkflow(String workflowName) throws QiniuException {
@@ -98,6 +102,7 @@ public class PipelineClient {
 
     /**
      * 停止 workflow
+     *
      * @param workflowName workflow name
      */
     public void stopWorkflow(String workflowName) throws QiniuException {
@@ -107,12 +112,73 @@ public class PipelineClient {
 
     /**
      * 查看 workflow 是否存在
+     *
      * @param workflowName workname
      * @return boolean
      */
     public boolean workflowExists(String workflowName) throws QiniuException {
         boolean exists = false;
         String getUrl = String.format("%s/v2/workflows/%s", this.pipelineHost, workflowName);
+        try {
+            this.client.get(getUrl, new StringMap()).close();
+            exists = true;
+        } catch (QiniuException e) {
+            //pass
+        }
+        return exists;
+    }
+
+    /**
+     * 创建 repo
+     *
+     * @param repoName  repo name
+     * @param repoInput repo extra param
+     */
+    public void createRepo(String repoName, CreateRepoInput repoInput) throws Exception {
+        String postUrl = String.format("%s/v2/repos/%s", this.pipelineHost, repoName);
+        String postBody = Json.encode(repoInput);
+        this.client.post(postUrl, postBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime).close();
+    }
+
+    /**
+     * 检查repo是否存在
+     *
+     * @param repoName repo name
+     */
+    public boolean repoExists(String repoName) {
+        boolean exists = false;
+        String getUrl = String.format("%s/v2/repos/%s", this.pipelineHost, repoName);
+        try {
+            this.client.get(getUrl, new StringMap()).close();
+            exists = true;
+        } catch (QiniuException e) {
+            //pass
+        }
+        return exists;
+    }
+
+
+    /**
+     * 创建导出到LOGDB，TSDB，HTTP等
+     *
+     * @param repoName    repo name
+     * @param exportName  export name
+     * @param exportInput export extra param
+     */
+    public void createExport(String repoName, String exportName, CreateExportInput exportInput) throws Exception {
+        String postUrl = String.format("%s/v2/repos/%s/exports/%s", this.pipelineHost, repoName, exportName);
+        String postBody = Json.encode(exportInput);
+        this.client.post(postUrl, postBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime).close();
+    }
+
+    /*
+    * 检查导出是否存在
+    * @param repoName repo name
+    * @param exportName export name
+    * */
+    public boolean exportExists(String repoName, String exportName) {
+        boolean exists = false;
+        String getUrl = String.format("%s/v2/repos/%s/exports/%s", this.pipelineHost, repoName, exportName);
         try {
             this.client.get(getUrl, new StringMap()).close();
             exists = true;

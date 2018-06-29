@@ -29,7 +29,7 @@ public class LogDBTest {
         createRepoInput.description = "this is a sdk test repo";
         createRepoInput.schema = new RepoSchemaEntry[]{
                 new RepoSchemaEntry("timestamp", ValueType.TypeDate),
-                new RepoSchemaEntry("sensor", ValueType.TypeString, Analyser.StandardAnalyzer),
+                new RepoSchemaEntry("sensor", ValueType.TypeString, Analyzer.StandardAnalyzer),
                 new RepoSchemaEntry("value", ValueType.TypeLong)
         };
 
@@ -59,9 +59,9 @@ public class LogDBTest {
         updateRepoInput.description = "this is a sdk test repo(update)";
         updateRepoInput.schema = new RepoSchemaEntry[]{
                 new RepoSchemaEntry("timestamp", ValueType.TypeDate),
-                new RepoSchemaEntry("sensor", ValueType.TypeString, Analyser.StandardAnalyzer),
+                new RepoSchemaEntry("sensor", ValueType.TypeString, Analyzer.StandardAnalyzer),
                 new RepoSchemaEntry("value", ValueType.TypeLong),
-                new RepoSchemaEntry("alias", ValueType.TypeString, Analyser.StandardAnalyzer)
+                new RepoSchemaEntry("alias", ValueType.TypeString, Analyzer.StandardAnalyzer)
         };
         try {
             this.logDBClient.updateRepo(randomRepoName, updateRepoInput);

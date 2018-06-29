@@ -3,16 +3,12 @@ package com.qiniu.pandora.logdb.search;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import com.qiniu.pandora.common.Constants;
-import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Client;
 import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.logdb.LogDBClient;
-import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
-import com.qiniu.pandora.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +34,6 @@ public class MultiSearchService {
                     .append(searchRequest.source).append("\n");
         }
 
-        System.out.println(postBody.toString());
         String postUrl = String.format("%s/v5/logdbkibana/msearch", this.logDBClient.getHost());
 
         Response response = this.logDBClient.getPandoraClient().post(postUrl,

@@ -1,6 +1,8 @@
 package com.qiniu.pandora.tsdb;
 
-import com.qiniu.pandora.common.*;
+import com.qiniu.pandora.common.Constants;
+import com.qiniu.pandora.common.PandoraClient;
+import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.Client;
 import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.tsdb.query.QueryDataInput;
@@ -12,36 +14,38 @@ import com.qiniu.pandora.util.StringMap;
 import java.util.Map;
 
 public class TSDBClient {
-    private PandoraClient client;
-    private String host;
+    private PandoraClient pandoraClient;
+    private String tsdbHost;
 
     public TSDBClient(PandoraClient pandoraClient) {
-        this.client = pandoraClient;
-        this.host = Constants.TSDB_HOST;
+        this.pandoraClient = pandoraClient;
+        this.tsdbHost = Constants.TSDB_HOST;
     }
 
-    public TSDBClient(PandoraClient pandoraClient, String host) {
-        this.client = pandoraClient;
-        this.host = host;
+    public TSDBClient(PandoraClient pandoraClient, String tsdbHost) {
+        this.pandoraClient = pandoraClient;
+        this.tsdbHost = tsdbHost;
     }
 
     /**
      * 创建 repo
+     *
      * @param repoName repo 名称
-     * @param input 创建 repo 的参数
+     * @param input    创建 repo 的参数
      * @throws QiniuException
      */
     public void createRepo(String repoName, CreateRepoInput input) throws QiniuException {
         if (input == null || isInValid(repoName, input.region)) {
             throw new QiniuException("repo name or region should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s", this.host, repoName);
+        String url = String.format("%s/v4/repos/%s", this.tsdbHost, repoName);
         byte[] content = Json.encode(input).getBytes(Constants.UTF_8);
-        client.post(url, content, new StringMap(), Client.JsonMime).close();
+        pandoraClient.post(url, content, new StringMap(), Client.JsonMime).close();
     }
 
     /**
      * 查询 tsdb repo 信息
+     *
      * @param repoName tsdb repo 名称
      * @return
      * @throws QiniuException
@@ -50,8 +54,8 @@ public class TSDBClient {
         if (isInValid(repoName)) {
             throw new QiniuException("repo name should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s", this.host, repoName);
-        Response resp = client.get(url, new StringMap());
+        String url = String.format("%s/v4/repos/%s", this.tsdbHost, repoName);
+        Response resp = pandoraClient.get(url, new StringMap());
         return resp.jsonToObject(GetRepoOuput.class);
     }
 
@@ -62,8 +66,8 @@ public class TSDBClient {
      * @throws QiniuException
      */
     public RepoDesc[] listRepo() throws QiniuException {
-        String url = String.format("%s/v4/repos", this.host);
-        Response resp = client.get(url, new StringMap());
+        String url = String.format("%s/v4/repos", this.tsdbHost);
+        Response resp = pandoraClient.get(url, new StringMap());
         return resp.jsonToObject(RepoDesc[].class);
     }
 
@@ -79,9 +83,9 @@ public class TSDBClient {
         if (isInValid(repoName) || metadata == null) {
             throw new QiniuException("repo name or metadata should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s/meta", this.host, repoName);
+        String url = String.format("%s/v4/repos/%s/meta", this.tsdbHost, repoName);
         byte[] content = Json.encode(metadata).getBytes(Constants.UTF_8);
-        client.post(url, content, new StringMap(), Client.JsonMime).close();
+        pandoraClient.post(url, content, new StringMap(), Client.JsonMime).close();
     }
 
     /**
@@ -95,8 +99,8 @@ public class TSDBClient {
         if (isInValid(repoName)) {
             throw new QiniuException("repo name should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s/meta", this.host, repoName);
-        client.delete(url, new StringMap()).close();
+        String url = String.format("%s/v4/repos/%s/meta", this.tsdbHost, repoName);
+        pandoraClient.delete(url, new StringMap()).close();
     }
 
     /**
@@ -111,8 +115,8 @@ public class TSDBClient {
             throw new QiniuException("repo name should not be empty");
         }
 
-        String url = String.format("%s/v4/repos/%s", this.host, repoName);
-        client.delete(url, new StringMap()).close();
+        String url = String.format("%s/v4/repos/%s", this.tsdbHost, repoName);
+        pandoraClient.delete(url, new StringMap()).close();
     }
 
     /**
@@ -127,9 +131,9 @@ public class TSDBClient {
             throw new QiniuException("repo name or series name should not be empty");
         }
 
-        String url = String.format("%s/v4/repos/%s/series/%s", this.host, repoName, seriesName);
+        String url = String.format("%s/v4/repos/%s/series/%s", this.tsdbHost, repoName, seriesName);
         byte[] content = Json.encode(input).getBytes(Constants.UTF_8);
-        client.post(url, content, new StringMap(), Client.JsonMime).close();
+        pandoraClient.post(url, content, new StringMap(), Client.JsonMime).close();
     }
 
     /**
@@ -143,8 +147,8 @@ public class TSDBClient {
         if (isInValid(repoName)) {
             throw new QiniuException("repo name should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s/series", this.host, repoName);
-        Response resp = client.get(url, new StringMap());
+        String url = String.format("%s/v4/repos/%s/series", this.tsdbHost, repoName);
+        Response resp = pandoraClient.get(url, new StringMap());
         return resp.jsonToObject(SeriesDesc[].class);
     }
 
@@ -161,9 +165,9 @@ public class TSDBClient {
         if (isInValid(repoName, seriesName) || metadata == null) {
             throw new QiniuException("repo name or series name or metadata should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s/series/%s/meta", this.host, repoName, seriesName);
+        String url = String.format("%s/v4/repos/%s/series/%s/meta", this.tsdbHost, repoName, seriesName);
         byte[] content = Json.encode(metadata).getBytes(Constants.UTF_8);
-        client.post(url, content, new StringMap(), Client.JsonMime).close();
+        pandoraClient.post(url, content, new StringMap(), Client.JsonMime).close();
     }
 
     /**
@@ -178,8 +182,8 @@ public class TSDBClient {
         if (isInValid(repoName, seriesName)) {
             throw new QiniuException("repo name or series name should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s/series/%s/meta", this.host, repoName, seriesName);
-        client.delete(url, new StringMap()).close();
+        String url = String.format("%s/v4/repos/%s/series/%s/meta", this.tsdbHost, repoName, seriesName);
+        pandoraClient.delete(url, new StringMap()).close();
     }
 
     /**
@@ -194,8 +198,8 @@ public class TSDBClient {
         if (isInValid(repoName, seriesName)) {
             throw new QiniuException("repo name or series name should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s/series/%s", this.host, repoName, seriesName);
-        client.delete(url, new StringMap()).close();
+        String url = String.format("%s/v4/repos/%s/series/%s", this.tsdbHost, repoName, seriesName);
+        pandoraClient.delete(url, new StringMap()).close();
     }
 
     /**
@@ -209,9 +213,9 @@ public class TSDBClient {
         if (isInValid(repoName, input.sql)) {
             throw new QiniuException("repo name or sql should not be empty");
         }
-        String url = String.format("%s/v4/repos/%s/query", this.host, repoName);
+        String url = String.format("%s/v4/repos/%s/query", this.tsdbHost, repoName);
         byte[] content = Json.encode(input).getBytes(Constants.UTF_8);
-        Response resp = client.post(url, content, new StringMap(), Client.JsonMime);
+        Response resp = pandoraClient.post(url, content, new StringMap(), Client.JsonMime);
         return resp.jsonToObject(QueryDataOutput.class);
     }
 
