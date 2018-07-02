@@ -56,7 +56,6 @@ public class LogDBClient implements ValueType, Analyzer {
 
     /**
      * SearchService工厂方法
-     * /v5/repos/<RepoName>/search
      *
      * @return SearchService
      */
@@ -111,8 +110,9 @@ public class LogDBClient implements ValueType, Analyzer {
     /**
      * 创建 LogDB 的 Repo
      *
-     * @param repoName  repo name
-     * @param repoInput create repo extra params
+     * @param repoName  repo 名称
+     * @param repoInput 额外参数
+     * @throws QiniuException 异常
      */
 
     public void createRepo(String repoName, CreateRepoInput repoInput) throws QiniuException {
@@ -132,8 +132,9 @@ public class LogDBClient implements ValueType, Analyzer {
     /**
      * 更新 LogDB 的 Repo
      *
-     * @param repoName  repo name
-     * @param repoInput update repo extra params
+     * @param repoName  repo 名称
+     * @param repoInput 额外参数
+     * @throws QiniuException 异常
      */
     public void updateRepo(String repoName, UpdateRepoInput repoInput) throws QiniuException {
         String putUrl = String.format("%s/v5/repos/%s", this.logdbHost, repoName);
@@ -145,8 +146,9 @@ public class LogDBClient implements ValueType, Analyzer {
     /**
      * 获取 LogDB 的信息
      *
-     * @param repoName repo name
+     * @param repoName repo 名称
      * @return GetRepoOutput
+     * @throws QiniuException 异常
      */
     public GetRepoOutput getRepo(String repoName) throws QiniuException {
         String getUrl = String.format("%s/v5/repos/%s", this.logdbHost, repoName);
@@ -158,6 +160,7 @@ public class LogDBClient implements ValueType, Analyzer {
      * 获取 LogDB 列表
      *
      * @return ListRepoOutput
+     * @throws QiniuException 异常
      */
     public ListRepoOutput listRepos() throws QiniuException {
         String getUrl = String.format("%s/v5/repos", this.logdbHost);
@@ -168,7 +171,8 @@ public class LogDBClient implements ValueType, Analyzer {
     /**
      * 删除 LogDB 的 Repo
      *
-     * @param repoName repo name
+     * @param repoName repo 名称
+     * @throws QiniuException 异常
      */
     public void deleteRepo(String repoName) throws QiniuException {
         String deleteUrl = String.format("%s/v5/repos/%s", this.logdbHost, repoName);
@@ -177,6 +181,9 @@ public class LogDBClient implements ValueType, Analyzer {
 
     /**
      * 检查 LogDB 的 Repo 是否存在
+     *
+     * @param repoName repo 名称
+     * @return 当 repo 存在返回 true
      */
     public boolean repoExists(String repoName) {
         boolean exists = false;

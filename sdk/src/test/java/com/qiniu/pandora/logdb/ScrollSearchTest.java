@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ScrollSearchTest extends LogDBTest {
+public class ScrollSearchTest {
 
     private SearchService searchService;
     private ScrollSearchService scrollSearchService;
@@ -45,7 +45,7 @@ public class ScrollSearchTest extends LogDBTest {
             System.out.println("total:" + searchResult.total + ", current: " + searchResult.data.size());
             System.out.println("scroll ID:" + searchResult.scrollID);
 
-            //use scrollID to query the remained data
+            //use scrollID to query the remasined data
             String scrollID = searchResult.scrollID;
             searchResult = scrollSearchService.scroll(repoName, scroll, scrollID);
             Assert.assertNotNull(searchResult.requestId);

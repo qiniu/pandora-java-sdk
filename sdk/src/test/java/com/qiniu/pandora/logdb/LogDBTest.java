@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class LogDBTest {
-    protected LogDBClient logDBClient;
+    private LogDBClient logDBClient;
 
     @Before
     public void setUp() throws Exception {
@@ -86,6 +86,10 @@ public class LogDBTest {
             e.printStackTrace();
             Assert.fail();
         }
+
+        //exists
+        boolean exists = this.logDBClient.repoExists(randomRepoName);
+        Assert.assertTrue(!exists);
     }
 
     @Test

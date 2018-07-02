@@ -18,13 +18,20 @@ import java.util.List;
  */
 public class PartialSearchService {
     private LogDBClient logDBClient;
-    private String repo;
 
     public PartialSearchService(LogDBClient logDBClient) {
         this.logDBClient = logDBClient;
     }
 
 
+    /**
+     * PartialSearch - 适用于大规模带有时间戳的单个repo
+     *
+     * @param repoName      repo 名称
+     * @param searchRequest 查询参数
+     * @return PartialSearchService.SearchResult
+     * @throws QiniuException 异常
+     */
     public SearchResult search(String repoName, SearchRequest searchRequest) throws QiniuException {
         String postUrl = String.format("%s/v5/repos/%s/s", this.logDBClient.getHost(), repoName);
         String postBody = Json.encode(searchRequest);
