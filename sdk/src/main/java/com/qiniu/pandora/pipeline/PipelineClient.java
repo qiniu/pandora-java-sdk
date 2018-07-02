@@ -20,7 +20,7 @@ public class PipelineClient {
         this(client, "https://pipeline.qiniu.com");
     }
 
-    private PipelineClient(PandoraClient client, String pipelineHost) {
+    public PipelineClient(PandoraClient client, String pipelineHost) {
         this.pipelineHost = pipelineHost;
         this.client = client;
     }
