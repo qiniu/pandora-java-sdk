@@ -21,17 +21,31 @@ import java.util.Scanner;
  * Pipeline 打点数据发送器
  */
 public class DataSender implements Sender {
-    private static final int LINE_CAPACITY = 4;
+    private String pipelineHost;
     private PandoraClient pandoraClient;
     private String url;
 
     public DataSender(String repoName, Auth auth) {
-        url = url(repoName);
+        this.pipelineHost = Constants.PIPELINE_HOST;
+        this.url = url(repoName);
+        this.pandoraClient = new PandoraClientImpl(auth);
+    }
+
+    public DataSender(String repoName, Auth auth, String pipelineHost) {
+        this.pipelineHost = pipelineHost;
+        this.url = url(repoName);
         this.pandoraClient = new PandoraClientImpl(auth);
     }
 
     public DataSender(String repoName, PandoraClient pandoraClient) {
-        url = url(repoName);
+        this.pipelineHost = Constants.PIPELINE_HOST;
+        this.url = url(repoName);
+        this.pandoraClient = pandoraClient;
+    }
+
+    public DataSender(String repoName, PandoraClient pandoraClient, String pipelineHost) {
+        this.pipelineHost = pipelineHost;
+        this.url = url(repoName);
         this.pandoraClient = pandoraClient;
     }
 
@@ -142,7 +156,7 @@ public class DataSender implements Sender {
     }
 
     protected String url(String repoName) {
-        return Constants.PIPELINE_HOST + "/v2/repos/" + repoName + "/data";
+        return String.format("%s/v2/repos/%s/data", this.pipelineHost, repoName);
     }
 
 }
