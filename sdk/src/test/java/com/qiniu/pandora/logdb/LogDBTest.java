@@ -35,7 +35,7 @@ public class LogDBTest {
         String randomRepoName = String.format("sdkrepo%s", (int) (Math.random() * 100));
         //create
         try {
-             this.logDBClient.createRepo(randomRepoName, createRepoInput);
+            this.logDBClient.createRepo(randomRepoName, createRepoInput);
         } catch (QiniuException e) {
             e.printStackTrace();
             Assert.fail();
@@ -86,6 +86,10 @@ public class LogDBTest {
             e.printStackTrace();
             Assert.fail();
         }
+
+        //exists
+        boolean exists = this.logDBClient.repoExists(randomRepoName);
+        Assert.assertTrue(!exists);
     }
 
     @Test
