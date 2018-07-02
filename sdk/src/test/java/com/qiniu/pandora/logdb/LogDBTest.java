@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class LogDBTest {
-    protected LogDBClient logDBClient;
+    private LogDBClient logDBClient;
 
     @Before
     public void setUp() throws Exception {
@@ -35,7 +35,7 @@ public class LogDBTest {
         String randomRepoName = String.format("sdkrepo%s", (int) (Math.random() * 100));
         //create
         try {
-            this.logDBClient.createRepo(randomRepoName, createRepoInput);
+             this.logDBClient.createRepo(randomRepoName, createRepoInput);
         } catch (QiniuException e) {
             e.printStackTrace();
             Assert.fail();

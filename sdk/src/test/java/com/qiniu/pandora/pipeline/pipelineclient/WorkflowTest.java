@@ -17,7 +17,8 @@ import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WorkflowTest {
-    protected PipelineClient pipelineClient;
+    private PipelineClient pipelineClient;
+    private String workflowName = TestConfig.WORKFLOW_NAME;
 
     @Before
     public void setUP() throws Exception {
@@ -32,7 +33,7 @@ public class WorkflowTest {
         CreateWorkflowInput createWorkflowInput = new CreateWorkflowInput();
         createWorkflowInput.comment = "javasdktest";
         createWorkflowInput.region = "nb";
-        createWorkflowInput.workflowName = "javasdk";
+        createWorkflowInput.workflowName = workflowName;
         pipelineClient.createWorkflow(createWorkflowInput);
     }
 
@@ -40,7 +41,7 @@ public class WorkflowTest {
     public void test002updateWorkflow() throws QiniuException {
         UpdateWorkflowInput updateWorkflowInput = new UpdateWorkflowInput();
         updateWorkflowInput.region = "nb";
-        updateWorkflowInput.workflowName = "javasdk";
+        updateWorkflowInput.workflowName = workflowName;
         updateWorkflowInput.nodes = null;
         pipelineClient.updateWorkflow(updateWorkflowInput);
     }
@@ -56,29 +57,26 @@ public class WorkflowTest {
 
     @Test
     public void test004getWorkflow() throws QiniuException {
-        String workflowname = "javasdk";
-        GetWorkflowOutput getWorkflowOutput = pipelineClient.getWorkflow(workflowname);
+
+        GetWorkflowOutput getWorkflowOutput = pipelineClient.getWorkflow(workflowName);
         System.out.println(getWorkflowOutput.toString());
     }
 
     @Test
     public void test005getWorkflowsStatus() throws QiniuException {
-        String workflowname = "javasdk";
-        GetWorkflowStatus getWorkflowStatus = pipelineClient.getWorkflowStatus(workflowname);
+        GetWorkflowStatus getWorkflowStatus = pipelineClient.getWorkflowStatus(workflowName);
         System.out.println(getWorkflowStatus.toString());
     }
 
 
     @Test
     public void test006workflowExists() throws QiniuException {
-        String workflowname = "javasdk";
-        System.out.println(pipelineClient.getWorkflowStatus(workflowname));
+        System.out.println(pipelineClient.getWorkflowStatus(workflowName));
     }
 
     @Test
     public void test007deleteWorkflow() throws QiniuException {
-        String workflowname = "javasdk";
-        pipelineClient.deleteWorkflow(workflowname);
+        pipelineClient.deleteWorkflow(workflowName);
     }
 
 }

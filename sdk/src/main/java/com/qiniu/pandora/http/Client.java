@@ -154,40 +154,81 @@ public class Client {
     }
 
     /**
-     * GET methods
+     * GET method
+     *
+     * @param url request url
+     * @return Response
      */
     public Response get(String url) throws QiniuException {
         return get(url, new StringMap());
     }
 
+    /**
+     * GET method
+     *
+     * @param url     request url
+     * @param headers request headers
+     * @return Response
+     */
     public Response get(String url, StringMap headers) throws QiniuException {
         Request.Builder requestBuilder = new Request.Builder().get().url(url);
         return send(requestBuilder, headers);
     }
 
     /**
-     * DELETE methods
+     * DELETE method
+     *
+     * @param url request url
+     * @return Response
      */
     public Response delete(String url) throws QiniuException {
         return delete(url, new StringMap());
     }
 
+    /**
+     * DELETE method
+     *
+     * @param url     request url
+     * @param headers request headers
+     * @return Response
+     */
     public Response delete(String url, StringMap headers) throws QiniuException {
         Request.Builder requestBuilder = new Request.Builder().delete().url(url);
         return send(requestBuilder, headers);
     }
 
     /**
-     * PUT methods
+     * PUT method
+     *
+     * @param url     request url
+     * @param body    request body
+     * @param headers request headers
+     * @return Response
      */
     public Response put(String url, byte[] body, StringMap headers) throws QiniuException {
         return put(url, body, headers, DefaultMime);
     }
 
+    /**
+     * PUT method
+     *
+     * @param url     request url
+     * @param body    request body
+     * @param headers request headers
+     * @return Response
+     */
     public Response put(String url, String body, StringMap headers) throws QiniuException {
         return put(url, StringUtils.utf8Bytes(body), headers, DefaultMime);
     }
 
+    /**
+     * PUT method
+     *
+     * @param url     request url
+     * @param params  request params
+     * @param headers request headers
+     * @return Response
+     */
     public Response put(String url, StringMap params, StringMap headers) throws QiniuException {
         final FormBody.Builder f = new FormBody.Builder();
         params.forEach(new StringMap.Consumer() {
