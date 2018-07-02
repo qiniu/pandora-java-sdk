@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * 单个 Repo 的搜索。
+ * 单个 Repo 的搜索
  */
 public class SearchService {
     private LogDBClient logDBClient;
@@ -25,10 +25,12 @@ public class SearchService {
     }
 
     /**
-     * Search
+     * Search - 单个 Repo 的搜索
      *
-     * @param repoName      logdb repo name
-     * @param searchRequest search extra params
+     * @param repoName      repo 名称
+     * @param searchRequest 查询承诺书
+     * @return SearchService.SearchResult
+     * @throws QiniuException 异常
      */
     public SearchResult search(String repoName, SearchRequest searchRequest) throws QiniuException {
         String postUrl = String.format("%s/v5/repos/%s/search", this.logDBClient.getHost(), repoName);

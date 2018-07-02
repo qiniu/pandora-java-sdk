@@ -1,4 +1,4 @@
-package com.qiniu.pandora.pipeline.pipelineclient;
+package com.qiniu.pandora.pipeline.workflow;
 
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.common.PandoraClientImpl;

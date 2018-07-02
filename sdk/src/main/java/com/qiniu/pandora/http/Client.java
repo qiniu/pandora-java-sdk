@@ -52,6 +52,8 @@ public class Client {
 
     /**
      * 构建一个自定义配置的 HTTP Client 类
+     *
+     * @param cfg Configuration
      */
     public Client(Configuration cfg) {
         this(cfg.dnsClient, cfg.useDnsHostFirst, cfg.proxy,
@@ -62,6 +64,17 @@ public class Client {
 
     /**
      * 构建一个自定义配置的 HTTP Client 类
+     *
+     * @param dns                          dns client
+     * @param hostFirst                    use code specified hosts first
+     * @param proxy                        proxy object
+     * @param connTimeout                  connection timeout
+     * @param readTimeout                  read timeout
+     * @param writeTimeout                 write timeout
+     * @param dispatcherMaxRequests        max request count per client
+     * @param dispatcherMaxRequestsPerHost max request count per host
+     * @param connectionPoolMaxIdleCount   connection poll max idle count
+     * @param connectionPoolMaxIdleMinutes connection pool max idle minutes
      */
     public Client(final DnsClient dns, final boolean hostFirst, final ProxyConfiguration proxy,
                   int connTimeout, int readTimeout, int writeTimeout, int dispatcherMaxRequests,
@@ -156,8 +169,9 @@ public class Client {
     /**
      * GET method
      *
-     * @param url request url
-     * @return Response
+     * @param url 请求 URL
+     * @return Response 请求回复
+     * @throws QiniuException 请求失败
      */
     public Response get(String url) throws QiniuException {
         return get(url, new StringMap());
@@ -166,9 +180,10 @@ public class Client {
     /**
      * GET method
      *
-     * @param url     request url
-     * @param headers request headers
-     * @return Response
+     * @param url     请求 URL
+     * @param headers 请求头部
+     * @return Response 请求回复
+     * @throws QiniuException 请求失败
      */
     public Response get(String url, StringMap headers) throws QiniuException {
         Request.Builder requestBuilder = new Request.Builder().get().url(url);
@@ -178,8 +193,9 @@ public class Client {
     /**
      * DELETE method
      *
-     * @param url request url
-     * @return Response
+     * @param url 请求 URL
+     * @return Response 请求回复
+     * @throws QiniuException 请求失败
      */
     public Response delete(String url) throws QiniuException {
         return delete(url, new StringMap());
@@ -188,9 +204,10 @@ public class Client {
     /**
      * DELETE method
      *
-     * @param url     request url
-     * @param headers request headers
-     * @return Response
+     * @param url     请求 URL
+     * @param headers 请求头部
+     * @return Response 请求回复
+     * @throws QiniuException 请求失败
      */
     public Response delete(String url, StringMap headers) throws QiniuException {
         Request.Builder requestBuilder = new Request.Builder().delete().url(url);
@@ -200,10 +217,11 @@ public class Client {
     /**
      * PUT method
      *
-     * @param url     request url
-     * @param body    request body
-     * @param headers request headers
-     * @return Response
+     * @param url     请求 URL
+     * @param body    请求体
+     * @param headers 请求头部
+     * @return Response 请求回复
+     * @throws QiniuException 请求失败
      */
     public Response put(String url, byte[] body, StringMap headers) throws QiniuException {
         return put(url, body, headers, DefaultMime);
@@ -212,10 +230,11 @@ public class Client {
     /**
      * PUT method
      *
-     * @param url     request url
-     * @param body    request body
-     * @param headers request headers
-     * @return Response
+     * @param url     请求 URL
+     * @param body    请求体
+     * @param headers 请求头部
+     * @return Response 请求回复
+     * @throws QiniuException 请求失败
      */
     public Response put(String url, String body, StringMap headers) throws QiniuException {
         return put(url, StringUtils.utf8Bytes(body), headers, DefaultMime);
@@ -224,10 +243,11 @@ public class Client {
     /**
      * PUT method
      *
-     * @param url     request url
-     * @param params  request params
-     * @param headers request headers
-     * @return Response
+     * @param url     请求 URL
+     * @param params  请求参数
+     * @param headers 请求头部
+     * @return Response 请求回复
+     * @throws QiniuException 请求失败
      */
     public Response put(String url, StringMap params, StringMap headers) throws QiniuException {
         final FormBody.Builder f = new FormBody.Builder();
@@ -270,6 +290,12 @@ public class Client {
 
     /**
      * POST methods
+     *
+     * @param url     请求 URL
+     * @param body    请求体
+     * @param headers 请求头部
+     * @return 请求回复
+     * @throws QiniuException 请求失败
      */
     public Response post(String url, byte[] body, StringMap headers) throws QiniuException {
         return post(url, body, headers, DefaultMime);

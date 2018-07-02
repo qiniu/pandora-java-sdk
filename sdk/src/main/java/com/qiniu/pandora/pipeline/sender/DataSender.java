@@ -37,6 +37,10 @@ public class DataSender implements Sender {
 
     /**
      * 发送Batch数据
+     *
+     * @param postBody post body bytes
+     * @return Response
+     * @throws QiniuException 发送失败
      */
     public Response send(byte[] postBody) throws QiniuException {
         if (postBody.length <= 0) {

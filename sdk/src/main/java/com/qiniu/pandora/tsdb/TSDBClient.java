@@ -35,7 +35,7 @@ public class TSDBClient {
      *
      * @param repoName repo 名称
      * @param input    创建 repo 的参数
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public void createRepo(String repoName, CreateRepoInput input) throws QiniuException {
         if (input == null || isInValid(repoName, input.region)) {
@@ -50,8 +50,8 @@ public class TSDBClient {
      * 查询 tsdb repo 信息
      *
      * @param repoName tsdb repo 名称
-     * @return
-     * @throws QiniuException
+     * @return GetRepoOutput
+     * @throws QiniuException 异常
      */
     public GetRepoOuput getRepo(String repoName) throws QiniuException {
         if (isInValid(repoName)) {
@@ -65,8 +65,8 @@ public class TSDBClient {
     /**
      * 查询账号下的所有 tsdb repo
      *
-     * @return
-     * @throws QiniuException
+     * @return RepoDesc[]
+     * @throws QiniuException 异常
      */
     public RepoDesc[] listRepo() throws QiniuException {
         String url = String.format("%s/v4/repos", this.tsdbHost);
@@ -79,8 +79,7 @@ public class TSDBClient {
      *
      * @param repoName tsdb repo 名称
      * @param metadata 更新的 metadata 信息
-     * @return
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public void updateRepoMetadata(String repoName, Map<String, String> metadata) throws QiniuException {
         if (isInValid(repoName) || metadata == null) {
@@ -95,8 +94,7 @@ public class TSDBClient {
      * 删除 tsdb repo 的 metadata 信息
      *
      * @param repoName tsdb repo 名称
-     * @return
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public void deleteRepoMetadata(String repoName) throws QiniuException {
         if (isInValid(repoName)) {
@@ -110,8 +108,7 @@ public class TSDBClient {
      * 删除 tsdb repo
      *
      * @param repoName tsdb repo 名称
-     * @return
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public void deleteRepo(String repoName) throws QiniuException {
         if (isInValid(repoName)) {
@@ -126,8 +123,7 @@ public class TSDBClient {
      * 创建 tsdb series
      *
      * @param input 创建 tsdb series 的参数，repoName 和 seriesName
-     * @return
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public void createSeries(String repoName, String seriesName, CreateSeriesInput input) throws QiniuException {
         if (input == null || isInValid(repoName, seriesName, input.retention)) {
@@ -143,8 +139,7 @@ public class TSDBClient {
      * 查询 repo 下的所有 series
      *
      * @param repoName tsdb repo 名称
-     * @return
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public SeriesDesc[] listSeries(String repoName) throws QiniuException {
         if (isInValid(repoName)) {
@@ -161,8 +156,7 @@ public class TSDBClient {
      * @param repoName   tsdb repo 名称
      * @param seriesName tsdb series 名称
      * @param metadata   更新的 metadata 信息
-     * @return
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public void updateSeriesMetadata(String repoName, String seriesName, Map<String, String> metadata) throws QiniuException {
         if (isInValid(repoName, seriesName) || metadata == null) {
@@ -178,8 +172,7 @@ public class TSDBClient {
      *
      * @param repoName   tsdb repo 名称
      * @param seriesName tsdb series 名称
-     * @return
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public void deleteSeriesMetadata(String repoName, String seriesName) throws QiniuException {
         if (isInValid(repoName, seriesName)) {
@@ -194,8 +187,7 @@ public class TSDBClient {
      *
      * @param repoName   tsdb repo 名称
      * @param seriesName tsdb series 名称
-     * @return
-     * @throws QiniuException
+     * @throws QiniuException 异常
      */
     public void deleteSeries(String repoName, String seriesName) throws QiniuException {
         if (isInValid(repoName, seriesName)) {
@@ -208,9 +200,9 @@ public class TSDBClient {
     /**
      * 查询数据
      *
-     * @param input 查询数的参数，repoName 和 sql 语句
-     * @return
-     * @throws QiniuException
+     * @param repoName tsdb repo 名称
+     * @param input    查询数的参数，repoName 和 sql 语句
+     * @throws QiniuException 异常
      */
     public QueryDataOutput queryPoint(String repoName, QueryDataInput input) throws QiniuException {
         if (isInValid(repoName, input.sql)) {

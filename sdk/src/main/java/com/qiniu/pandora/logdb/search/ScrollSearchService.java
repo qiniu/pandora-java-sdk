@@ -10,7 +10,7 @@ import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 
 /**
- * Created by jemy on 2018/6/26.
+ * 滚动搜索 - 适用于批量返回数据
  */
 public class ScrollSearchService {
     private LogDBClient logDBClient;
@@ -20,12 +20,13 @@ public class ScrollSearchService {
     }
 
     /**
-     * Scroll the whole logdb
+     * 滚动搜索
      *
-     * @param repoName repo name
-     * @param scroll   preset scroll
-     * @param scrollID scrollID from last response
+     * @param repoName repo 名称
+     * @param scroll   scroll 保持时间
+     * @param scrollID 上个请求返回的 scrollID
      * @return SearchService.SearchResult
+     * @throws QiniuException 异常
      */
     public SearchService.SearchResult scroll(String repoName, String scroll, String scrollID) throws QiniuException {
         String postUrl = String.format("%s/v5/repos/%s/scroll", this.logDBClient.getHost(), repoName);

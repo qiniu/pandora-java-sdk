@@ -27,7 +27,8 @@ public class PipelineClient {
 
     /***
      * 创建 workflow
-     * @param workflowInput  create workflow params
+     * @param workflowInput 创建 workflow 的参数
+     * @throws QiniuException 异常
      */
     public void createWorkflow(CreateWorkflowInput workflowInput) throws QiniuException {
         String postUrl = String.format("%s/v2/workflows/%s", this.pipelineHost, workflowInput.workflowName);
@@ -38,7 +39,8 @@ public class PipelineClient {
     /**
      * 更新 workflow
      *
-     * @param updateWorkflowInput update workflow params
+     * @param updateWorkflowInput 更新 workflow 的参数
+     * @throws QiniuException 异常
      */
     public void updateWorkflow(UpdateWorkflowInput updateWorkflowInput) throws QiniuException {
         String putUrl = String.format("%s/v2/workflows/%s", this.pipelineHost, updateWorkflowInput.workflowName);
@@ -49,7 +51,8 @@ public class PipelineClient {
     /**
      * 删除 workflow
      *
-     * @param workflowName workflow name
+     * @param workflowName workflow 名称
+     * @throws QiniuException 异常
      */
     public void deleteWorkflow(String workflowName) throws QiniuException {
         String deleteUrl = String.format("%s/v2/workflows/%s", this.pipelineHost, workflowName);
@@ -59,8 +62,9 @@ public class PipelineClient {
     /**
      * 获取 workflow 信息
      *
-     * @param workflowName workflow name
+     * @param workflowName workflow 名称
      * @return GetWorkflowOutput
+     * @throws QiniuException 异常
      */
     public GetWorkflowOutput getWorkflow(String workflowName) throws QiniuException {
         String getUrl = String.format("%s/v2/workflows/%s", this.pipelineHost, workflowName);
@@ -72,8 +76,9 @@ public class PipelineClient {
     /**
      * 获取 workflow 状态
      *
-     * @param workflowName workflow name
+     * @param workflowName workflow 名称
      * @return WorkflowStatus
+     * @throws QiniuException 异常
      */
     public GetWorkflowStatus getWorkflowStatus(String workflowName) throws QiniuException {
         String getUrl = String.format("%s/v2/workflows/%s/status", this.pipelineHost, workflowName);
@@ -85,6 +90,7 @@ public class PipelineClient {
      * 获取 workflow 列表
      *
      * @return GetWorkflowOutput[]
+     * @throws QiniuException 异常
      */
     public GetWorkflowOutput[] listWorkflows() throws QiniuException {
         String getUrl = String.format("%s/v2/workflows", this.pipelineHost);
@@ -95,7 +101,8 @@ public class PipelineClient {
     /**
      * 启动 workflow
      *
-     * @param workflowName workflow name
+     * @param workflowName workflow 名称
+     * @throws QiniuException 异常
      */
     public void startWorkflow(String workflowName) throws QiniuException {
         String postUrl = String.format("%s/v2/workflows/%s/start", this.pipelineHost, workflowName);
@@ -105,7 +112,8 @@ public class PipelineClient {
     /**
      * 停止 workflow
      *
-     * @param workflowName workflow name
+     * @param workflowName workflow 名称
+     * @throws QiniuException 异常
      */
     public void stopWorkflow(String workflowName) throws QiniuException {
         String postUrl = String.format("%s/v2/workflows/%s/stop", this.pipelineHost, workflowName);
@@ -116,7 +124,8 @@ public class PipelineClient {
      * 查看 workflow 是否存在
      *
      * @param workflowName workname
-     * @return boolean
+     * @return 当 workflow 存在时返回 true
+     * @throws QiniuException 异常
      */
     public boolean workflowExists(String workflowName) throws QiniuException {
         boolean exists = false;
@@ -131,10 +140,11 @@ public class PipelineClient {
     }
 
     /**
-     * 创建 repo
+     * 创建 pipeline repo
      *
-     * @param repoName  repo name
-     * @param repoInput repo extra param
+     * @param repoName  repo 名称
+     * @param repoInput 额外参数
+     * @throws QiniuException 异常
      */
     public void createRepo(String repoName, CreateRepoInput repoInput) throws Exception {
         String postUrl = String.format("%s/v2/repos/%s", this.pipelineHost, repoName);
@@ -143,9 +153,21 @@ public class PipelineClient {
     }
 
     /**
-     * 检查 repo 是否存在
+     * 删除 pipeline repo
      *
-     * @param repoName repo name
+     * @param repoName repo 名称
+     * @throws QiniuException 异常
+     */
+    public void deleteRepo(String repoName) throws QiniuException {
+        String deleteUrl = String.format("%s/v2/repos/%s", this.pipelineHost, repoName);
+        this.client.delete(deleteUrl, new StringMap()).close();
+    }
+
+    /**
+     * 检查 pipeline repo 是否存在
+     *
+     * @param repoName repo 名称
+     * @return 当 repo 存在返回 true
      */
     public boolean repoExists(String repoName) {
         boolean exists = false;
@@ -163,9 +185,10 @@ public class PipelineClient {
     /**
      * 创建到 LogDB，TSDB，HTTP等的导出
      *
-     * @param repoName    repo name
-     * @param exportName  export name
-     * @param exportInput export extra param
+     * @param repoName    repo 名称
+     * @param exportName  导出名称
+     * @param exportInput 额外参数
+     * @throws QiniuException 异常
      */
     public void createExport(String repoName, String exportName, CreateExportInput exportInput) throws Exception {
         String postUrl = String.format("%s/v2/repos/%s/exports/%s", this.pipelineHost, repoName, exportName);
@@ -175,8 +198,10 @@ public class PipelineClient {
 
     /*
     * 检查导出是否存在
-    * @param repoName repo name
-    * @param exportName export name
+    * @param repoName repo 名称
+    * @param exportName 导出名称
+    * @return 当 repo 存在时返回 true
+    * @throws QiniuException 异常
     * */
     public boolean exportExists(String repoName, String exportName) {
         boolean exists = false;
@@ -189,5 +214,4 @@ public class PipelineClient {
         }
         return exists;
     }
-
 }

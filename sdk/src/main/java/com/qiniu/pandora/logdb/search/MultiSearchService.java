@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * 跨越多个 Repo 进行搜索
  */
 public class MultiSearchService {
     private LogDBClient logDBClient;
@@ -25,7 +25,9 @@ public class MultiSearchService {
     /**
      * Multi Search - 跨越多个 Repo 进行搜索
      *
-     * @param searchRequestList request list
+     * @param searchRequestList 请求列表
+     * @return MultiSearchService.SearchResult
+     * @throws QiniuException 异常
      */
     public SearchResult search(List<SearchRequest> searchRequestList) throws QiniuException {
         StringBuilder postBody = new StringBuilder();
