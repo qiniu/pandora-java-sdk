@@ -196,6 +196,18 @@ public class PipelineClient {
         this.client.post(postUrl, postBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime).close();
     }
 
+    /**
+     * 删除到 LogDB，TSDB，HTTP等的导出
+     *
+     * @param repoName   repo 名称
+     * @param exportName 导出名称
+     * @throws QiniuException 异常
+     */
+    public void deleteExport(String repoName, String exportName) throws QiniuException {
+        String deleteUrl = String.format("%s/v2/repos/%s/exports/%s", this.pipelineHost, repoName, exportName);
+        this.client.delete(deleteUrl, new StringMap()).close();
+    }
+
     /*
     * 检查导出是否存在
     * @param repoName repo 名称
