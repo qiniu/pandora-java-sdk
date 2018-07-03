@@ -27,16 +27,28 @@ public class ParallelDataSender extends DataSender {
     }
 
 
-    public ParallelDataSender(String repoName, Auth auth, int par) {
+    public ParallelDataSender(String repoName, Auth auth, int parrallel) {
         super(repoName, auth);
-        this.parrallel = par;
-        this.service = Executors.newFixedThreadPool(par);
+        this.parrallel = parrallel;
+        this.service = Executors.newFixedThreadPool(parrallel);
     }
 
-    public ParallelDataSender(String repoName, PandoraClient pandoraClient, int par) {
+    public ParallelDataSender(String repoName, PandoraClient pandoraClient, int parrallel) {
         super(repoName, pandoraClient);
-        this.parrallel = par;
-        this.service = Executors.newFixedThreadPool(par);
+        this.parrallel = parrallel;
+        this.service = Executors.newFixedThreadPool(parrallel);
+    }
+
+    public ParallelDataSender(String repoName, Auth auth, String pipelineHost, int parrallel) {
+        super(repoName, auth, pipelineHost);
+        this.parrallel = parrallel;
+        this.service = Executors.newFixedThreadPool(parrallel);
+    }
+
+    public ParallelDataSender(String repoName, PandoraClient pandoraClient, String pipelineHost, int parrallel) {
+        super(repoName, pandoraClient, pipelineHost);
+        this.parrallel = parrallel;
+        this.service = Executors.newFixedThreadPool(parrallel);
     }
 
     /**
