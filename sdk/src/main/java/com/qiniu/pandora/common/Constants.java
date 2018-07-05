@@ -19,17 +19,17 @@ public class Constants {
     /**
      * 默认PIPELINE服务器
      */
-    public static String PIPELINE_HOST = "https://pipeline.qiniu.com";
+    public static String PIPELINE_HOST = "https://pipeline.qiniuapi.com";
 
     /**
      * 默认TSDB查询服务器
      */
-    public static String TSDB_HOST = "https://tsdb.qiniu.com";
+    public static String TSDB_HOST = "https://tsdb.qiniuapi.com";
 
     /**
      * 默认LOGDB查询服务器
      */
-    public static String LOGDB_HOST = "https://logdb.qiniu.com";
+    public static String LOGDB_HOST = "https://logdb.qiniuapi.com";
 
     /**
      * 使用的机房区域
