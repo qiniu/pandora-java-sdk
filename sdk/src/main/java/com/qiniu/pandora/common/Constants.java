@@ -9,7 +9,7 @@ public class Constants {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.0.0";
+    public static final String VERSION = "2.0.2";
 
     /**
      * 服务默认编码
