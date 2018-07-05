@@ -23,7 +23,7 @@ public class PandoraClientImpl implements PandoraClient {
     }
 
     public PandoraClientImpl(Auth auth, Client client) {
-        this.client = client;
+        this.auth = auth;
         this.client = client;
     }
 

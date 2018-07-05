@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.2
+
+1. 修复PandoraClientImpl构造函数的错误
+
 ## 2.0.1
 
 1. 增加删除 export 的功能
