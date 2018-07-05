@@ -29,7 +29,7 @@ public class Constants {
     /**
      * 默认LOGDB查询服务器
      */
-    public static String LOGDB_HOST = "https://logdb.qiniuapi.com";
+    public static String LOGDB_HOST = "https://insight.qiniuapi.com";
 
     /**
      * 使用的机房区域
