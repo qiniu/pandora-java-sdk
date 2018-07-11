@@ -17,7 +17,7 @@ public class PipelineClient {
     private String pipelineHost;
 
     public PipelineClient(PandoraClient client) {
-        this(client, "https://pipeline.qiniu.com");
+        this(client, Constants.PIPELINE_HOST);
     }
 
     public PipelineClient(PandoraClient client, String pipelineHost) {
