@@ -1,9 +1,9 @@
 package com.qiniu.pandora.pipeline.sender;
 
 import com.qiniu.pandora.common.Constants;
+import com.qiniu.pandora.common.QiniuRuntimeException;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -15,10 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DataSenderCache {
 
-  private volatile boolean isRunning = true;
+  private volatile boolean isClose;
   private Sender sender;
   private FilenameFilter logFileFilter;
   private String repoName;
@@ -36,6 +38,9 @@ public class DataSenderCache {
   private Calendar currentLogCalendar;
   private BufferedOutputStream currentLogWriter;
   private long logRotateIntervalInMinutes;
+  private long logMaxCacheSize = -1;
+
+  private Thread retryThread = null;
 
   private DataSenderCache(OptionsBuilder opts) {
     this.repoName = opts.getRepoName();
@@ -44,6 +49,8 @@ public class DataSenderCache {
     this.logRetryIntervalInSec = opts.getLogRetryIntervalInSec();
     this.logRotateFileSize = opts.getLogRotateFileSize();
     this.sender = opts.getSender();
+    this.logMaxCacheSize = opts.getLogMaxCacheSize();
+    this.retryService = Executors.newFixedThreadPool(opts.getLogRetryThreadPoolSize());
 
     this.logRotateIntervalInMinutes = this.logRotateIntervalInSec / 60;
     this.retryingFiles = new ConcurrentHashMap<String, Boolean>();
@@ -57,12 +64,13 @@ public class DataSenderCache {
       }
     };
     //create the backend task to put logs
-    new Thread(new Runnable() {
+    retryThread = new Thread(new Runnable() {
       @Override
       public void run() {
         pushLogs();
       }
-    }).start();
+    });
+    retryThread.start();
   }
 
   private void pushLogs() {
@@ -117,7 +125,6 @@ public class DataSenderCache {
                     //delete the file when sent success
                     logFile.delete();
                   } catch (IOException e) {
-                    //e.printStackTrace();
                   }
                   //whether success or not, delete key
                   retryingFiles.remove(logFileAbsPath);
@@ -129,32 +136,43 @@ public class DataSenderCache {
       }
       //wait for the next run
       try {
-        System.out.println("Sleep " + this.logRetryIntervalInSec + " SECONDS.");
         TimeUnit.SECONDS.sleep(this.logRetryIntervalInSec);
       } catch (InterruptedException e) {
-        e.printStackTrace();
       }
-      if (!isRunning) {
+
+      if (isClose) {
+        retryService.shutdown();
         File[] logFiles = logCacheDirFile.listFiles(this.logFileFilter);
-        if (logFiles == null || logFiles.length == 0) {
-          retryService.shutdown();
-          return;
+        try {
+          if (this.currentLogWriter != null) {
+            this.currentLogWriter.flush();
+            this.currentLogWriter.close();
+          }
+        } catch (Exception ex) {
+
         }
+        if (logFiles != null && logFiles.length > 0) {
+          for (File file : logFiles) {
+            if (file.getAbsolutePath().endsWith(".log.tmp")) {
+              String filePath = file.getAbsolutePath();
+              file.renameTo(new File(filePath.substring(0, filePath.length() - 4)));
+            }
+          }
+        }
+        return;
       }
     }
   }
 
-  public static DataSenderCache getInstance(OptionsBuilder opts) throws Exception {
+  public static DataSenderCache getInstance(OptionsBuilder opts) throws QiniuRuntimeException {
     synchronized (DataSenderCache.class) {
       makeLogCacheDir(opts.getLogCacheDir());
 
-      DataSenderCache instance = new DataSenderCache(opts);
-      instance.retryService = Executors.newFixedThreadPool(opts.getLogRetryThreadPoolSize());
-      return instance;
+      return new DataSenderCache(opts);
     }
   }
 
-  public static void makeLogCacheDir(String logCacheDir) throws Exception {
+  public static void makeLogCacheDir(String logCacheDir) throws QiniuRuntimeException {
     File cacheDir = new File(logCacheDir);
 
     if (!cacheDir.exists()) {
@@ -162,12 +180,25 @@ public class DataSenderCache {
     }
 
     if (!cacheDir.exists() || !cacheDir.isDirectory() || !cacheDir.canWrite()) {
-      throw new Exception(
+      throw new QiniuRuntimeException(
           logCacheDir + " must exists and be a writable directory");
     }
   }
 
-  public synchronized void write(byte[] logBuffer) {
+  public synchronized void write(byte[] logBuffer) throws QiniuRuntimeException {
+    if (logMaxCacheSize > 0) {
+      File logCacheDirFile = new File(this.logCacheDir);
+      File[] logFiles = logCacheDirFile.listFiles(this.logFileFilter);
+      if (logFiles != null && logFiles.length > 0) {
+        long total = logBuffer.length;
+        for (File file : logFiles) {
+          total += file.length();
+        }
+        if (total > logMaxCacheSize) {
+          throw new QiniuRuntimeException("Points too large");
+        }
+      }
+    }
     int logBufferLen = logBuffer.length;
     //check rotate interval
     long currentTime = System.currentTimeMillis();
@@ -270,7 +301,6 @@ public class DataSenderCache {
         this.currentLogWriter.close();
       } catch (IOException e) {
         e.printStackTrace();
-        //NOTE ignore
       }
 
       //change tmp log file to finished log file
@@ -298,22 +328,16 @@ public class DataSenderCache {
       this.currentLogWriter.flush();
       this.currentFileLength += logBufferLen;
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new QiniuRuntimeException(e.getMessage());
       //NOTE write error, output the log buffer to console
-      System.out.println(new String(logBuffer, Constants.UTF_8));
+      // System.out.println(new String(logBuffer, Constants.UTF_8));
     }
   }
 
   public synchronized void close() {
-    try {
-      if (this.currentLogWriter != null) {
-        this.currentLogWriter.flush();
-        this.currentLogWriter.close();
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      isRunning = false;
+    isClose = true;
+    if (retryThread != null) {
+      retryThread.interrupt();
     }
   }
 }
