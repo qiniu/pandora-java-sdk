@@ -10,22 +10,35 @@ public class OptionsBuilder {
   private long logRotateFileSize;
   private int logRetryIntervalInSec;
   private int logRetryThreadPoolSize;
+  private long logMaxCacheSize = -1;
   private Sender sender;
 
+  private OptionsBuilder() {
+  }
 
   public static OptionsBuilder newOpts() {
     OptionsBuilder opts = new OptionsBuilder();
     opts.sender = new MockSender();
     opts.repoName = "unKnow";
     opts.logRotateIntervalInSec = 10 * 60;
-    opts.logRotateFileSize = 1024 * 1024 * 100;
-    opts.logRetryIntervalInSec = 60;
+    opts.logRotateFileSize = 1024 * 1024 * 10;
+    opts.logRetryIntervalInSec = 5;
     opts.logRetryThreadPoolSize = 1;
     return opts;
   }
 
-  public void setSender(Sender sender) {
+  public long getLogMaxCacheSize() {
+    return logMaxCacheSize;
+  }
+
+  public OptionsBuilder setLogMaxCacheSize(long logMaxCacheSize) {
+    this.logMaxCacheSize = logMaxCacheSize;
+    return this;
+  }
+
+  public OptionsBuilder setSender(Sender sender) {
     this.sender = sender;
+    return this;
   }
 
   public OptionsBuilder setRepoName(String repoName) {
@@ -64,17 +77,14 @@ public class OptionsBuilder {
 
   public String getLogCacheDir() {
     if (logCacheDir == null || logCacheDir.length() == 0) {
-      logCacheDir = new File(repoName + "_" + System.currentTimeMillis())
-          .getAbsolutePath();
+      logCacheDir = new File(".pandoraCacheDir").getAbsolutePath();
     }
     return logCacheDir;
   }
 
-
   public long getLogRotateFileSize() {
     return logRotateFileSize;
   }
-
 
   public int getLogRetryThreadPoolSize() {
     return logRetryThreadPoolSize;

@@ -17,10 +17,13 @@ public class FaultTolerantDataSender extends DataSender {
   DataSenderCache cache = null;
   String repo = "unknow";
 
+  public boolean isClose = false;
+
   public FaultTolerantDataSender(String repoName, Auth auth) {
     super(repoName, auth);
     this.repo = repoName;
   }
+
 
   public FaultTolerantDataSender(String repoName, PandoraClient pandoraClient) {
     super(repoName, pandoraClient);
@@ -38,16 +41,23 @@ public class FaultTolerantDataSender extends DataSender {
     this.repo = repoName;
   }
 
-  public void initDataSenderCache(OptionsBuilder builder) throws Exception {
+  public void initDataSenderCache(OptionsBuilder builder) throws QiniuRuntimeException {
     builder.setSender(this);
     if ("unKnow".equals(builder.getRepoName())) {
       builder.setRepoName(repo);
+    }
+    if(cache != null){
+      cache.close();
     }
     cache = DataSenderCache.getInstance(builder);
   }
 
   @Override
   public Response send(Batch points) throws QiniuException {
+    if (isClose) {
+      throw new QiniuRuntimeException("Sender is close");
+    }
+
     byte[] bs = points.toString().getBytes(Constants.UTF_8);
     try {
       super.send(bs);
@@ -55,6 +65,10 @@ public class FaultTolerantDataSender extends DataSender {
       if (ex.response != null && ex.response.statusCode / 100 == 4) {
         throw ex;
       } else {
+        if (null == cache) {
+          OptionsBuilder opts = OptionsBuilder.newOpts().setRepoName(this.repo).setSender(this);
+          initDataSenderCache(opts);
+        }
         cache.write(bs);
       }
     }
@@ -109,6 +123,7 @@ public class FaultTolerantDataSender extends DataSender {
 
   @Override
   public void close() {
+    isClose = true;
     if (cache != null) {
       cache.close();
     }
