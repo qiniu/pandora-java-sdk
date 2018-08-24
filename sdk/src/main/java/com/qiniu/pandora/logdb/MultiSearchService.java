@@ -21,33 +21,59 @@ public class MultiSearchService implements Reusable {
     private String path = Constant.POST_MSEARCH;
     private List<SearchRequest> searchRequestList = new ArrayList<>();
 
+    private long startTimeInMillis;
+    private long endTimeInMillis;
+
+
     public MultiSearchService(LogDBClient logDBClient) {
         this.logDBClient = logDBClient;
     }
 
-    public MultiSearchService add(SearchRequest searchRequest){
-        if(searchRequest!=null){
+    public MultiSearchService add(SearchRequest searchRequest) {
+        if (searchRequest != null) {
             this.searchRequestList.add(searchRequest);
         }
         return this;
     }
-    public MultiSearchResult action() throws QiniuException{
+
+    public long getStartTimeInMillis() {
+        return startTimeInMillis;
+    }
+
+    public MultiSearchService setStartTimeInMillis(long startTimeInMillis) {
+        this.startTimeInMillis = startTimeInMillis;
+        return this;
+    }
+
+    public long getEndTimeInMillis() {
+        return endTimeInMillis;
+    }
+
+    public MultiSearchService setEndTimeInMillis(long endTimeInMillis) {
+        this.endTimeInMillis = endTimeInMillis;
+        return this;
+    }
+
+    public MultiSearchResult action() throws QiniuException {
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
-        Response response = pandoraClient.post(this.url(), StringUtils.utf8Bytes(this.source()), new StringMap(), Client.TextMime);
+        String url = this.url() + "?start_time=" + this.startTimeInMillis + "&end_time=" + this.endTimeInMillis;
+        Response response = pandoraClient.post(url, StringUtils.utf8Bytes(this.source()), new StringMap(), Client.TextMime);
         MultiSearchResult multiSearchResult = Json.decode(response.bodyString(), MultiSearchResult.class);
         multiSearchResult.setResponse(response);
         return multiSearchResult;
 
     }
+
     private String source() {
         StringBuffer bodybuffer = new StringBuffer();
-        for (SearchRequest searchRequest :searchRequestList){
-            bodybuffer.append(searchRequest.getIndexHeader()+"\n");
-            bodybuffer.append(searchRequest.getSource()+"\n");
+        for (SearchRequest searchRequest : searchRequestList) {
+            bodybuffer.append(searchRequest.getIndexHeader() + "\n");
+            bodybuffer.append(searchRequest.getSource() + "\n");
         }
         return bodybuffer.toString();
     }
-    private String url(){
+
+    private String url() {
         return this.logDBClient.getHost() + this.path;
     }
 
@@ -83,21 +109,25 @@ public class MultiSearchService implements Reusable {
         public void setRepo(String repo) {
             this.repo = repo;
         }
-        public String getIndexHeader(){
-            return "{\"index\":[\""+repo+"\"]}";
+
+        public String getIndexHeader() {
+            return "{\"index\":[\"" + repo + "\"]}";
         }
     }
-    public static class SearchResponse{
+
+    public static class SearchResponse {
         private SearchHits hits;
-        private Map<String,JsonElement> aggregations;
+        private Map<String, JsonElement> aggregations;
 
 
-        public static class SearchHits{
+        public static class SearchHits {
             private int total;
             private List<SearchHit> hits;
+
             public static class SearchHit {
-                private Map<String,JsonElement> _source;
-                private Map<String,List<String>> highlight;
+                private Map<String, JsonElement> _source;
+                private Map<String, List<String>> highlight;
+
                 public SearchHit() {
                 }
 
@@ -170,11 +200,12 @@ public class MultiSearchService implements Reusable {
         }
 
         /**
-         *  得到本次请求的ID，用来定位相关问题
+         * 得到本次请求的ID，用来定位相关问题
+         *
          * @return multiSearchResult request id
          */
-        public String getRequestId(){
-            if(response==null){
+        public String getRequestId() {
+            if (response == null) {
                 return "";
             }
             return response.reqId;
