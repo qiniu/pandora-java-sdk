@@ -27,7 +27,7 @@ public class DataSender implements Sender {
 
     public DataSender(String repoName, Auth auth) {
         url = url(repoName);
-        this.pandoraClient = new PandoraClientImpl(auth, url);
+        this.pandoraClient = new PandoraClientImpl(auth);
     }
 
     public DataSender(String repoName, PandoraClient pandoraClient) {
@@ -48,7 +48,7 @@ public class DataSender implements Sender {
             return null;
         }
         StringMap headers = new StringMap();
-        return pandoraClient.post(url, points.toString().getBytes(), headers, HttpCommon.TEXT_PLAIN);
+        return pandoraClient.post(url, points.toString().getBytes(Constants.UTF_8), headers, HttpCommon.TEXT_PLAIN);
     }
 
 
@@ -104,7 +104,7 @@ public class DataSender implements Sender {
 
     @Override
     public SendPointError sendFromBytes(byte[] points) throws QiniuException {
-        String ps = new String(points);
+        String ps = new String(points, Constants.UTF_8);
         return sendFromString(ps);
     }
 
@@ -116,7 +116,7 @@ public class DataSender implements Sender {
         File f = new File(filePath);
         final Scanner scanner;
         try {
-            scanner = new Scanner(f);
+            scanner = new Scanner(f, "utf-8");
         } catch (FileNotFoundException e) {
             throw new QiniuRuntimeException(e);
         }
@@ -129,7 +129,7 @@ public class DataSender implements Sender {
     }
 
     protected String url(String repoName) {
-        return Config.PIPELINE_HOST + "/v2/repos/" + repoName + "/data";
+        return Constants.PIPELINE_HOST + "/v2/repos/" + repoName + "/data";
     }
 
 }

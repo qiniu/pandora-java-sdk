@@ -1,6 +1,7 @@
 package com.qiniu.pandora.util;
 
-import com.qiniu.pandora.common.Config;
+import com.qiniu.pandora.common.Configuration;
+import com.qiniu.pandora.common.Constants;
 
 import java.util.Collection;
 
@@ -131,10 +132,10 @@ public final class StringUtils {
     }
 
     public static byte[] utf8Bytes(String data) {
-        return data.getBytes(Config.UTF_8);
+        return data.getBytes(Constants.UTF_8);
     }
 
     public static String utf8String(byte[] data) {
-        return new String(data, Config.UTF_8);
+        return new String(data, Constants.UTF_8);
     }
 }

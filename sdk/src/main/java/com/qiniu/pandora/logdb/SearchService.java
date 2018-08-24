@@ -7,24 +7,21 @@ import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
 import com.qiniu.pandora.util.StringUtils;
-import com.qiniu.pandora.util.UrlSafeBase64;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by tuo on 2017/6/3.
+ * 单个repo的搜索，可重用。
  */
-
-public class SearchService {
+public class SearchService implements Reusable {
     private LogDBClient logDBClient;
     private final String path = Constant.GET_SEARCH;
 
     private String repo;
 
-    private SearchRequest sr;
+    private SearchRequest sr = new SearchRequest();
 
     public SearchService(LogDBClient logDBClient) {
         this.logDBClient = logDBClient;
@@ -50,6 +47,11 @@ public class SearchService {
         return this;
     }
 
+    public SearchService setSort(String sort) {
+        this.sr.setSort(sort);
+        return this;
+    }
+
     public SearchService setHighlight(Highlight highlight) {
         this.sr.setHighlight(highlight);
         return this;
@@ -66,14 +68,25 @@ public class SearchService {
     }
 
     public SearchRet action() throws QiniuException{
-        List<String> parts = new ArrayList<>();
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
-        String url = this.logDBClient.getHost() + String.format(this.path,this.repo);
-        Response resp =pandoraClient.post(url,this.sr.ToJsonBytes(),new StringMap(), Client.JsonMime);
-        return Json.decode(resp.bodyString(), SearchRet.class);
+        Response resp =pandoraClient.post(this.url(),StringUtils.utf8Bytes(this.source()),new StringMap(), Client.JsonMime);
+        SearchRet ret = Json.decode(resp.bodyString(), SearchRet.class);
+        ret.setResponse(resp);
+        return ret;
     }
 
+    @Override
+    public void reset() {
+        this.repo = null;
+        this.sr = new SearchRequest();
+    }
 
+    private String source(){
+        return Json.encode(this.sr);
+    }
+    private String url(){
+        return this.logDBClient.getHost() + String.format(this.path,this.repo);
+    }
 
     static class SearchRequest {
         public String getQuery() {
@@ -161,9 +174,6 @@ public class SearchService {
         public SearchRequest() {
         }
 
-        public byte[] ToJsonBytes(){
-            return StringUtils.utf8Bytes(Json.encode(this));
-        }
     }
 
     public static class SearchRet {
@@ -172,6 +182,27 @@ public class SearchService {
         private boolean partialSuccess;
         private List<Row> data;
         private String scroll_id;
+        private Response response;
+
+        public Response getResponse() {
+            return response;
+        }
+
+        public void setResponse(Response response) {
+            this.response = response;
+        }
+
+        /**
+         *  RequestId 用来返回该次请求的ID，用来查询相关问题。
+         * @return  requestId
+         */
+        public String getRequestId() {
+            if(response == null){
+                return  "";
+            }
+            return response.reqId;
+        }
+
 
         /**
          * 如果该字段为true，代表这次查询提前结束，只返回了部分命中结果
@@ -224,6 +255,7 @@ public class SearchService {
             sb.append(", partialSuccess=").append(partialSuccess);
             sb.append(", data=").append(data);
             sb.append(", scroll_id=").append(scroll_id);
+            sb.append(", requestId=").append(getRequestId());
             sb.append('}');
             return sb.toString();
         }

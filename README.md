@@ -14,7 +14,7 @@ Pandora Java SDK 包含七牛大数据服务平台Pipeline服务的数据打点A
 <dependency>
     <groupId>com.qiniu</groupId>
     <artifactId>qiniu-pandora-sdk</artifactId>
-    <version>1.1</version>
+    <version>1.x</version>
 </dependency>
 ```
 

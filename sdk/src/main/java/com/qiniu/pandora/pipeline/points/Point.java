@@ -1,7 +1,11 @@
 package com.qiniu.pandora.pipeline.points;
 
+import com.qiniu.pandora.common.Configuration;
+import com.qiniu.pandora.common.Constants;
+import com.qiniu.pandora.logdb.Constant;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringUtils;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -71,7 +75,7 @@ public class Point {
     /**
      * 增加整数字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value 整数字段值
      */
     public void append(String key, Integer value) {
@@ -82,7 +86,7 @@ public class Point {
     /**
      * 增加整数字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value 长整数字段值
      */
     public void append(String key, Long value) {
@@ -93,7 +97,7 @@ public class Point {
     /**
      * 增加字符串字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value 字符串字段值
      */
     public void append(String key, String value) {
@@ -105,7 +109,7 @@ public class Point {
     /**
      * 增加浮点数字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value 双精度字段值
      */
     public void append(String key, Double value) {
@@ -116,7 +120,7 @@ public class Point {
     /**
      * 增加浮点数字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value 浮点型字段值
      */
     public void append(String key, Float value) {
@@ -127,9 +131,9 @@ public class Point {
     /**
      * 增加数组字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value 数组型字段值
-     * @param <V> 数组元素类型
+     * @param <V>   数组元素类型
      */
     public <V> void append(String key, List<V> value) {
         Field field = new Field(key, Json.encode(value));
@@ -139,29 +143,31 @@ public class Point {
     /**
      * 添加Map字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value Map型字段值
-     * @param <K> Map 键类型
-     * @param <V> Map 值类型
+     * @param <K>   Map 键类型
+     * @param <V>   Map 值类型
      */
-    public <K,V> void append(String key, Map<K,V> value) {
+    public <K, V> void append(String key, Map<K, V> value) {
         Field field = new Field(key, Json.encode(value));
         append(field);
     }
+
     /**
      * 增加bool字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value 布尔型字段值
      */
     public void append(String key, Boolean value) {
         Field field = new Field(key, value);
         append(field);
     }
+
     /**
      * 增加时间字段
      *
-     * @param key 字段名
+     * @param key   字段名
      * @param value Date型字段值
      */
     public void append(String key, Date value) {
@@ -221,7 +227,7 @@ public class Point {
         public Field(String key, Object value) {
             this.key = key;
             this.value = value;
-            this.size = toString().getBytes().length;
+            this.size = toString().getBytes(Constants.UTF_8).length;
         }
 
         public int getSize() {

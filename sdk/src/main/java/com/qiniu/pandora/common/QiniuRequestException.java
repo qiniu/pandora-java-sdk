@@ -6,10 +6,8 @@ import com.qiniu.pandora.http.Response;
  * Pandora 服务端错误
  */
 public class QiniuRequestException extends QiniuException {
-    public final Response response;
-
     public QiniuRequestException(Response response) {
-        this.response = response;
+        super(response);
     }
 
     public String url() {

@@ -1,5 +1,6 @@
 package com.qiniu.pandora.http;
 
+import com.qiniu.pandora.common.Configuration;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.common.QiniuRuntimeException;
 import com.qiniu.pandora.util.Json;
@@ -10,6 +11,10 @@ import okhttp3.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+
+/**
+ * 定义HTTP请求的日志信息和常规方法
+ */
 
 /**
  * 定义HTTP请求的日志信息和常规方法
@@ -190,7 +195,7 @@ public final class Response {
         try {
             this.body = response.body().bytes();
         } catch (IOException e) {
-            throw new QiniuRuntimeException(e);
+            throw new QiniuException(e);
         }
         return body;
     }
@@ -204,6 +209,12 @@ public final class Response {
             return null;
         }
         return this.response.body().byteStream();
+    }
+
+    public synchronized void close() {
+        if (this.response != null) {
+            this.response.close();
+        }
     }
 
     public String contentType() {
@@ -220,5 +231,24 @@ public final class Response {
 
     public static class ErrorBody {
         public String error;
+    }
+
+    public String getInfo() {
+        String[] msg = new String[3];
+        try {
+            msg[0] = url();
+        } catch (Throwable t) {
+        }
+        try {
+            msg[1] = toString();
+        } catch (Throwable t) {
+        }
+        try {
+            msg[2] = bodyString();
+        } catch (Throwable t) {
+
+        }
+
+        return StringUtils.join(msg, "  \n");
     }
 }

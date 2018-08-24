@@ -15,16 +15,20 @@ import java.util.TimeZone;
  * 七牛请求基础库
  */
 public class PandoraClientImpl implements PandoraClient {
-    private final Client client = Client.getInstance();
-    protected Auth auth;
-    protected String url;
+    private Client client;
+    private Auth auth;
 
-    public PandoraClientImpl(Auth auth, String url) {
+    public PandoraClientImpl(Auth auth) {
         this.auth = auth;
-        this.url = url;
+        this.client = new Client();
     }
 
-    protected String signAuth(String url, StringMap headers, String method) throws QiniuException {
+    public PandoraClientImpl(Auth auth, Client client) {
+        this.client = client;
+        this.client = client;
+    }
+
+    private String signAuth(String url, StringMap headers, String method) throws QiniuException {
         String token;
         try {
             token = auth.signRequest(url, method, headers.map(), null);
@@ -58,8 +62,31 @@ public class PandoraClientImpl implements PandoraClient {
         return client.get(url, headers);
     }
 
+    @Override
+    public Response put(String url, byte[] content, StringMap headers, String bodyType) throws QiniuException {
+        String date = getServerTime();
+        headers.put(Auth.ContentType, bodyType);
+        headers.put(Auth.Date, date);
 
-    protected String getServerTime() {
+        // TODO 由用户选择是否可以启动md5
+        // headers.put(Auth.ContentMD5, Md5.getMd5(content));
+
+        String token = signAuth(url, headers, HttpCommon.METHOD_PUT);
+        headers.put(Auth.HTTPHeaderAuthorization, token);
+        return client.put(url, content, headers, bodyType);
+    }
+
+    @Override
+    public Response delete(String url, StringMap headers) throws QiniuException {
+        String date = getServerTime();
+        headers.put(Auth.Date, date);
+
+        String token = signAuth(url, headers, HttpCommon.METHOD_DELETE);
+        headers.put(Auth.HTTPHeaderAuthorization, token);
+        return client.delete(url, headers);
+    }
+
+    private String getServerTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "EEE, dd MMM yyyy HH:mm:ss z", Locale.US);

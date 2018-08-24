@@ -5,7 +5,7 @@
 
   <groupId>com.qiniu</groupId>
   <artifactId>qiniu-pandora-sdk</artifactId>
-  <version>1.2</version>
+  <version>1.3.1</version>
   <packaging>jar</packaging>
 
   <parent>
@@ -164,7 +164,7 @@
     <dependency>
       <groupId>com.qiniu</groupId>
       <artifactId>happy-dns-java</artifactId>
-      <version>0.1.4</version>
+      <version>0.1.5</version>
     </dependency>
   </dependencies>
 </project>

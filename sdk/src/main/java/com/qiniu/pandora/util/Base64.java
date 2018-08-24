@@ -1,6 +1,9 @@
 package com.qiniu.pandora.util;
 
+import com.qiniu.pandora.common.Configuration;
+
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * Utilities for encoding and decoding the Base64 representation of
@@ -9,6 +12,7 @@ import java.io.UnsupportedEncodingException;
  * href="http://www.ietf.org/rfc/rfc3548.txt">3548</a>.
  */
 public final class Base64 {
+    public static final Charset UTF_8 = Charset.forName("UTF-8");
     /**
      * Default values for encoder/decoder flags.
      */
@@ -75,7 +79,7 @@ public final class Base64 {
      *                                  incorrect padding
      */
     public static byte[] decode(String str, int flags) {
-        return decode(str.getBytes(), flags);
+        return decode(str.getBytes(UTF_8), flags);
     }
 
     /**

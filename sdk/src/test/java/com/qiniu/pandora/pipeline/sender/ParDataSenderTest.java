@@ -1,5 +1,7 @@
 package com.qiniu.pandora.pipeline.sender;
 
+import com.qiniu.pandora.common.Configuration;
+import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.common.PandoraClient;
 import com.qiniu.pandora.pipeline.error.SendPointError;
 import com.qiniu.pandora.pipeline.points.Point;
@@ -102,7 +104,7 @@ public class ParDataSenderTest extends SenderTest {
         SendPointError se = ds.sendFromString(sb.toString().trim());
         Assert.assertEquals(client.getPointSize(), maxCnt);
 
-        se = ds.sendFromBytes(sb.toString().trim().getBytes());
+        se = ds.sendFromBytes(sb.toString().trim().getBytes(Constants.UTF_8));
         Assert.assertEquals(client.getPointSize(), maxCnt * 2);
         ds.close();
     }

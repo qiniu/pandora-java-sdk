@@ -1,6 +1,6 @@
 package com.qiniu.pandora.util;
 
-import com.qiniu.pandora.common.Config;
+import com.qiniu.pandora.common.Configuration;
 import com.qiniu.pandora.common.QiniuRuntimeException;
 
 import java.io.UnsupportedEncodingException;
@@ -25,7 +25,7 @@ public final class UrlSafeBase64 {
      * @return 结果字符串
      */
     public static String encodeToString(String data) {
-        return encodeToString(data.getBytes(Config.UTF_8));
+        return encodeToString(data.getBytes(UTF_8));
     }
 
     /**
