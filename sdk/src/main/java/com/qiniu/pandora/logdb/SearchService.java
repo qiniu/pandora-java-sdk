@@ -67,9 +67,20 @@ public class SearchService implements Reusable {
         return this;
     }
 
-    public SearchRet action() throws QiniuException{
+    public SearchService setStartTime(long startTime) {
+        this.sr.setStart_time(startTime);
+        return this;
+    }
+
+    public SearchService setEndTime(long endTime) {
+        this.sr.setEnd_time(endTime);
+        return this;
+    }
+
+    public SearchRet action() throws QiniuException {
         PandoraClient pandoraClient = this.logDBClient.getPandoraClient();
-        Response resp =pandoraClient.post(this.url(),StringUtils.utf8Bytes(this.source()),new StringMap(), Client.JsonMime);
+        String url = this.url() + "?start_time=" + this.sr.start_time + "&end_time=" + this.sr.end_time;
+        Response resp = pandoraClient.post(url, StringUtils.utf8Bytes(this.source()), new StringMap(), Client.JsonMime);
         SearchRet ret = Json.decode(resp.bodyString(), SearchRet.class);
         ret.setResponse(resp);
         return ret;
@@ -81,11 +92,12 @@ public class SearchService implements Reusable {
         this.sr = new SearchRequest();
     }
 
-    private String source(){
+    private String source() {
         return Json.encode(this.sr);
     }
-    private String url(){
-        return this.logDBClient.getHost() + String.format(this.path,this.repo);
+
+    private String url() {
+        return this.logDBClient.getHost() + String.format(this.path, this.repo);
     }
 
     static class SearchRequest {
@@ -152,12 +164,29 @@ public class SearchService implements Reusable {
         public void setFields(String fields) {
             this.fields = fields;
         }
+
         public Highlight getHighlight() {
             return highlight;
         }
 
         public void setHighlight(Highlight highlight) {
             this.highlight = highlight;
+        }
+
+        public long getStart_time() {
+            return start_time;
+        }
+
+        public void setStart_time(long start_time) {
+            this.start_time = start_time;
+        }
+
+        public long getEnd_time() {
+            return end_time;
+        }
+
+        public void setEnd_time(long end_time) {
+            this.end_time = end_time;
         }
 
         private String query;
@@ -169,6 +198,8 @@ public class SearchService implements Reusable {
         private String scroll;
         private String fields;
         private Highlight highlight;
+        private long start_time;
+        private long end_time;
 
 
         public SearchRequest() {
@@ -193,12 +224,13 @@ public class SearchService implements Reusable {
         }
 
         /**
-         *  RequestId 用来返回该次请求的ID，用来查询相关问题。
-         * @return  requestId
+         * RequestId 用来返回该次请求的ID，用来查询相关问题。
+         *
+         * @return requestId
          */
         public String getRequestId() {
-            if(response == null){
-                return  "";
+            if (response == null) {
+                return "";
             }
             return response.reqId;
         }
@@ -224,6 +256,7 @@ public class SearchService implements Reusable {
 
         /**
          * 返回所有数据行
+         *
          * @return 所有数据行
          */
         public List<Row> getData() {
