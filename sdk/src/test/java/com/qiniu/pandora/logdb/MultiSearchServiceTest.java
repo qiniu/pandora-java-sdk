@@ -6,6 +6,13 @@ import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.common.TestConfig;
 import com.qiniu.pandora.logdb.search.MultiSearchService;
 import com.qiniu.pandora.util.Auth;
+import org.elasticsearch.action.search.MultiSearchRequest;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,5 +50,35 @@ public class MultiSearchServiceTest {
             e.printStackTrace();
             Assert.fail();
         }
+    }
+
+    @Test
+    public void multiSearch() throws Exception {
+        MultiSearchRequest request = new MultiSearchRequest();
+        SearchRequest firstSearchRequest = new SearchRequest();
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        BoolQueryBuilder b = new BoolQueryBuilder();
+        b.must(QueryBuilders.termQuery("hostname", "elastic.es.com"));
+        searchSourceBuilder.query(b);
+        firstSearchRequest.source(searchSourceBuilder);
+        firstSearchRequest.indices(repoName);
+        request.add(firstSearchRequest);
+
+        SearchRequest secondSearchRequest = new SearchRequest();
+        searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.termQuery("name", "nginx"));
+        secondSearchRequest.source(searchSourceBuilder);
+        secondSearchRequest.indices(repoName);
+        request.add(secondSearchRequest);
+
+
+        MultiSearchService.SearchResult searchResult = multiSearchService.multiSearch(request);
+        System.out.println(searchResult.requestId);
+        for (MultiSearchService.SearchResponse respons : searchResult.responses) {
+            for (MultiSearchService.SearchResponse.SearchHits.SearchHit hit : respons.hits.hits) {
+                System.out.println(hit._source);
+            }
+        }
+
     }
 }
