@@ -7,7 +7,9 @@ import com.qiniu.pandora.common.TestConfig;
 import com.qiniu.pandora.logdb.search.MultiSearchService;
 import com.qiniu.pandora.util.Auth;
 import org.elasticsearch.action.search.MultiSearchRequest;
+import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -27,11 +29,20 @@ public class MultiSearchServiceTest {
 
     @Before
     public void setUp() {
-        Auth auth = Auth.create(TestConfig.ACCESS_KEY, TestConfig.SECRET_KEY);
+        String ak = TestConfig.ACCESS_KEY;
+        String sk = TestConfig.SECRET_KEY;
+        if (Strings.isNullOrEmpty(ak)){
+            ak = System.getenv("QINIU_ACCESS_KEY");
+            sk = System.getenv("QINIU_SECRETY_KEY");
+        }
+        Auth auth = Auth.create(ak,sk);
         PandoraClient client = new PandoraClientImpl(auth);
         LogDBClient logDBClient = new LogDBClient(client);
         this.multiSearchService = logDBClient.NewMultiSearchService();
-        this.repoName = TestConfig.LOGDB_REPO;
+        this.repoName = System.getenv("QINIU_REPO");
+        if (Strings.isNullOrEmpty(repoName)){
+            this.repoName = TestConfig.LOGDB_REPO;
+        }
     }
 
     @Test
@@ -72,13 +83,8 @@ public class MultiSearchServiceTest {
         request.add(secondSearchRequest);
 
 
-        MultiSearchService.SearchResult searchResult = multiSearchService.multiSearch(request);
-        System.out.println(searchResult.requestId);
-        for (MultiSearchService.SearchResponse respons : searchResult.responses) {
-            for (MultiSearchService.SearchResponse.SearchHits.SearchHit hit : respons.hits.hits) {
-                System.out.println(hit._source);
-            }
-        }
+        MultiSearchResponse searchResult = multiSearchService.multiSearch(request);
+        System.out.println(searchResult.toString());
 
     }
 }

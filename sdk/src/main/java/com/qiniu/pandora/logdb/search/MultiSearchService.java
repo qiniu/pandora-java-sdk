@@ -9,6 +9,7 @@ import com.qiniu.pandora.http.Response;
 import com.qiniu.pandora.logdb.LogDBClient;
 import com.qiniu.pandora.util.StringMap;
 import org.elasticsearch.action.search.MultiSearchRequest;
+import org.elasticsearch.action.search.MultiSearchResponse;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * 跨越多个 Repo 进行搜索
  */
-public class MultiSearchService {
+public class MultiSearchService extends SearchBase {
     private LogDBClient logDBClient;
 
     public MultiSearchService(LogDBClient logDBClient) {
@@ -52,24 +53,20 @@ public class MultiSearchService {
 
     /**
      * 支持构建官方的elastic搜索
-     * TODO; 后续支持elastic的response
+     *
      * @param multiSearchRequest elastic官方multiSearch
-     * @return LogDB搜索结果格式
+     * @return MultiSearchResponse
      * @throws IOException
      */
-    public SearchResult multiSearch(MultiSearchRequest multiSearchRequest) throws IOException {
+    public MultiSearchResponse multiSearch(MultiSearchRequest multiSearchRequest) throws IOException {
         String postUrl = String.format("%s/v5/logdbkibana/msearch", this.logDBClient.getHost());
         byte[] multiSearch = Request.multiSearchBytes(multiSearchRequest);
 
         Response response = this.logDBClient.getPandoraClient().post(postUrl,
                 multiSearch, new StringMap(), Client.TextMime);
-        SearchResult result = response.jsonToObject(SearchResult.class);
-        if (result != null) {
-            result.requestId = response.reqId;
-        }
-        return result;
+        return parseEntity(response, MultiSearchResponse::fromXContext);
     }
-
+    
 
     public static class SearchRequest {
         public String source;
