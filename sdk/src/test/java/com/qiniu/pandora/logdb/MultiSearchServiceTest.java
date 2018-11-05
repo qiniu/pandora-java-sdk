@@ -65,26 +65,37 @@ public class MultiSearchServiceTest {
 
     @Test
     public void multiSearch() throws Exception {
+        // start build MultiSearchRequest
         MultiSearchRequest request = new MultiSearchRequest();
+        
+        // how to build single searchRequest? 
+        // Doc: https://www.elastic.co/guide/en/elasticsearch/client/java-rest/5.6/java-rest-high-search.html
+        // start to build first searchRequest
         SearchRequest firstSearchRequest = new SearchRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        
         BoolQueryBuilder b = new BoolQueryBuilder();
         b.must(QueryBuilders.termQuery("hostname", "elastic.es.com"));
         searchSourceBuilder.query(b);
+        
         firstSearchRequest.source(searchSourceBuilder);
+        // using repoName as indices() input
         firstSearchRequest.indices(repoName);
+        // add first request to mutlSearchRequest
         request.add(firstSearchRequest);
 
+        // start to build second request
         SearchRequest secondSearchRequest = new SearchRequest();
         searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.termQuery("name", "nginx"));
         secondSearchRequest.source(searchSourceBuilder);
         secondSearchRequest.indices(repoName);
+        // add second request to mutlSearchRequest
         request.add(secondSearchRequest);
 
-
+        // do the request
         MultiSearchResponse searchResult = multiSearchService.multiSearch(request);
-        System.out.println(searchResult.toString());
+        // do something with searchResult
 
     }
 }
