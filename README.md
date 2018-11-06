@@ -14,7 +14,7 @@ Pandora Java SDK 包含七牛大数据服务平台Pipeline服务的数据打点A
 <dependency>
     <groupId>com.qiniu</groupId>
     <artifactId>qiniu-pandora-sdk</artifactId>
-    <version>2.x</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -27,3 +27,4 @@ Pandora Java SDK 包含七牛大数据服务平台Pipeline服务的数据打点A
 5. [迭代生成数据点进行发送，避免把所有数据点缓存到内存中](https://github.com/qiniu/pandora-java-sdk/blob/master/example/sender/src/main/java/LazyPointsSender.java)
 6. [从数据文件中读取内容进行发送](https://github.com/qiniu/pandora-java-sdk/blob/master/example/sender/src/main/java/FileSender.java)
 7. [日志查询](https://github.com/qiniu/pandora-java-sdk/blob/master/example/logdb/src/main/java/Search.java)
+8. [Elastic模式构建日志查询](https://github.com/qiniu/pandora-java-sdk/blob/master/sdk/src/test/java/com/qiniu/pandora/logdb/MultiSearchServiceTest.java)
