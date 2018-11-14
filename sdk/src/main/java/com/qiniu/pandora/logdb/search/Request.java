@@ -142,19 +142,7 @@ public final class Request {
 
         return new Request(HttpDelete.METHOD_NAME, endpoint, parameters.getParams(), null);
     }
-
-    static Request openIndex(OpenIndexRequest openIndexRequest) {
-        String endpoint = endpoint(openIndexRequest.indices(), Strings.EMPTY_ARRAY, "_open");
-
-        Params parameters = Params.builder();
-
-        parameters.withTimeout(openIndexRequest.timeout());
-        parameters.withMasterTimeout(openIndexRequest.masterNodeTimeout());
-        parameters.withWaitForActiveShards(openIndexRequest.waitForActiveShards(), ActiveShardCount.NONE);
-        parameters.withIndicesOptions(openIndexRequest.indicesOptions());
-
-        return new Request(HttpPost.METHOD_NAME, endpoint, parameters.getParams(), null);
-    }
+    
 
     static Request closeIndex(CloseIndexRequest closeIndexRequest) {
         String endpoint = endpoint(closeIndexRequest.indices(), Strings.EMPTY_ARRAY, "_close");
@@ -166,19 +154,6 @@ public final class Request {
         parameters.withIndicesOptions(closeIndexRequest.indicesOptions());
 
         return new Request(HttpPost.METHOD_NAME, endpoint, parameters.getParams(), null);
-    }
-
-    static Request createIndex(CreateIndexRequest createIndexRequest) throws IOException {
-        String endpoint = endpoint(createIndexRequest.indices(), Strings.EMPTY_ARRAY, "");
-
-        Params parameters = Params.builder();
-        parameters.withTimeout(createIndexRequest.timeout());
-        parameters.withMasterTimeout(createIndexRequest.masterNodeTimeout());
-        parameters.withWaitForActiveShards(createIndexRequest.waitForActiveShards(), ActiveShardCount.DEFAULT);
-        parameters.withUpdateAllTypes(createIndexRequest.updateAllTypes());
-
-        HttpEntity entity = createEntity(createIndexRequest, REQUEST_BODY_CONTENT_TYPE);
-        return new Request(HttpPut.METHOD_NAME, endpoint, parameters.getParams(), entity);
     }
 
     static Request info() {
@@ -327,16 +302,7 @@ public final class Request {
 
         return new Request(HttpGet.METHOD_NAME, endpoint, parameters.getParams(), null);
     }
-
-    static Request multiGet(MultiGetRequest multiGetRequest) throws IOException {
-        Params parameters = Params.builder();
-        parameters.withPreference(multiGetRequest.preference());
-        parameters.withRealtime(multiGetRequest.realtime());
-        parameters.withRefresh(multiGetRequest.refresh());
-        HttpEntity entity = createEntity(multiGetRequest, REQUEST_BODY_CONTENT_TYPE);
-        return new Request(HttpGet.METHOD_NAME, "/_mget", parameters.getParams(), entity);
-    }
-
+    
     static Request index(IndexRequest indexRequest) {
         String method = Strings.hasLength(indexRequest.id()) ? HttpPut.METHOD_NAME : HttpPost.METHOD_NAME;
 
@@ -439,11 +405,11 @@ public final class Request {
     static Request multiSearch(MultiSearchRequest multiSearchRequest) throws IOException {
         Params params = Params.builder();
         params.putParam(RestSearchAction.TYPED_KEYS_PARAM, "true");
-        if (multiSearchRequest.maxConcurrentSearchRequests() != MultiSearchRequest.MAX_CONCURRENT_SEARCH_REQUESTS_DEFAULT) {
+        if (multiSearchRequest.maxConcurrentSearchRequests() != NewMultiSearchRequest.MAX_CONCURRENT_SEARCH_REQUESTS_DEFAULT) {
             params.putParam("max_concurrent_searches", Integer.toString(multiSearchRequest.maxConcurrentSearchRequests()));
         }
         XContent xContent = REQUEST_BODY_CONTENT_TYPE.xContent();
-        byte[] source = MultiSearchRequest.writeMultiLineFormat(multiSearchRequest, xContent);
+        byte[] source = NewMultiSearchRequest.writeMultiLineFormat(multiSearchRequest, xContent);
         HttpEntity entity = new ByteArrayEntity(source, createContentType(xContent.type()));
         return new Request("GET", "/_msearch", params.getParams(), entity);
     }
@@ -451,11 +417,11 @@ public final class Request {
     static byte[] multiSearchBytes(MultiSearchRequest multiSearchRequest) throws IOException {
         Params params = Params.builder();
         params.putParam(RestSearchAction.TYPED_KEYS_PARAM, "true");
-        if (multiSearchRequest.maxConcurrentSearchRequests() != MultiSearchRequest.MAX_CONCURRENT_SEARCH_REQUESTS_DEFAULT) {
+        if (multiSearchRequest.maxConcurrentSearchRequests() != NewMultiSearchRequest.MAX_CONCURRENT_SEARCH_REQUESTS_DEFAULT) {
             params.putParam("max_concurrent_searches", Integer.toString(multiSearchRequest.maxConcurrentSearchRequests()));
         }
         XContent xContent = REQUEST_BODY_CONTENT_TYPE.xContent();
-        return MultiSearchRequest.writeMultiLineFormat(multiSearchRequest, xContent);
+        return NewMultiSearchRequest.writeMultiLineFormat(multiSearchRequest, xContent);
     }
 
     private static HttpEntity createEntity(ToXContent toXContent, XContentType xContentType) throws IOException {

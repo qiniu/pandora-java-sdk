@@ -64,9 +64,8 @@ public class MultiSearchService extends SearchBase {
 
         Response response = this.logDBClient.getPandoraClient().post(postUrl,
                 multiSearch, new StringMap(), Client.TextMime);
-        return parseEntity(response, MultiSearchResponse::fromXContext);
+        return parseEntity(response, MultiResponseParser::fromXContext);
     }
-    
 
     public static class SearchRequest {
         public String source;
