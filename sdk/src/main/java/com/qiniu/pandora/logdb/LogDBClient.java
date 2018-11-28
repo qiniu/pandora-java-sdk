@@ -7,11 +7,9 @@ import com.qiniu.pandora.logdb.search.MultiSearchService;
 import com.qiniu.pandora.logdb.search.PartialSearchService;
 import com.qiniu.pandora.logdb.search.ScrollSearchService;
 import com.qiniu.pandora.logdb.search.SearchService;
-import com.qiniu.pandora.pipeline.points.Point;
 import com.qiniu.pandora.util.Auth;
 import com.qiniu.pandora.util.Json;
 import com.qiniu.pandora.util.StringMap;
-
 
 /**
  * 定义 LogDB 相关方法，包括 Repo 管理，创建搜索服务等
@@ -198,20 +196,4 @@ public class LogDBClient implements ValueType, Analyzer {
         }
         return exists;
     }
-
-
-  /**
-   * repo 没有PK则是新增 obj 到logdb，
-   *      如果有 pk 且 logdb 存在 obj 中 pk 的值，则为修改反之仍为新增
-   *
-   * @param repoName repo 名称
-   * @param obj 内容
-   * @return
-   */
-  public void putData(String repoName, Object obj) throws QiniuException {
-    String putUrl = String.format("%s/v5/repos/%s/data", getHost(), repoName);
-    String putBody = Json.encode(obj);
-    getPandoraClient().post(putUrl, putBody.getBytes(Constants.UTF_8), new StringMap(), Client.JsonMime)
-        .close();
-  }
 }

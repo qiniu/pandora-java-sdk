@@ -1,15 +1,27 @@
-package com.qiniu.pandora.util;
+package update;
 
+import com.qiniu.pandora.util.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class DocUtil {
 
+  public static void changeField(Object document, String key, Object value) {
+    if (StringUtils.isNullOrEmpty(key)) {
+      return;
+    }
+
+    String[] keys = key.split("\\.");
+    if (document instanceof Map) {
+      changeField((Map) document, keys, value);
+    }
+  }
+
   // 改变 document 根据 key 指定的元素的值，例如 { "A1": {"B1": "Value1", "B2": "Value2"...},  } ，
   // key 为 A1.B1 value 为 "CCCC"，则 document 变为 { "A1": {"B1": "Value1", "B2": "Value2"...},  }
   // 如果key指定的是数组，且数组中的每个元素仍然是Map类型，则会将该数组所有的元素都进行修改
-  public static void changeField(Map<String, Object> document, String key, Object value) {
+  public static void changeField(Map document, String key, Object value) {
     if (StringUtils.isNullOrEmpty(key)) {
       return;
     }
@@ -18,8 +30,7 @@ public class DocUtil {
     changeField(document, keys, value);
   }
 
-  public static void changeField(Map<String, Object> document, String[] keys, Object value)
-      throws RuntimeException {
+  public static void changeField(Map<String, Object> document, String[] keys, Object value) {
     if (keys == null || keys.length == 0) {
       return;
     }
@@ -33,11 +44,9 @@ public class DocUtil {
     }
 
     if (temp instanceof List) {
-      for (Object obj : (List) temp) {
-        if (obj instanceof Map) {
+      for (Object obj : (List) temp)
+        if (obj instanceof Map)
           changeField((Map) obj, Arrays.copyOfRange(keys, 1, keys.length), value);
-        }
-      }
     }
   }
 
@@ -66,6 +75,25 @@ public class DocUtil {
       if (temp.containsKey(keys[0])) {
         Object v = temp.get(keys[0]);
         if (keys.length == 1) {
+          try {
+            // logdb 返回来的数字都是double类型，所以需要处理下
+            if (v instanceof Double) {
+              Double d = (Double) v;
+              if (value instanceof Integer) {
+                temp.put(keys[0], d.intValue());
+                return d - ((Integer) value).doubleValue() == 0;
+              } else if (value instanceof Long) {
+                temp.put(keys[0], d.longValue());
+                return d - ((Long) value).doubleValue() == 0;
+              } else if (value instanceof Float) {
+                temp.put(keys[0], d.floatValue());
+                return d - ((Float) value).doubleValue() == 0;
+              }
+              return d - (Double) value == 0;
+            }
+          } catch (Exception e) {
+            return false;
+          }
           return value.equals(v);
         }
         return compareObject(v, Arrays.copyOfRange(keys, 1, keys.length), value);
@@ -107,4 +135,5 @@ public class DocUtil {
     }
     return null;
   }
+
 }
