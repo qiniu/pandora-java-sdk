@@ -9,6 +9,7 @@ import okhttp3.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * 定义HTTP请求的日志信息和常规方法
@@ -53,6 +54,8 @@ public final class Response {
 
     private byte[] body;
     private okhttp3.Response response;
+
+    private static ObjectMapper mapper = new ObjectMapper();
 
     private Response(okhttp3.Response response, int statusCode, String reqId, String xlog, String xvia,
                      String address, double duration, String error, byte[] body) {
@@ -175,6 +178,12 @@ public final class Response {
             return null;
         }
         String b = bodyString();
+
+        try {
+           return mapper.readValue(b, classOfT);
+        } catch (IOException e) {
+        }
+
         return Json.decode(b, classOfT);
     }
 
