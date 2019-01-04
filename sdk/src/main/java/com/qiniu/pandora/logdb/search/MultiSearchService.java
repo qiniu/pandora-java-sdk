@@ -51,6 +51,27 @@ public class MultiSearchService extends SearchBase {
     }
 
 
+    public SearchResult search(List<SearchRequest> searchRequestList, long startTime, long endTime) throws QiniuException {
+        StringBuilder postBody = new StringBuilder();
+        for (SearchRequest searchRequest : searchRequestList) {
+            postBody.append(searchRequest.getIndexHeader()).append("\n")
+                .append(searchRequest.source).append("\n");
+        }
+
+        String postUrl = String.format("%s/v5/logdbkibana/msearch", this.logDBClient.getHost());
+
+        if(startTime >0 && endTime > 0){
+            postUrl = postUrl + "?start_time=" + startTime + "&end_time=" + endTime;
+        }
+        Response response = this.logDBClient.getPandoraClient().post(postUrl,
+            postBody.toString().getBytes(Constants.UTF_8), new StringMap(), Client.TextMime);
+        SearchResult result = response.jsonToObject(SearchResult.class);
+        if (result != null) {
+            result.requestId = response.reqId;
+        }
+        return result;
+    }
+
     /**
      * 支持构建官方的elastic搜索
      *
