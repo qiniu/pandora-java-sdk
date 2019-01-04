@@ -62,7 +62,10 @@ public class SearchService {
         public String fields;
         @SerializedName("highlight")
         public Highlight highlight;
-
+        @SerializedName("start_time")
+        public long startTime;
+        @SerializedName("end_time")
+        public long endTime;
         public class Highlight {
             @SerializedName("pre_tags")
             public ArrayList<String> preTags;
