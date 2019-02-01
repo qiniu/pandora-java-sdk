@@ -66,6 +66,9 @@ public class SearchService {
         public long startTime;
         @SerializedName("end_time")
         public long endTime;
+        @SerializedName("default_operator")
+        public String defaultOperator;
+
         public class Highlight {
             @SerializedName("pre_tags")
             public ArrayList<String> preTags;
