@@ -43,7 +43,7 @@ public class Point {
                 continue;
             }
             String key = partTrim.substring(0, i);
-            String value = partTrim.substring(i + 1, part.length());
+            String value = partTrim.substring(i + 1);
             p.append(key, value);
         }
         return p;
