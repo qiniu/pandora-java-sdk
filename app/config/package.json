@@ -1,0 +1,14 @@
+{
+  "name": "{{app_name}}",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "version": "node ../../script/sync-version.js",
+    "server_package": "bash bins/build.sh && npm run package",
+    "package": "bash bins/package.sh"
+  },
+  "author": "",
+  "license": "ISC"
+}

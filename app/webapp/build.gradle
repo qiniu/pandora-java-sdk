@@ -1,0 +1,22 @@
+task webappInstall(type: Exec) {
+  workingDir '.'
+  if (isWindows) {
+    commandLine 'cmd', '/c', 'rush install'
+  } else {
+    commandLine 'bash', '-c', 'rush install'
+  }
+}
+
+task webappDllBuild(type: Exec) {
+  dependsOn webappInstall
+
+  workingDir 'packages/webapp'
+  if (isWindows) {
+    commandLine 'cmd', '/c', 'npm run build:dll'
+  } else {
+    commandLine 'bash', '-c', 'npm run build:dll'
+  }
+}
+
+task webappBuild() {
+}

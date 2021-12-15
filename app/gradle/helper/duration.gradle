@@ -1,0 +1,37 @@
+class DurationPlugin implements Plugin<Project> {
+
+  Map<String, Long> timeCostMap = new LinkedHashMap<>()
+
+  @Override
+  void apply(Project project) {
+    project.getGradle().addListener(new TaskExecutionListener() {
+      @Override
+      void beforeExecute(Task task) {
+        timeCostMap.put(task.getPath(), System.currentTimeMillis())
+      }
+
+      @Override
+      void afterExecute(Task task, TaskState taskState) {
+        timeCostMap.put(task.getPath(), System.currentTimeMillis() - timeCostMap.get(task.getPath()))
+        printf 'Task durations: %dms\n', timeCostMap.get(task.getPath())
+      }
+    })
+
+    project.getGradle().addBuildListener(new BuildAdapter() {
+      @Override
+      void buildFinished(BuildResult buildResult) {
+        println "\n========== Task Durations (1s+) Summary Begin ==============="
+        timeCostMap.each({
+          if (it.getValue() > 60000) {
+            printf 'Task %-75s durations: %.2fm\n', it.getKey(), it.getValue() / 60000
+          } else if (it.getValue() > 1000) {
+            printf 'Task %-75s durations: %.2fs\n', it.getKey(), it.getValue() / 1000
+          }
+        })
+        println "========== Task Durations (1s+) Summary End ================="
+      }
+    })
+  }
+}
+
+apply plugin: DurationPlugin

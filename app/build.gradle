@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+  id "com.diffplug.spotless" version "5.15.2" apply false
+}
+
+apply from: 'gradle/globals.gradle'
+apply from: 'gradle/dependencies.gradle'
+apply from: 'gradle/junit-test.gradle'
+apply from: 'gradle/helper/idea.gradle'
+apply from: 'gradle/helper/codestyle.gradle'
+apply from: 'gradle/helper/compile.gradle'
+apply from: 'gradle/helper/duration.gradle'
+apply from: 'gradle/helper/tools.gradle'
+
+task zip(dependsOn: ':archive:zip')
+task tar(dependsOn: ':archive:tar')
+
+task googleJavaFormat() {
+    dependsOn javaprojects.stream().flatMap({it.tasks.stream()}).filter({it.name == 'spotlessJavaApply'}).collect()
+}
+
+task verifyGoogleJavaFormat() {
+    dependsOn javaprojects.stream().flatMap({it.tasks.stream()}).filter({it.name == 'spotlessJavaCheck'}).collect()
+}

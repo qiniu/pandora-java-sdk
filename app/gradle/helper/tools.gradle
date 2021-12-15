@@ -1,0 +1,32 @@
+
+task changeAppName {
+
+  doFirst {
+    if (!generateApp?.trim()) {
+      throw new GradleException('app could not be empty')
+    }
+  }
+
+  doLast {
+    def appFile = rootProject.file('config/app.json')
+    def text = appFile.text.replaceAll(~/"name"[\s]?:[\s]?"(.*)"/, "\"name\": \"${generateApp}\"")
+    text = text.replaceAll(~/"title"[\s]?:[\s]?"(.*)"/, "\"title\": \"${generateApp}\"")
+    appFile.text = text
+
+    def packageFile = rootProject.file('config/package.json')
+    text = packageFile.text.replaceAll(~/"name"[\s]?:[\s]?"(.*)"/, "\"name\": \"${generateApp}\"")
+    packageFile.text = text
+
+    def serviceFile = rootProject.file('config/resources/custom_services/service.json')
+    text = serviceFile.text.replaceAll(~/"name"[\s]?:[\s]?"(.*)"/, "\"name\": \"${generateApp}\"")
+    serviceFile.text = text
+
+    def javaGradle = project(':java').file('build.gradle')
+    text = javaGradle.text.replaceAll(~/archiveBaseName[\s]?=[\s]?"(.*)"/, "archiveBaseName = \"${generateApp}\"")
+    javaGradle.text = text
+
+    def constantFile = project(':java').file('src/main/java/io/qiniu/common/Constant.java')
+    text = constantFile.text.replaceAll(~/APP_NAME[\s]?=[\s]?"(.*)"/, "APP_NAME = \"${generateApp}\"")
+    constantFile.text = text
+  }
+}

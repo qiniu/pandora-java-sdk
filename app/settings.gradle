@@ -1,0 +1,5 @@
+rootProject.name = 'app'
+
+include 'archive',
+    'java',
+    'webapp'

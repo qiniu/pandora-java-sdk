@@ -1,0 +1,26 @@
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version '2.6.1'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+jar {
+  enabled = false
+}
+
+bootJar {
+  archiveBaseName = "{{app_name}}"
+  archiveVersion = ""
+}
+
+dependencies {
+  implementation "org.apache.httpcomponents:httpclient:${versions.httpclient}"
+  implementation "org.apache.httpcomponents:httpcore:${versions.httpcore}"
+  implementation "org.springframework.boot:spring-boot-gradle-plugin:${versions.springBootVersion}"
+
+  compile "org.springframework.boot:spring-boot-starter-web"
+
+  annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+  testCompile "org.springframework.boot:spring-boot-starter-test"
+}
