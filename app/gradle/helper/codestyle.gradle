@@ -1,0 +1,16 @@
+configure(javaprojects.findAll {
+a -> a
+}) {
+  apply plugin: "com.diffplug.spotless"
+
+  spotless {
+    java {
+      // 目前最新版本是1.11.0，选择1.9的原因是intelij idea 的 google-code-style插件支持到最新1.9
+
+      googleJavaFormat('1.9')
+      target fileTree('.') {
+        include '**/io/qiniu/**/*.java'
+      }
+    }
+  }
+}

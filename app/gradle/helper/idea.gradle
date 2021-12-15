@@ -1,0 +1,23 @@
+allprojects {
+  apply plugin: 'idea'
+
+  if (isIdea) {
+    project.buildDir = file('build/idea')
+  }
+
+  idea {
+    module {
+      inheritOutputDirs = false
+      outputDir = file('build/idea/classes/main')
+      testOutputDir = file('build/idea/classes/test')
+    }
+  }
+
+  task cleanIdeaBuildDir(type: Delete) {
+    delete 'build/idea'
+  }
+  cleanIdeaBuildDir.setGroup("ide")
+  cleanIdeaBuildDir.setDescription("Deletes the IDEA build directory.")
+
+  tasks.cleanIdea.dependsOn(cleanIdeaBuildDir)
+}

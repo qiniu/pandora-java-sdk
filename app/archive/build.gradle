@@ -1,0 +1,72 @@
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "commons-codec:commons-codec:${versions.commonscodec}"
+    classpath "org.bouncycastle:bcprov-jdk15on:${versions.bouncycastle}"
+    classpath "de.undercouch:gradle-download-task:${versions.undercouch}"
+  }
+}
+
+apply plugin: 'de.undercouch.download'
+
+task copy(type: Copy) {
+  dependsOn ":java:assemble"
+  dependsOn ":webapp:webappBuild"
+
+  destinationDir rootProject.file('archive')
+
+  into('app') {
+    from { rootProject.file('config') }
+  }
+
+  into('app/bins') {
+    from { project(":java").file('build/libs') }
+    from { project(":java").file("src/main/resources/application.properties") }
+  }
+
+  into("app/appserver") {
+    from { project(":webapp").file("build") }
+  }
+
+  doFirst {
+    delete rootProject.file("app")
+  }
+}
+
+task zip(type: Zip) {
+  dependsOn copy
+
+  destinationDirectory.set(file('build/zip'))
+
+  archiveBaseName.set("${appName}-${appVersion}")
+
+  into("${appName}") {
+    from { file('app') }
+  }
+
+  doFirst {
+    delete file('build/zip/')
+    file('build/zip/').mkdirs()
+  }
+}
+
+task tar(type: Tar) {
+  dependsOn copy
+  destinationDirectory.set(file('build/tar'))
+  compression Compression.GZIP
+
+  archiveBaseName.set("${appName}-${appVersion}")
+  archiveExtension.set('tar.gz')
+
+  into("${appName}") {
+    from { file("app") }
+  }
+
+  doFirst {
+    delete project.file("build/tar")
+    file('build/tar').mkdirs()
+  }
+}

@@ -1,0 +1,50 @@
+import groovy.json.JsonSlurper
+import java.util.regex.Pattern
+
+Properties libProps = new Properties()
+libProps.load(new FileInputStream(project.rootProject.file("gradle/version.properties")))
+
+ext {
+  versions = libProps
+
+  isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+  isMacOsX = org.gradle.internal.os.OperatingSystem.current().isMacOsX()
+  isLinux = org.gradle.internal.os.OperatingSystem.current().isLinux()
+
+  isEclipse = (System.getProperty("eclipse.launcher") != null
+      || System.getProperty("eclipse.application") != null
+      || gradle.startParameter.taskNames.contains('eclipse')
+      || gradle.startParameter.taskNames.contains('cleanEclipse'))
+
+  isIdea = (System.getProperty("idea.active") != null
+      || gradle.startParameter.taskNames.contains('idea')
+      || gradle.startParameter.taskNames.contains('cleanIdea')
+      || gradle.startParameter.taskNames.contains('cleanIdeaBuild'))
+
+  javaprojects = subprojects.findAll { it.file('src/main/java').exists() }
+
+  webprojects = subprojects.findAll { it.file('rush.json').exists() }
+
+  webArgs = System.properties.getOrDefault('webargs', '').toString()
+  printf 'pandora webargs: %s\n', webArgs
+
+  def cfg = new JsonSlurper().parse(project.rootProject.file("config/app.json"))
+  appName = cfg.getAt("name").toString()
+
+  // for generate demo app code
+  generateApp = System.properties.getOrDefault('app', appName).toString()
+
+  def matcher = Pattern.compile('AppVersion[\\s\\S]+?"([0-9.]+)".*?;')
+      .matcher(project(':java').file('src/main/java/io/qiniu/common/Constant.java').text)
+  appVersion = matcher.find() ? matcher.group(1) : '1.0.0'
+  printf 'app name: %s, app version: %s\n', appName, appVersion
+}
+
+allprojects {
+  group 'io.qiniu'
+  version "${appVersion}"
+}
+
+configure(javaprojects) {
+  apply plugin: 'java-library'
+}
