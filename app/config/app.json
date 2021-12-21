@@ -1,0 +1,13 @@
+{
+  "name": "{{app_name}}",
+  "title": "{{app_name}}",
+  "icon": "",
+  "description": "",
+  "categories": [],
+  "platformVersion": ">=0.13.4",
+  "docsLink": "https://developer.qiniu.com/insight",
+  "preview": [],
+  "scope": "global",
+  "type": "app",
+  "version": "0.0.1"
+}
