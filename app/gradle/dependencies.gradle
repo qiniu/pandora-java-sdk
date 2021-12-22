@@ -2,6 +2,7 @@ configure(javaprojects) {
 
   repositories {
     mavenCentral()
+    mavenLocal()
   }
 
   dependencies {
