@@ -47,6 +47,32 @@ Pandora-Java-App项目涉及到 [Java](https://www.oracle.com/java/technologies/
    $ ./gradlew verifyGoogleJavaFormat
    ```
 
+数据库表定义
+============
+config/resources/storage目录中存放安装app时会创建的表，样例如下：`tableName`为表名，`fields`为该表的字段集合，`indices`为创建表时所创建的索引，只在创建表时生效，`filename`为导出app时生成storage resources的文件名。
+
+```json
+{
+   "tableSchemas":[{
+    "tableName": "test",
+    "fields":[
+      {
+        "name":"name",
+        "type":"varchar",
+        "length": 128
+      }
+    ],
+    "indices":[["name"]]
+  }],
+   "filename":"storage"
+}
+```
+
+本地导入pandora sdk
+============
+在app开发过程中可能会需要调用pandora的一些服务与接口，我们提供pandora sdk封装了对外的接口。
+你可以在`gradle/dependencies.gradle`中添加`mavenLocal()`，来引入本地maven仓库。
+同时在`sdk`目录下执行`mvn install`即可将sdk打包并发布到本地maven仓库中。
 
 目录结构介绍
 ============

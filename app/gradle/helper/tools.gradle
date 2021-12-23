@@ -19,6 +19,7 @@ task changeAppName {
 
     def serviceFile = rootProject.file('config/resources/custom_services/service.json')
     text = serviceFile.text.replaceAll(~/"name"[\s]?:[\s]?"(.*)"/, "\"name\": \"${generateApp}\"")
+    text = text.replaceAll(~/"filename"[\s]?:[\s]?"(.*)"/, "\"filename\": \"bins/${generateApp}.jar\"")
     serviceFile.text = text
 
     def javaGradle = project(':java').file('build.gradle')

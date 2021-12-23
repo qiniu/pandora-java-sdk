@@ -1,51 +1,35 @@
 package io.qiniu.service;
 
-import io.qiniu.client.PandoraClient;
-import io.qiniu.common.entity.pandora.PandoraMode;
+import com.qiniu.pandora.DefaultPandoraClient;
+import com.qiniu.pandora.service.customservice.CustomService;
+import com.qiniu.pandora.service.storage.StorageService;
 import io.qiniu.configuration.PandoraProperties;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import org.apache.http.HttpResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class PandoraService {
 
-  private static final Logger logger = LoggerFactory.getLogger(PandoraService.class);
-
-  private PandoraProperties properties;
-  private PandoraClient client;
+  private DefaultPandoraClient client;
+  private CustomService customService;
+  private StorageService storageService;
 
   @Autowired
   public PandoraService(PandoraProperties properties) {
-    this.properties = properties;
-    this.client = new PandoraClient(properties.getPandoraUrl());
+    this.client = new DefaultPandoraClient(properties.getPandoraUrl());
+    this.customService = client.NewCustomService();
+    this.storageService = client.NewStorageService();
   }
 
-  public void register() throws IOException {
-    if (properties.getMode() == PandoraMode.LOCAL) {
-      return;
-    }
-    HttpResponse response =
-        client.register(
-            properties.getAppName(),
-            properties.getServiceName(),
-            properties.getServerAddress(),
-            properties.getServerPort(),
-            properties.getPandoraToken());
-    if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
-      logger.error(
-          "register to pandora filed, error: {}",
-          new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8));
-      System.exit(128);
-    }
-  }
-
-  public PandoraClient getClient() {
+  public DefaultPandoraClient getClient() {
     return client;
+  }
+
+  public CustomService getCustomService() {
+    return customService;
+  }
+
+  public StorageService getStorageService() {
+    return storageService;
   }
 }
