@@ -2,28 +2,30 @@ package com.qiniu.pandora;
 
 import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.common.QiniuException;
-import com.qiniu.pandora.http.Client;
-import com.qiniu.pandora.http.Response;
+import com.qiniu.pandora.http.HttpClientSingleton;
 import com.qiniu.pandora.service.customservice.CustomService;
 import com.qiniu.pandora.service.storage.StorageService;
+import com.qiniu.pandora.service.upload.UploadDataService;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 public class DefaultPandoraClient implements PandoraClient {
 
-  private Client client;
+  private CloseableHttpClient client = HttpClientSingleton.ClientInstance;
   private String pandoraHost;
 
   public DefaultPandoraClient(String pandoraHost) {
-    this.client = new Client();
-    this.pandoraHost = addHTTPSchema(pandoraHost);
-  }
-
-  public DefaultPandoraClient(Client client, String pandoraHost) {
-    this.client = client;
     this.pandoraHost = addHTTPSchema(pandoraHost);
   }
 
@@ -35,27 +37,102 @@ public class DefaultPandoraClient implements PandoraClient {
     return new CustomService(this);
   }
 
-  public Response post(String path, byte[] content, Map<String, String> headers, String bodyType)
+  public UploadDataService NewUploadDataService() {
+    return new UploadDataService(this);
+  }
+
+  public HttpResponse post(
+      String path, byte[] content, Map<String, String> headers, String bodyType)
       throws QiniuException {
-    headers.put(Client.CONTENT_TYPE, bodyType);
-
-    HttpServletRequest request =
-        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-    return client.post(String.format("%s%s", pandoraHost, path), content, headers, bodyType);
+    headers.put(Constants.CONTENT_TYPE, bodyType);
+    return sendRequest(
+        buildRequest(
+            String.format("%s%s", pandoraHost, path), HttpPost.METHOD_NAME, headers, content));
   }
 
-  public Response get(String path, Map<String, String> headers) throws QiniuException {
-    return client.get(String.format("%s%s", pandoraHost, path), headers);
+  public HttpResponse get(String path, Map<String, String> headers) throws QiniuException {
+    return sendRequest(
+        buildRequest(String.format("%s%s", pandoraHost, path), HttpGet.METHOD_NAME, headers, null));
   }
 
-  public Response put(String path, byte[] content, Map<String, String> headers, String bodyType)
+  public HttpResponse put(String path, byte[] content, Map<String, String> headers, String bodyType)
       throws QiniuException {
-    headers.put(Client.CONTENT_TYPE, bodyType);
-    return client.put(String.format("%s%s", pandoraHost, path), content, headers, bodyType);
+    headers.put(Constants.CONTENT_TYPE, bodyType);
+    return sendRequest(
+        buildRequest(
+            String.format("%s%s", pandoraHost, path), HttpPut.METHOD_NAME, headers, content));
   }
 
-  public Response delete(String path, Map<String, String> headers) throws QiniuException {
-    return client.delete(String.format("%s%s", pandoraHost, path), headers);
+  public HttpResponse delete(String path, Map<String, String> headers) throws QiniuException {
+    return sendRequest(
+        buildRequest(
+            String.format("%s%s", pandoraHost, path), HttpDelete.METHOD_NAME, headers, null));
+  }
+
+  public HttpResponse sendRequest(HttpUriRequest request) throws QiniuException {
+    HttpResponse httpResponse;
+    try {
+      httpResponse = client.execute(request);
+    } catch (Exception e) {
+      throw new QiniuException(e);
+    }
+    if (httpResponse.getStatusLine().getStatusCode() >= 300) {
+      String message;
+      try {
+        message = EntityUtils.toString(httpResponse.getEntity());
+      } catch (IOException e) {
+        throw new QiniuException(e);
+      }
+      throw new QiniuException(httpResponse, message);
+    }
+    return httpResponse;
+  }
+
+  public static HttpUriRequest buildRequest(
+      String url, String method, Map<String, String> headers, byte[] body) {
+    HttpUriRequest request;
+    switch (method.toUpperCase()) {
+      case HttpGet.METHOD_NAME:
+        request = new HttpGet(URI.create(url));
+        break;
+      case HttpPost.METHOD_NAME:
+        request = new HttpPost(URI.create(url));
+        if (body != null) {
+          ((HttpPost) request).setEntity(new ByteArrayEntity(body));
+        }
+        break;
+      case HttpPut.METHOD_NAME:
+        request = new HttpPut(URI.create(url));
+        if (body != null) {
+          ((HttpPut) request).setEntity(new ByteArrayEntity(body));
+        }
+        break;
+      case HttpDelete.METHOD_NAME:
+        request = new HttpDelete(URI.create(url));
+        break;
+      default:
+        throw new IllegalArgumentException(String.format("unexpected http method '%s'", method));
+    }
+
+    if (headers != null) {
+      headers.forEach(request::setHeader);
+    }
+    request.setHeader(Constants.USER_AGENT, userAgent());
+    request.setHeader(Constants.CONTENT_TYPE, Constants.CONTENT_TYPE_APPLICATION_JSON);
+    request.removeHeaders(Constants.CONTENT_LENGTH);
+    return request;
+  }
+
+  private static String userAgent() {
+    String javaVersion = "Java/" + System.getProperty("java.version");
+    String os =
+        System.getProperty("os.name")
+            + " "
+            + System.getProperty("os.arch")
+            + " "
+            + System.getProperty("os.version");
+    String sdk = "QiniuJava/" + Constants.VERSION;
+    return sdk + " (" + os + ") " + javaVersion;
   }
 
   private String addHTTPSchema(String url) {

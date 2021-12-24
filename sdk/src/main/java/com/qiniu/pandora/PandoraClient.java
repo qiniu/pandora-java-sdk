@@ -1,18 +1,18 @@
 package com.qiniu.pandora;
 
 import com.qiniu.pandora.common.QiniuException;
-import com.qiniu.pandora.http.Response;
 import java.util.Map;
+import org.apache.http.HttpResponse;
 
 public interface PandoraClient {
 
-  Response post(String url, byte[] content, Map<String, String> headers, String bodyType)
+  HttpResponse post(String path, byte[] content, Map<String, String> headers, String bodyType)
       throws QiniuException;
 
-  Response get(String url, Map<String, String> headers) throws QiniuException;
+  HttpResponse get(String path, Map<String, String> headers) throws QiniuException;
 
-  Response put(String url, byte[] content, Map<String, String> headers, String bodyType)
+  HttpResponse put(String path, byte[] content, Map<String, String> headers, String bodyType)
       throws QiniuException;
 
-  Response delete(String url, Map<String, String> headers) throws QiniuException;
+  HttpResponse delete(String path, Map<String, String> headers) throws QiniuException;
 }

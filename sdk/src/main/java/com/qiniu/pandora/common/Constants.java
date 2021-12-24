@@ -10,6 +10,32 @@ public class Constants {
   /** Pandora地址 */
   public static final String PANDORA_HOST = "http://127.0.0.1:9200";
 
+  /** Pandora接口前缀 */
+  public static final String DEFAULT_PANDORA_PREFIX = "/api/v1";
+
+  /** Pandora storage接口路径 */
+  public static final String DEFAULT_STORAGE_PREFIX =
+      DEFAULT_PANDORA_PREFIX + "/storage/v2/collections";
+  /** Pandora app注册接口路径 */
+  public static final String DEFAULT_REGISTER_PREFIX = DEFAULT_PANDORA_PREFIX + "/apps/instances";
+  /** Pandora 上传数据接口路径 */
+  public static final String DEFAULT_SIMPLE_DATA_PREFIX = DEFAULT_PANDORA_PREFIX + "/simple/data";
+
+  /** HTTP 相关请求头 */
+  public static final String CONTENT_TYPE = "Content-Type";
+
+  public static final String CONTENT_LENGTH = "Content-Length";
+  public static final String AUTHORIZATION = "Authorization";
+  public static final String USER_AGENT = "User-Agent";
+
+  /** HTTP 相关响应头 */
+  public static final String X_REQ_ID = "X-ReqId";
+
+  /** 常用 HTTP Content-Type */
+  public static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";
+
+  public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain";
+
   /** 服务默认编码 */
   public static final Charset UTF_8 = Charset.forName("UTF-8");
 

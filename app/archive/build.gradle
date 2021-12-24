@@ -32,7 +32,7 @@ task copy(type: Copy) {
   }
 
   doFirst {
-    delete rootProject.file("app")
+    delete project.file("app")
   }
 }
 

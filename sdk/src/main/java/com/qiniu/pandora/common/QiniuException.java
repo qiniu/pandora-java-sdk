@@ -1,15 +1,17 @@
 package com.qiniu.pandora.common;
 
 import com.qiniu.pandora.http.QiniuError;
-import com.qiniu.pandora.http.Response;
+import com.qiniu.pandora.util.JsonHelper;
 import java.io.IOException;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 
 public class QiniuException extends IOException {
-  public final Response response;
+  public final HttpResponse response;
   private String error;
 
-  public QiniuException(Response response) {
-    super(response != null ? response.getInfo() : null);
+  public QiniuException(HttpResponse response, String msg) {
+    super(msg);
     this.response = response;
   }
 
@@ -29,28 +31,24 @@ public class QiniuException extends IOException {
     this.error = msg;
   }
 
-  public String url() {
-    return response.url();
-  }
-
   public int code() {
-    return response == null ? -1 : response.statusCode;
+    return response == null ? -1 : response.getStatusLine().getStatusCode();
   }
 
   public String error() {
     if (error != null) {
       return error;
     }
-    if (response == null || response.statusCode / 100 == 2 || !response.isJson()) {
+    if (response == null || response.getStatusLine().getStatusCode() / 100 == 2) {
       return null;
     }
     QiniuError e = null;
     try {
-      e = response.jsonToObject(QiniuError.class);
-    } catch (QiniuException e1) {
+      e = JsonHelper.readValue(QiniuError.class, EntityUtils.toString(response.getEntity()));
+    } catch (IOException e1) {
       e1.printStackTrace();
     }
-    error = e == null ? "" : e.error;
+    error = e == null ? "" : e.message;
     return error;
   }
 }

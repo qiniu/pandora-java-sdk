@@ -1,6 +1,6 @@
 {
   "name": "{{app_name}}",
   "env":"java",
-  "filename":"bins/{{app_name}}.jar",
+  "filename": "bins/{{app_name}}.jar",
   "type":"collector"
 }
