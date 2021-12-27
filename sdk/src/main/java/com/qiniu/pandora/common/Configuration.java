@@ -1,10 +1,8 @@
 package com.qiniu.pandora.common;
 
-import com.qiniu.pandora.http.ProxyConfiguration;
-import qiniu.happydns.DnsClient;
-
 /** 配置类，定义 Pandora 及 HTTP 各服务参数 */
 public class Configuration {
+
   /** 连接超时时间 单位秒(默认10s) */
   public int connectTimeout = Constants.CONNECT_TIMEOUT;
   /** 写超时时间 单位秒(默认 0 , 不超时) */
@@ -21,14 +19,11 @@ public class Configuration {
   public int connectionPoolMaxIdleMinutes = Constants.CONNECTION_POOL_MAX_IDLE_MINUTES;
   /** 上传失败重试次数 */
   public int retryMax = 5;
-  /** 外部dns */
-  public DnsClient dnsClient;
+
   /*
    * 解析域名时,优先使用host配置,主要针对内部局域网配置
    */
   public boolean useDnsHostFirst;
-  /** 代理对象 */
-  public ProxyConfiguration proxy;
 
   public Configuration() {}
 }
