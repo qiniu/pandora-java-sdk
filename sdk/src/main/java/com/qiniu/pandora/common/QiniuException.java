@@ -1,54 +1,59 @@
 package com.qiniu.pandora.common;
 
-import com.qiniu.pandora.http.QiniuError;
-import com.qiniu.pandora.util.JsonHelper;
 import java.io.IOException;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
+import org.springframework.http.HttpStatus;
 
 public class QiniuException extends IOException {
-  public final HttpResponse response;
-  private String error;
 
-  public QiniuException(HttpResponse response, String msg) {
-    super(msg);
-    this.response = response;
+  private int errCode;
+
+  private String errMsg;
+
+  private Throwable causeThrowable;
+
+  public QiniuException(final HttpStatus status, final String errMsg) {
+    super(errMsg);
+
+    this.errCode = status.value();
+    this.errMsg = errMsg;
+    this.causeThrowable = null;
+  }
+
+  public QiniuException(final int errCode, final String errMsg) {
+    super(errMsg);
+
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+    this.causeThrowable = null;
   }
 
   public QiniuException(Exception e) {
-    this(e, null);
-  }
+    super(e);
 
-  public QiniuException(Exception e, String msg) {
-    super(msg, e);
-    this.response = null;
-    this.error = msg;
+    this.errCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+    this.errMsg = null;
+    this.causeThrowable = e;
   }
 
   public QiniuException(String msg) {
     super(msg);
-    this.response = null;
-    this.error = msg;
+
+    this.errCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+    this.errMsg = msg;
+    this.causeThrowable = null;
   }
 
-  public int code() {
-    return response == null ? -1 : response.getStatusLine().getStatusCode();
+  public int getErrCode() {
+    return errCode;
   }
 
-  public String error() {
-    if (error != null) {
-      return error;
+  public String getErrMsg() {
+    if (errMsg != null) {
+      return errMsg;
     }
-    if (response == null || response.getStatusLine().getStatusCode() / 100 == 2) {
-      return null;
+    if (this.causeThrowable != null) {
+      return this.causeThrowable.getMessage();
     }
-    QiniuError e = null;
-    try {
-      e = JsonHelper.readValue(QiniuError.class, EntityUtils.toString(response.getEntity()));
-    } catch (IOException e1) {
-      e1.printStackTrace();
-    }
-    error = e == null ? "" : e.message;
-    return error;
+    return null;
   }
 }

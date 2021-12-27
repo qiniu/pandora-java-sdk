@@ -6,11 +6,8 @@ import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.service.PandoraService;
 import com.qiniu.pandora.util.JsonHelper;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 
 public class StorageService extends PandoraService {
 
@@ -86,7 +83,7 @@ public class StorageService extends PandoraService {
       Map<String, String> headers,
       TypeReference<StorageDTO<T>> typeReference)
       throws QiniuException {
-    HttpResponse response =
+    byte[] response =
         client.get(
             String.format(
                 Constants.DEFAULT_STORAGE_PREFIX + "/%s/data/%s%s",
@@ -95,11 +92,7 @@ public class StorageService extends PandoraService {
                 combineParams(params)),
             headers);
     StorageDTO<T> t;
-    try {
-      t = JsonHelper.readValue(typeReference, EntityUtils.toByteArray(response.getEntity()));
-    } catch (IOException e) {
-      throw new QiniuException(e);
-    }
+    t = JsonHelper.readValue(typeReference, response);
     return t;
   }
 
@@ -125,17 +118,13 @@ public class StorageService extends PandoraService {
   public <T> T getDataById(
       String appName, String tableName, String id, Map<String, String> headers, Class<T> tClass)
       throws QiniuException {
-    HttpResponse response =
+    byte[] response =
         client.get(
             String.format(
                 Constants.DEFAULT_STORAGE_PREFIX + "/%s/data/%s/%s", appName, tableName, id),
             headers);
     T t;
-    try {
-      t = JsonHelper.readValue(tClass, EntityUtils.toByteArray(response.getEntity()));
-    } catch (IOException e) {
-      throw new QiniuException(e);
-    }
+    t = JsonHelper.readValue(tClass, response);
     return t;
   }
 

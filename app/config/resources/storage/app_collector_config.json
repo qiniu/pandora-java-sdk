@@ -1,0 +1,53 @@
+{
+  "tableSchemas":[{
+    "tableName": "app_collector_config",
+    "fields": [
+      {
+        "name":"name",
+        "type":"varchar",
+        "length":64
+      },
+      {
+        "name":"description",
+        "type":"varchar",
+        "length":256
+      },
+      {
+        "name":"repo",
+        "type":"varchar",
+        "length":128
+      },
+      {
+        "name": "sourceType",
+        "type": "varchar",
+        "length": 128
+      },
+      {
+        "name": "owner",
+        "type": "varchar",
+        "length": 64
+      },
+      {
+        "name": "enabled",
+        "type": "int"
+      },
+      {
+        "name":"config",
+        "type":"text"
+      },
+      {
+        "name":"createTime",
+        "type":"bigint"
+      },
+      {
+        "name":"updateTime",
+        "type":"bigint"
+      }
+    ],
+    "indices":[
+      ["name"],
+      ["name", "owner"]
+    ]
+  }],
+  "filename":"app_collector_config"
+}

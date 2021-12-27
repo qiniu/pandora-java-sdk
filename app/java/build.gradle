@@ -19,6 +19,7 @@ dependencies {
   implementation "org.apache.httpcomponents:httpclient:${versions.httpclient}"
   implementation "org.apache.httpcomponents:httpcore:${versions.httpcore}"
   implementation "org.springframework.boot:spring-boot-gradle-plugin:${versions.springBootVersion}"
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
 
   compile "org.springframework.boot:spring-boot-starter-web"
 
