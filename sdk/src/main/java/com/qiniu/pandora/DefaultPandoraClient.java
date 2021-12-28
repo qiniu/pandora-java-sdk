@@ -3,6 +3,7 @@ package com.qiniu.pandora;
 import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.http.HttpClientSingleton;
+import com.qiniu.pandora.service.account.DcTokenService;
 import com.qiniu.pandora.service.customservice.CustomService;
 import com.qiniu.pandora.service.storage.StorageService;
 import com.qiniu.pandora.service.upload.UploadDataService;
@@ -39,6 +40,10 @@ public class DefaultPandoraClient implements PandoraClient {
 
   public UploadDataService NewUploadDataService() {
     return new UploadDataService(this);
+  }
+
+  public DcTokenService NewDcTokenService() {
+    return new DcTokenService(this);
   }
 
   public HttpResponse post(

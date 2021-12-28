@@ -13,6 +13,9 @@ public class Constants {
   /** Pandora接口前缀 */
   public static final String DEFAULT_PANDORA_PREFIX = "/api/v1";
 
+  /** Pandora采集接口前缀 */
+  public static final String DEFAULT_PANDORA_DC_PREFIX = DEFAULT_PANDORA_PREFIX + "/dc";
+
   /** Pandora storage接口路径 */
   public static final String DEFAULT_STORAGE_PREFIX =
       DEFAULT_PANDORA_PREFIX + "/storage/v2/collections";
