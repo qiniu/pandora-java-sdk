@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PandoraService {
 
-  private DefaultPandoraClient client;
-  private CustomService customService;
-  private StorageService storageService;
+  private final DefaultPandoraClient client;
+  private final CustomService customService;
+  private final StorageService storageService;
 
   @Autowired
   public PandoraService(PandoraProperties properties) {

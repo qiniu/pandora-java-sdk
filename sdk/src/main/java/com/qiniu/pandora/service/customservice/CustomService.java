@@ -5,11 +5,9 @@ import com.qiniu.pandora.common.Constants;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.service.PandoraService;
 import com.qiniu.pandora.util.JsonHelper;
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 
 public class CustomService extends PandoraService {
 
@@ -21,7 +19,7 @@ public class CustomService extends PandoraService {
       throws QiniuException {
     Map<String, String> headers = new HashMap<>();
     headers.put(Constants.AUTHORIZATION, token);
-    HttpResponse response =
+    byte[] response =
         client.post(
             Constants.DEFAULT_REGISTER_PREFIX,
             JsonHelper.writeValueAsBytes(
@@ -29,11 +27,7 @@ public class CustomService extends PandoraService {
             headers,
             Constants.CONTENT_TYPE_APPLICATION_JSON);
     String id;
-    try {
-      id = EntityUtils.toString(response.getEntity());
-    } catch (IOException e) {
-      throw new QiniuException(e);
-    }
+    id = Arrays.toString(response);
     return id;
   }
 

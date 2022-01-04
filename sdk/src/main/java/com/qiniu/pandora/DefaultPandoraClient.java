@@ -6,10 +6,10 @@ import com.qiniu.pandora.http.HttpClientSingleton;
 import com.qiniu.pandora.service.customservice.CustomService;
 import com.qiniu.pandora.service.storage.StorageService;
 import com.qiniu.pandora.service.upload.UploadDataService;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import org.apache.http.HttpResponse;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -41,8 +41,7 @@ public class DefaultPandoraClient implements PandoraClient {
     return new UploadDataService(this);
   }
 
-  public HttpResponse post(
-      String path, byte[] content, Map<String, String> headers, String bodyType)
+  public byte[] post(String path, byte[] content, Map<String, String> headers, String bodyType)
       throws QiniuException {
     headers.put(Constants.CONTENT_TYPE, bodyType);
     return sendRequest(
@@ -50,12 +49,12 @@ public class DefaultPandoraClient implements PandoraClient {
             String.format("%s%s", pandoraHost, path), HttpPost.METHOD_NAME, headers, content));
   }
 
-  public HttpResponse get(String path, Map<String, String> headers) throws QiniuException {
+  public byte[] get(String path, Map<String, String> headers) throws QiniuException {
     return sendRequest(
         buildRequest(String.format("%s%s", pandoraHost, path), HttpGet.METHOD_NAME, headers, null));
   }
 
-  public HttpResponse put(String path, byte[] content, Map<String, String> headers, String bodyType)
+  public byte[] put(String path, byte[] content, Map<String, String> headers, String bodyType)
       throws QiniuException {
     headers.put(Constants.CONTENT_TYPE, bodyType);
     return sendRequest(
@@ -63,29 +62,23 @@ public class DefaultPandoraClient implements PandoraClient {
             String.format("%s%s", pandoraHost, path), HttpPut.METHOD_NAME, headers, content));
   }
 
-  public HttpResponse delete(String path, Map<String, String> headers) throws QiniuException {
+  public byte[] delete(String path, Map<String, String> headers) throws QiniuException {
     return sendRequest(
         buildRequest(
             String.format("%s%s", pandoraHost, path), HttpDelete.METHOD_NAME, headers, null));
   }
 
-  public HttpResponse sendRequest(HttpUriRequest request) throws QiniuException {
-    HttpResponse httpResponse;
-    try {
-      httpResponse = client.execute(request);
+  public byte[] sendRequest(HttpUriRequest request) throws QiniuException {
+    try (CloseableHttpResponse httpResponse = client.execute(request)) {
+      HttpEntity entity = httpResponse.getEntity();
+      if (httpResponse.getStatusLine().getStatusCode() >= 300) {
+        throw new QiniuException(
+            httpResponse.getStatusLine().getStatusCode(), EntityUtils.toString(entity));
+      }
+      return EntityUtils.toByteArray(entity);
     } catch (Exception e) {
       throw new QiniuException(e);
     }
-    if (httpResponse.getStatusLine().getStatusCode() >= 300) {
-      String message;
-      try {
-        message = EntityUtils.toString(httpResponse.getEntity());
-      } catch (IOException e) {
-        throw new QiniuException(e);
-      }
-      throw new QiniuException(httpResponse, message);
-    }
-    return httpResponse;
   }
 
   public static HttpUriRequest buildRequest(

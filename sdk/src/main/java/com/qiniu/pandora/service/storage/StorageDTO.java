@@ -3,18 +3,18 @@ package com.qiniu.pandora.service.storage;
 import java.util.List;
 
 public class StorageDTO<T> {
-  private String total;
+  private long total;
 
   private List<T> data;
 
   public StorageDTO() {}
 
-  public StorageDTO(String total, List<T> data) {
+  public StorageDTO(long total, List<T> data) {
     this.total = total;
     this.data = data;
   }
 
-  public String getTotal() {
+  public long getTotal() {
     return total;
   }
 
