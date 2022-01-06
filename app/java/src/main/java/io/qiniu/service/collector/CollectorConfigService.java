@@ -20,6 +20,14 @@ public class CollectorConfigService {
     this.configDao = configDao;
   }
 
+  public CollectorConfig getConfig(long configId) throws QiniuException {
+    try {
+      return configDao.getById(configId);
+    } catch (Exception e) {
+      throw QiniuExceptions.InternalServerError(e.getMessage());
+    }
+  }
+
   public List<CollectorConfig> getConfigs() throws QiniuException {
     try {
       return configDao.getList();

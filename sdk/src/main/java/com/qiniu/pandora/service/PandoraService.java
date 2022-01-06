@@ -18,7 +18,7 @@ public abstract class PandoraService {
     this.client = client;
   }
 
-  public String combineParams(Map<String, String> params) {
+  public static String combineParams(Map<String, String> params) {
     if (params == null || params.isEmpty()) {
       return "";
     }
@@ -29,11 +29,16 @@ public abstract class PandoraService {
             .collect(Collectors.joining("&")));
   }
 
-  public Map<String, String> acquireDefaultHeaders() {
+  public static Map<String, String> acquireDefaultHeaders() {
     Map<String, String> headers = new HashMap<>();
-    HttpServletRequest request =
-        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
+    ServletRequestAttributes attributes =
+        (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    if (attributes == null) {
+      return headers;
+    }
+
+    HttpServletRequest request = attributes.getRequest();
     Enumeration<String> headerNames = request.getHeaderNames();
     while (headerNames.hasMoreElements()) {
       String name = headerNames.nextElement();
@@ -43,6 +48,7 @@ public abstract class PandoraService {
       }
       headers.putIfAbsent(name, request.getHeader(name));
     }
+
     return headers;
   }
 }

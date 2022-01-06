@@ -42,6 +42,7 @@ public class CollectRunner implements Runner {
     this.properties = properties;
     this.configurationProvider = configurationProvider;
     supervisor = new LifecycleSupervisor();
+    this.state = State.STOPPED;
   }
 
   public void start() {
@@ -91,6 +92,21 @@ public class CollectRunner implements Runner {
     stop();
     // todo delete meta
     logger.info("runner [" + name + "] has deleted");
+  }
+
+  @Override
+  public Map<String, String> getProperties() {
+    return this.properties;
+  }
+
+  @Override
+  public String getName() {
+    return this.name;
+  }
+
+  @Override
+  public State getState() {
+    return this.state;
   }
 
   private void configure(Map<String, String> properties) {

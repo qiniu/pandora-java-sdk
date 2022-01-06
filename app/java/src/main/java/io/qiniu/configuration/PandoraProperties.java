@@ -33,6 +33,9 @@ public class PandoraProperties {
   @Value("${pandora.service:demo}")
   private String serviceName;
 
+  @Value("${pandora.id:}")
+  private String id;
+
   public String getPandoraUrl() {
     return pandoraUrl;
   }
@@ -59,6 +62,14 @@ public class PandoraProperties {
 
   public String getServiceName() {
     return serviceName;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String setId(String id) {
+    return this.id = id;
   }
 
   @Bean

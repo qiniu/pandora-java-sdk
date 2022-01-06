@@ -1,0 +1,60 @@
+{
+  "tableSchemas":[{
+    "tableName": "app_collector_task",
+    "fields": [
+      {
+        "name": "taskId",
+        "type": "varchar",
+        "length": 128
+      },
+      {
+        "name":"name",
+        "type":"varchar",
+        "length":128
+      },
+      {
+        "name":"workerId",
+        "type":"varchar",
+        "length":128
+      },
+      {
+        "name":"configId",
+        "type":"int"
+      },
+      {
+        "name": "enabled",
+        "type": "int"
+      },
+      {
+        "name": "status",
+        "type": "int"
+      },
+      {
+        "name": "enabled",
+        "type": "int"
+      },
+      {
+        "name": "meta",
+        "type": "text"
+      },
+      {
+        "name":"config",
+        "type":"text"
+      },
+      {
+        "name":"createTime",
+        "type":"timestamp"
+      },
+      {
+        "name":"updateTime",
+        "type":"timestamp"
+      }
+    ],
+    "indices":[
+      ["taskId"],
+      ["name"],
+      ["configId"]
+    ]
+  }],
+  "filename":"app_collector_task"
+}

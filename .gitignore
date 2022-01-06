@@ -1,5 +1,7 @@
 # file 
 *.iml
+.id
+.pid
 
 # Folders
 .idea/
