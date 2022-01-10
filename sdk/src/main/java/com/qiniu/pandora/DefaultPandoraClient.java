@@ -6,6 +6,7 @@ import com.qiniu.pandora.http.HttpClientSingleton;
 import com.qiniu.pandora.service.customservice.CustomService;
 import com.qiniu.pandora.service.storage.StorageService;
 import com.qiniu.pandora.service.upload.UploadDataService;
+import com.qiniu.pandora.service.account.DcTokenService;
 import java.net.URI;
 import java.util.Map;
 import org.apache.http.HttpEntity;
@@ -39,6 +40,10 @@ public class DefaultPandoraClient implements PandoraClient {
 
   public UploadDataService NewUploadDataService() {
     return new UploadDataService(this);
+  }
+
+  public DcTokenService NewDcTokenService() {
+    return new DcTokenService(this);
   }
 
   public byte[] post(String path, byte[] content, Map<String, String> headers, String bodyType)
