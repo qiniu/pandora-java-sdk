@@ -37,11 +37,11 @@
       },
       {
         "name":"createTime",
-        "type":"bigint"
+        "type":"timestamp"
       },
       {
         "name":"updateTime",
-        "type":"bigint"
+        "type":"timestamp"
       }
     ],
     "indices":[
