@@ -35,7 +35,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-version>1.5.4.RELEASE</spring-version>
     <jackson-version>2.12.3</jackson-version>
-    <log4j-version>2.17.0</log4j-version>
+    <log4j-version>2.17.1</log4j-version>
     <http-client-version>4.5.13</http-client-version>
     <http-core-version>4.4.9</http-core-version>
     <junit-version>4.13.1</junit-version>
@@ -195,6 +195,19 @@
         <artifactId>log4j-1.2-api</artifactId>
         <version>${log4j-version}</version>
       </dependency>
+
+      <!-- collect -->
+      <dependency>
+        <groupId>org.apache.flume</groupId>
+        <artifactId>flume-ng-core</artifactId>
+        <version>1.9.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.flume</groupId>
+        <artifactId>flume-ng-node</artifactId>
+        <version>1.9.0</version>
+      </dependency>
+
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
