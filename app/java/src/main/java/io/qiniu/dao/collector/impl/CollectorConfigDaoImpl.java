@@ -6,12 +6,13 @@ import io.qiniu.common.Constant;
 import io.qiniu.common.entity.Pagination;
 import io.qiniu.common.entity.ResourceList;
 import io.qiniu.common.entity.collector.CollectorConfig;
+import io.qiniu.common.entity.collector.CollectorConfig.CollectorConfigDTO;
 import io.qiniu.dao.collector.ICollectorConfigDao;
 import io.qiniu.repository.AbstractDatabaseImpl;
 import io.qiniu.service.PandoraService;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,13 +71,18 @@ public class CollectorConfigDaoImpl extends AbstractDatabaseImpl implements ICol
 
   @Override
   public CollectorConfig getById(long configId) throws Exception {
-    return this.service
-        .getStorageService()
-        .getDataById(
-            Constant.APP_NAME,
-            Constant.APP_TABLE_NAME_COLLECTOR_CONFIG,
-            Long.toString(configId),
-            CollectorConfig.class);
+    CollectorConfigDTO config =
+        this.service
+            .getStorageService()
+            .getDataById(
+                Constant.APP_NAME,
+                Constant.APP_TABLE_NAME_COLLECTOR_CONFIG,
+                Long.toString(configId),
+                CollectorConfigDTO.class);
+    if (config != null) {
+      return config.toCollectorConfig();
+    }
+    return null;
   }
 
   @Override
@@ -87,17 +93,17 @@ public class CollectorConfigDaoImpl extends AbstractDatabaseImpl implements ICol
         URLEncoder.encode(
             String.format("name=\"%s\" and owner = \"%s\"", name, owner),
             StandardCharsets.UTF_8.toString()));
-    List<CollectorConfig> configs =
+    List<CollectorConfigDTO> configs =
         this.service
             .getStorageService()
             .getData(
                 Constant.APP_NAME,
                 Constant.APP_TABLE_NAME_COLLECTOR_CONFIG,
                 queryMap,
-                new TypeReference<StorageDTO<CollectorConfig>>() {})
+                new TypeReference<StorageDTO<CollectorConfigDTO>>() {})
             .getData();
     if (configs.size() > 0) {
-      return configs.get(0);
+      return configs.get(0).toCollectorConfig();
     } else {
       return null;
     }
@@ -149,7 +155,7 @@ public class CollectorConfigDaoImpl extends AbstractDatabaseImpl implements ICol
 
     queryMap.put("query", URLEncoder.encode(filterStr, StandardCharsets.UTF_8.toString()));
 
-    StorageDTO<CollectorConfig> configDTO =
+    StorageDTO<CollectorConfigDTO> configDTO =
         this.service
             .getStorageService()
             .getData(
@@ -157,9 +163,13 @@ public class CollectorConfigDaoImpl extends AbstractDatabaseImpl implements ICol
                 Constant.APP_TABLE_NAME_COLLECTOR_CONFIG,
                 queryMap,
                 new TypeReference<>() {});
+    List<CollectorConfig> configList = new ArrayList<>();
+    for (CollectorConfigDTO configDTOItem : configDTO.getData()) {
+      configList.add(configDTOItem.toCollectorConfig());
+    }
     return new ResourceList<>(
         configDTO.getTotal(),
-        configDTO.getData(),
+        configList,
         pagination.getSort(),
         pagination.getPageNo(),
         pagination.getPageSize());
@@ -167,14 +177,21 @@ public class CollectorConfigDaoImpl extends AbstractDatabaseImpl implements ICol
 
   @Override
   public List<CollectorConfig> getList() throws Exception {
-    return this.service
-        .getStorageService()
-        .getData(
-            Constant.APP_NAME,
-            Constant.APP_TABLE_NAME_COLLECTOR_CONFIG,
-            new HashMap<>(),
-            new TypeReference<StorageDTO<CollectorConfig>>() {})
-        .getData();
+    List<CollectorConfigDTO> configDTOS =
+        this.service
+            .getStorageService()
+            .getData(
+                Constant.APP_NAME,
+                Constant.APP_TABLE_NAME_COLLECTOR_CONFIG,
+                new HashMap<>(),
+                new TypeReference<StorageDTO<CollectorConfigDTO>>() {})
+            .getData();
+
+    List<CollectorConfig> configs = new ArrayList<>(configDTOS.size());
+    for (CollectorConfigDTO configDTO : configDTOS) {
+      configs.add(configDTO.toCollectorConfig());
+    }
+    return configs;
   }
 
   @Override
@@ -185,15 +202,20 @@ public class CollectorConfigDaoImpl extends AbstractDatabaseImpl implements ICol
         URLEncoder.encode(
             String.format("id in (%s)", StringUtils.collectionToCommaDelimitedString(configIds)),
             StandardCharsets.UTF_8.toString()));
-
-    return this.service
-        .getStorageService()
-        .getData(
-            Constant.APP_NAME,
-            Constant.APP_TABLE_NAME_COLLECTOR_CONFIG,
-            queryMap,
-            new TypeReference<StorageDTO<CollectorConfig>>() {})
-        .getData();
+    List<CollectorConfigDTO> configDTOS =
+        this.service
+            .getStorageService()
+            .getData(
+                Constant.APP_NAME,
+                Constant.APP_TABLE_NAME_COLLECTOR_CONFIG,
+                queryMap,
+                new TypeReference<StorageDTO<CollectorConfigDTO>>() {})
+            .getData();
+    List<CollectorConfig> configs = new ArrayList<>(configDTOS.size());
+    for (CollectorConfigDTO configDTO : configDTOS) {
+      configs.add(configDTO.toCollectorConfig());
+    }
+    return configs;
   }
 
   @Override
@@ -268,7 +290,7 @@ public class CollectorConfigDaoImpl extends AbstractDatabaseImpl implements ICol
 
     Map<String, Object> updateMap = new HashMap<>();
     updateMap.put("enabled", status ? 1 : 0);
-    updateMap.put("updateTime", new Date().getTime());
+    updateMap.put("updateTime", System.currentTimeMillis());
 
     this.service
         .getStorageService()
