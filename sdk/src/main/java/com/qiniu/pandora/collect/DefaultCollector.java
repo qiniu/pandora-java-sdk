@@ -2,6 +2,7 @@ package com.qiniu.pandora.collect;
 
 import com.qiniu.pandora.collect.runner.CollectRunner;
 import com.qiniu.pandora.collect.runner.Runner;
+import com.qiniu.pandora.collect.runner.config.CollectorConfig;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

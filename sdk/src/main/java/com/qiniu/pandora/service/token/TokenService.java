@@ -1,4 +1,4 @@
-package com.qiniu.pandora.service.account;
+package com.qiniu.pandora.service.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
@@ -8,23 +8,22 @@ import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.service.PandoraService;
 import com.qiniu.pandora.util.JsonHelper;
 
-/**
- * @author yilunyang
- */
-public class DcTokenService extends PandoraService {
+/** @author yilunyang */
+public class TokenService extends PandoraService {
   public static final String DC_TOKEN_URL = Constants.DEFAULT_PANDORA_DC_PREFIX + "/token";
 
-  public DcTokenService(PandoraClient client) {
+  public TokenService(PandoraClient client) {
     super(client);
   }
 
   public String createToken() throws QiniuException {
     TokenRespBody parsedResp;
-    byte[] response = client.post(
-        DC_TOKEN_URL,
-        ByteArrayBuilder.NO_BYTES,
-        acquireDefaultHeaders(),
-        Constants.CONTENT_TYPE_APPLICATION_JSON);
+    byte[] response =
+        client.post(
+            DC_TOKEN_URL,
+            ByteArrayBuilder.NO_BYTES,
+            acquireDefaultHeaders(),
+            Constants.CONTENT_TYPE_APPLICATION_JSON);
 
     parsedResp = JsonHelper.readValue(TokenRespBody.class, response);
     if (parsedResp == null) {
@@ -38,11 +37,12 @@ public class DcTokenService extends PandoraService {
     RefreshTokenReqBody reqBody = new RefreshTokenReqBody(oldToken);
     TokenRespBody parsedResponse;
 
-    byte[] response = client.put(
-        DC_TOKEN_URL,
-        JsonHelper.writeValueAsBytes(reqBody),
-        acquireDefaultHeaders(),
-        Constants.CONTENT_TYPE_APPLICATION_JSON);
+    byte[] response =
+        client.put(
+            DC_TOKEN_URL,
+            JsonHelper.writeValueAsBytes(reqBody),
+            acquireDefaultHeaders(),
+            Constants.CONTENT_TYPE_APPLICATION_JSON);
 
     parsedResponse = JsonHelper.readValue(TokenRespBody.class, response);
 

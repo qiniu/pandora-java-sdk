@@ -12,8 +12,7 @@ import java.util.Map;
 import org.apache.flume.ChannelException;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.EventDeliveryException;
-import org.apache.flume.PollableSource;
+import org.apache.flume.EventDrivenSource;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.SimpleEvent;
 import org.apache.flume.source.AbstractSource;
@@ -21,7 +20,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.util.ObjectUtils;
 
-public class FileSource extends AbstractSource implements PollableSource, Configurable {
+public class FileSource extends AbstractSource implements EventDrivenSource, Configurable {
 
   private static final Logger logger = LogManager.getLogger(FileSource.class);
 
@@ -38,19 +37,12 @@ public class FileSource extends AbstractSource implements PollableSource, Config
   }
 
   @Override
-  public long getBackOffSleepIncrement() {
-    return 0;
+  public synchronized void stop() {
+    super.stop();
   }
 
   @Override
-  public long getMaxBackOffSleepInterval() {
-    return 0;
-  }
-
-  @Override
-  public Status process() throws EventDeliveryException {
-    Status status = null;
-
+  public void start() {
     try {
       Event event = new SimpleEvent();
 
@@ -68,16 +60,11 @@ public class FileSource extends AbstractSource implements PollableSource, Config
       // Store the Event into this Source's associated Channel(s)
       getChannelProcessor().processEvent(event);
 
-      status = Status.READY;
     } catch (Throwable t) {
       // Log exception, handle individual exceptions as needed
       logger.error("ERROR: ", t);
-      status = Status.BACKOFF;
     }
-    return status;
   }
-
-  private void readLine(byte[] line) {}
 
   private void processLine(byte[] line) {
     byte[] message = line;

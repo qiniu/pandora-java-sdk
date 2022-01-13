@@ -1,5 +1,6 @@
 package com.qiniu.pandora.collect;
 
+import com.qiniu.pandora.collect.runner.config.CollectorConfig;
 import java.util.List;
 
 public interface Collector {

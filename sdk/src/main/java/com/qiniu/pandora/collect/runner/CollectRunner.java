@@ -1,6 +1,8 @@
 package com.qiniu.pandora.collect.runner;
 
 import com.qiniu.pandora.collect.State;
+import com.qiniu.pandora.collect.runner.config.EmbeddedRunnerConfiguration;
+import com.qiniu.pandora.collect.runner.config.MaterializedConfigurationProvider;
 import java.util.Map;
 import org.apache.flume.Channel;
 import org.apache.flume.FlumeException;

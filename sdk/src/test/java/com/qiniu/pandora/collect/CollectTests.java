@@ -1,6 +1,7 @@
 package com.qiniu.pandora.collect;
 
 import com.google.common.collect.Maps;
+import com.qiniu.pandora.collect.runner.config.CollectorConfig;
 import org.apache.flume.FlumeException;
 import org.junit.After;
 import org.junit.Before;

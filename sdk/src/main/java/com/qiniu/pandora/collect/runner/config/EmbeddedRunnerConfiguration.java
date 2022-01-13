@@ -1,8 +1,9 @@
-package com.qiniu.pandora.collect.runner;
+package com.qiniu.pandora.collect.runner.config;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import com.qiniu.pandora.collect.runner.source.SourceType;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -108,7 +109,6 @@ public class EmbeddedRunnerConfiguration {
       }
       String key = join(sink, TYPE);
       checkRequired(properties, key);
-      checkAllowed(ALLOWED_SINKS, properties.get(key));
     }
     checkRequired(properties, SINK_PROCESSOR_TYPE);
     checkAllowed(ALLOWED_SINK_PROCESSORS, properties.get(SINK_PROCESSOR_TYPE));
@@ -122,12 +122,12 @@ public class EmbeddedRunnerConfiguration {
    * @param properties - embedded agent configuration
    * @return configuration applicable to a flume agent
    */
-  static Map<String, String> configure(String name, Map<String, String> properties)
+  public static Map<String, String> configure(String name, Map<String, String> properties)
       throws FlumeException {
     validate(name, properties);
     // we are going to modify the properties as we parse the config
     properties = new HashMap<String, String>(properties);
-
+    adapterCustomSourceAndSink(properties);
     String sinkNames = properties.remove(SINKS);
 
     String strippedName = name.replaceAll("\\s+", "");
@@ -250,4 +250,36 @@ public class EmbeddedRunnerConfiguration {
   }
 
   private EmbeddedRunnerConfiguration() {}
+
+  // change to custom type class name
+  private static void adapterCustomSourceAndSink(Map<String, String> properties) {
+    adapterCustomSource(properties);
+    adapterCustomSink(properties);
+  }
+
+  private static void adapterCustomSource(Map<String, String> properties) {
+    if (!properties.containsKey(EmbeddedRunnerConfiguration.SOURCE_TYPE)) {
+      return;
+    }
+    SourceType sourceType =
+        SourceType.fromString(properties.get(EmbeddedRunnerConfiguration.SOURCE_TYPE));
+    if (sourceType != null) {
+      properties.put(EmbeddedRunnerConfiguration.SOURCE_TYPE, sourceType.getClassName());
+    }
+  }
+
+  private static void adapterCustomSink(Map<String, String> properties) {
+    if (!properties.containsKey(EmbeddedRunnerConfiguration.SINKS)) {
+      return;
+    }
+    String[] sinks = properties.get(EmbeddedRunnerConfiguration.SINKS).split("\\s+");
+    for (String sink : sinks) {
+      String key = join(sink, SEPERATOR, TYPE);
+      com.qiniu.pandora.collect.runner.sinks.SinkType sinkType =
+          com.qiniu.pandora.collect.runner.sinks.SinkType.fromString(properties.get(key));
+      if (sinkType != null) {
+        properties.put(key, sinkType.getClassName());
+      }
+    }
+  }
 }
