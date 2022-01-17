@@ -1,0 +1,18 @@
+.spinContainer {
+  position: relative;
+  border: 1px solid red;
+  text-align: center;
+  .spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.selector {
+  :global {
+    .ant-select-selection {
+      background: #f1f2f5 !important;
+    }
+  }
+}
