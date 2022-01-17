@@ -1,9 +1,9 @@
 {
-  "name": "src_trigger",
-  "title": "上汽SRC告警触发操作APP",
-  "description": "描述信息",
+  "name": "java_app",
+  "title": "java_app模板",
+  "description": "java_app通用模板",
   "categories": ["分类"],
-  "version": "2.0.0",
+  "version": "1.0.0",
   "authors": ["pandora"],
   "type": "APP",
   "icon": "static/icon.png",
