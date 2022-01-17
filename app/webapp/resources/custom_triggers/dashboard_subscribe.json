@@ -1,0 +1,6 @@
+{
+  "name": "dashboard_subscribe",
+  "displayName": "仪表盘订阅",
+  "env": "python3",
+  "filename": "dashboard_subscribe.py"
+}

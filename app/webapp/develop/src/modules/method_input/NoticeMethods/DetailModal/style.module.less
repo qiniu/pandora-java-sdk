@@ -1,0 +1,21 @@
+.wrapper {
+  :global {
+    .ant-modal-body {
+      height: 70vh;
+      > div,
+      .ant-spin-nested-loading,
+      .ant-spin-nested-loading .ant-spin-container {
+        height: 100%;
+      }
+    }
+  }
+  .flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  .disabledClick {
+    pointer-events: none;
+  }
+}

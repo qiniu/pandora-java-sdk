@@ -1,0 +1,15 @@
+<form>
+  <input type="multiselect" field="attr5">
+    <label>api的options</label>
+    <api>http://cs21:9220/api/v1/repos?order=desc&pageNo=1&pageSize=10&prefix=&sort=updateTime&withDocSize=true</api>
+    <field-name>repos</field-name>
+    <init-value>xxx</init-value>
+  </input>
+    <input type="number" field="attr9" required="true">
+    <label>属性9</label>
+    <initial-value>10</initial-value>
+    <rule>
+      <pattern>integer</pattern>
+    </rule>
+  </input>
+</form>

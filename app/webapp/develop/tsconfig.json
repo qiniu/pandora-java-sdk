@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "ESNext",
+    "strict": true,
+    "lib": ["dom", "es2015"],
+    "allowJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "baseUrl": "./src",
+    "outDir": "./lib",
+    "rootDir": "src",
+    "noUnusedLocals": true,
+    "downlevelIteration": true,
+    "noUnusedParameters": true,
+    "typeRoots": ["./types", "./node_modules/@types"]
+  },
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "include": ["src", "types"],
+  "exclude": ["node_modules"],
+  "atom": {
+    "rewriteTsconfig": false
+  }
+}

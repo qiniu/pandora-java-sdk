@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+cp -Rf lib/** ../appserver/static/src_trigger
+
+cd ..
+appname=$(basename `pwd`)
+cd ..
+tar -czvf "${appname}.tar.gz" --exclude="${appname}/develop" $appname

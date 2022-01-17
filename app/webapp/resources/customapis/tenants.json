@@ -1,0 +1,8 @@
+{
+  "prefix": "/tenants",
+  "env": "python3",
+  "filename": "tenants.py",
+  "method": [
+    "GET"
+  ]
+}

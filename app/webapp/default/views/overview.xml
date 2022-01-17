@@ -1,0 +1,36 @@
+<html style="background: #ffffff; padding: 12px;">
+
+<h2>关于</h2>
+
+<p>该项目是一个基于Pandora Python SDK的后端APP示例项目。</p>
+
+<h3>修改自定义API</h3>
+
+<ul>
+    <li>修改 resourecs/customapis/api.json 更改自定义API内容</li>
+    <li>接下来修改自定义API的响应方法，位于 bins/api_example.py 路径下，覆盖 `do_handle_data` 方法实现你自己的API业务逻辑。如果需要引入第三方依赖可以使用pip 进行安装，建议及时可以将依赖同步到requirements文件中</li>
+    <li>修改 bins/tests/test_api_example.py 路径下的单元测试文件，通过SDK提供的 mock 工具测试HTTP 请求逻辑。</li>
+    <li>在项目目录下执行 `./run.sh unittest` 运行单元测试，查看运行结果。</li>
+</ul>
+
+
+
+<h3>修改自定义SPL代码逻辑</h3>
+
+<ul>
+    <li>修改 resourecs/customoperators/spl.json 更改自定义API内容</li>
+    <li>接下来修改自定义SPL的执行方法，位于 bins/spl_example.py 路径下，覆盖 `streaming_handle` 方法实现你自己的API业务逻辑。如果需要引入第三方依赖可以使用pip 进行安装，建议及时可以将依赖同步到requirements文件中</li>
+    <li>修改 bins/tests/test_spl_example.py 路径下的单元测试文件，测试数据处理逻辑。</li>
+    <li>在项目目录下执行 `./run.sh unittest` 运行单元测试，查看运行结果。</li>
+</ul>
+
+<h3>打包</h3>
+
+<ul>
+    <li>可以使用 package 命令进行简单的打包工作，如 ./run.sh package</li>
+    <li>如果在windows/mac 环境下开发，需要向linux环境打包APP，可以使用 ./run.sh docker_build 命令，注意，如果项目依赖C扩展，需要在 Dockerfile 中指定目标的 Python 环境。</li>
+    <li>当打包成功的话，APP包会出现在 dist 目录下</li>
+    <li>登录Pandora环境，上传查看效果</li>
+</ul>
+
+</html>

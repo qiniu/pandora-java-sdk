@@ -1,0 +1,8 @@
+{
+  "prefix": "/message",
+  "env": "python3",
+  "filename": "message.py",
+  "method": [
+    "GET"
+  ]
+}

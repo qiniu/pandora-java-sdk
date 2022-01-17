@@ -1,0 +1,47 @@
+@import '@qn-pandora/pandora-component/lib/style/theme.less';
+.root {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  .tag {
+    color: #bfbfbf;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    margin-right: 20px;
+    padding: 0;
+    text-align: center;
+    flex-shrink: 0;
+    background-color: transparent;
+    border: 1px solid #bfbfbf;
+  }
+  .activeTag {
+    background-color: #2c6dd2;
+  }
+  .disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .selector {
+    width: 75%;
+    margin-right: 3px;
+  }
+  .view {
+    cursor: pointer;
+    color: @theme-color;
+    margin-left: 5px;
+  }
+  .icon {
+    cursor: pointer;
+    &.active {
+      color: @normal-color;
+    }
+    &.readonly {
+      width: 19px;
+      margin-right: 5px;
+    }
+  }
+}
+.last {
+  margin-bottom: 0px !important;
+}
