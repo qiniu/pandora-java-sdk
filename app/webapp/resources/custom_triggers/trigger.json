@@ -1,6 +1,0 @@
-{
-  "name": "src_trigger",
-  "displayName": "通知SRC系统角色",
-  "env": "python3",
-  "filename": "src_trigger.py"
-}

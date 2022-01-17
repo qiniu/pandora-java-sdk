@@ -1,0 +1,10 @@
+<form>
+  <input required="true" type="text" token="name">
+   <label>名称</label>
+  </input>
+  <input required="true" type="text" token="config">
+   <label>配置</label>
+    <rule>
+      <function>configValidator</function>
+    </rule>
+</form>
