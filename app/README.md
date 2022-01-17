@@ -14,6 +14,10 @@ Pandora-Java-App项目涉及到 [Java](https://www.oracle.com/java/technologies/
     $ sudo npm install -g @microsoft/rush@5.54.0
     $ sudo npm install -g pnpm@6.7.1
 
+使用本地Pandora-Java-SDK接口时，需要安装`maven`，并在sdk目录下执行
+    
+    $ mvn install
+
 我们无需手动安装`gradle`工具包，在第一次执行`./gradlew`的命令时，它会自动引导下载`gradle`。
 
 

@@ -1,7 +1,8 @@
 {
   "name": "{{app_name}}",
   "title": "{{app_name}}",
-  "icon": "",
+  "authors": ["pandora"],
+  "icon": "static/icon.png",
   "description": "",
   "categories": [],
   "platformVersion": ">=0.13.4",
