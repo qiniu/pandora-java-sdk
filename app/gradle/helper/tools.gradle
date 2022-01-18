@@ -13,10 +13,6 @@ task changeAppName {
     text = text.replaceAll(~/"title"[\s]?:[\s]?"(.*)"/, "\"title\": \"${generateApp}\"")
     appFile.text = text
 
-    def packageFile = rootProject.file('config/package.json')
-    text = packageFile.text.replaceAll(~/"name"[\s]?:[\s]?"(.*)"/, "\"name\": \"${generateApp}\"")
-    packageFile.text = text
-
     def serviceFile = rootProject.file('config/resources/custom_services/service.json')
     text = serviceFile.text.replaceAll(~/"name"[\s]?:[\s]?"(.*)"/, "\"name\": \"${generateApp}\"")
     text = text.replaceAll(~/"filename"[\s]?:[\s]?"(.*)"/, "\"filename\": \"bins/${generateApp}.jar\"")

@@ -1,1 +1,0 @@
-{"name": "saic_custom_input", "version": "0.1.0", "scripts": {"package": "bash ./run.sh package", "server_package": "npm run package"}}

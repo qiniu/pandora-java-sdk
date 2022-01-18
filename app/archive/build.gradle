@@ -28,7 +28,19 @@ task copy(type: Copy) {
   }
 
   into("app/appserver") {
-    from { project(":webapp").file("build") }
+    from { project(":webapp").file("appserver") }
+  }
+
+  into("app/appserver/static") {
+    from { project(":webapp").file("develop/lib") }
+  }
+
+  into("app/default") {
+    from { project(":webapp").file("default") }
+  }
+
+  into("app/static") {
+    from { project(":webapp").file("static") }
   }
 
   doFirst {

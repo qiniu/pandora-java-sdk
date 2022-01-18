@@ -36,3 +36,8 @@ archive/app/
 
 java/build/
 java/src/main/generated/
+
+# webapp
+webapp/.vscode/
+webapp/develop/lib/
+webapp/develop/node_modules/
