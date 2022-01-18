@@ -37,6 +37,8 @@ archive/app/
 java/build/
 java/src/main/generated/
 
+config/bins/
+
 # webapp
 webapp/.vscode/
 webapp/develop/lib/

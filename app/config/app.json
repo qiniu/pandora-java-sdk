@@ -4,7 +4,7 @@
   "authors": ["pandora"],
   "icon": "static/icon.png",
   "description": "",
-  "categories": [],
+  "categories": ["collector"],
   "platformVersion": ">=0.13.4",
   "docsLink": "https://developer.qiniu.com/insight",
   "preview": [],
