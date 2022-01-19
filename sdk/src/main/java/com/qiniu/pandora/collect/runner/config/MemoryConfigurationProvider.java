@@ -1,4 +1,4 @@
-package com.qiniu.pandora.collect.runner;
+package com.qiniu.pandora.collect.runner.config;
 
 import java.util.Map;
 import org.apache.flume.conf.FlumeConfiguration;

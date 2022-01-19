@@ -1,9 +1,10 @@
 package com.qiniu.pandora.collect.runner.sinks;
 
 import com.qiniu.pandora.DefaultPandoraClient;
-import com.qiniu.pandora.service.upload.UploadDataService;
+import com.qiniu.pandora.common.Constants;
+import com.qiniu.pandora.service.upload.PostDataResponse;
+import com.qiniu.pandora.service.upload.PostDataService;
 import java.io.IOException;
-import java.io.OutputStream;
 import org.apache.flume.Channel;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
@@ -23,12 +24,14 @@ public class PandoraSink extends AbstractSink implements Configurable {
   public static final String REPO = "repo";
   public static final String SOURCE_TYPE = "source_type";
   public static final String PANDORA_HOST = "pandora_host";
+  public static final String TOKEN = "token";
 
   private String hostname;
   private String repo;
   private String sourceType;
+  private String token;
 
-  private UploadDataService uploadDataService;
+  private PostDataService postDataService;
 
   @Override
   public final void configure(final Context context) {
@@ -52,10 +55,16 @@ public class PandoraSink extends AbstractSink implements Configurable {
       throw new IllegalArgumentException("pandora_host cannot be empty");
     }
 
+    String token = context.getString(TOKEN);
+    if (ObjectUtils.isEmpty(pandoraHost)) {
+      throw new IllegalArgumentException("pandora_host cannot be empty");
+    }
+
     this.hostname = hostname;
     this.repo = repo;
     this.sourceType = sourceType;
-    uploadDataService = new UploadDataService(new DefaultPandoraClient(pandoraHost));
+    this.token = token;
+    postDataService = new PostDataService(new DefaultPandoraClient(pandoraHost));
   }
 
   @Override
@@ -70,8 +79,7 @@ public class PandoraSink extends AbstractSink implements Configurable {
 
   @Override
   public final Status process() throws EventDeliveryException {
-    Status status = null;
-    OutputStream outputStream = null;
+    Status status = Status.READY;
 
     Channel ch = getChannel();
     Transaction txn = ch.getTransaction();
@@ -88,14 +96,21 @@ public class PandoraSink extends AbstractSink implements Configurable {
       if (eventBody != null && eventBody.length > 0) {
         logger.debug("Sending request : " + new String(event.getBody()));
 
+        // todo check success / fail
+        PostDataResponse response;
         try {
-          // todo response success count / fail count
-          uploadDataService.upload(eventBody, hostname, "", repo, sourceType, "");
+          response =
+              postDataService.upload(
+                  eventBody,
+                  hostname,
+                  "",
+                  repo,
+                  sourceType,
+                  token,
+                  Constants.CONTENT_TYPE_APPLICATION_JSON);
         } catch (IOException e) {
-          // todo fault tolerant
           txn.rollback();
           status = Status.BACKOFF;
-
           logger.error("upload data failed", e);
         }
       } else {
@@ -118,14 +133,6 @@ public class PandoraSink extends AbstractSink implements Configurable {
 
     } finally {
       txn.close();
-
-      if (outputStream != null) {
-        try {
-          outputStream.close();
-        } catch (IOException e) {
-          // ignore errors
-        }
-      }
     }
     return status;
   }

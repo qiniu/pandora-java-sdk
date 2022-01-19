@@ -47,7 +47,7 @@ public class CollectRunnerTests {
     Thread.sleep(1000L);
 
     properties = Maps.newHashMap();
-    properties.put("source.type", "com.qiniu.pandora.collect.runner.source.FileSource");
+    properties.put("source.type", "file");
     properties.put("source.input.file", this.getClass().getResource("/test.log").getPath());
     properties.put("channel.type", "memory");
     properties.put("channel.capacity", "200");

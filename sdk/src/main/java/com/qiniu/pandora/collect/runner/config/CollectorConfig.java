@@ -1,4 +1,4 @@
-package com.qiniu.pandora.collect;
+package com.qiniu.pandora.collect.runner.config;
 
 import java.util.Map;
 import java.util.Objects;

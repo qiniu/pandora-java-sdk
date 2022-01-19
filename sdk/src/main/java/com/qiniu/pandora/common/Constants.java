@@ -24,6 +24,8 @@ public class Constants {
   /** Pandora 上传数据接口路径 */
   public static final String DEFAULT_SIMPLE_DATA_PREFIX = DEFAULT_PANDORA_PREFIX + "/simple/data";
 
+  public static final String DEFAULT_DATA_PREFIX = DEFAULT_PANDORA_PREFIX + "/data";
+
   /** HTTP 相关请求头 */
   public static final String CONTENT_TYPE = "Content-Type";
 
