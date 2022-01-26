@@ -24,4 +24,14 @@ public interface Collector {
   void updateRunner(CollectorConfig config);
 
   void updateRunners(List<CollectorConfig> configs);
+
+  void stopRunners(List<String> ids);
+
+  void startRunners(List<String> ids);
+
+  List<CollectorConfig> getAllRunners();
+
+  List<CollectorConfig> getRunners(List<String> ids);
+
+  CollectorConfig getRunner(String id);
 }

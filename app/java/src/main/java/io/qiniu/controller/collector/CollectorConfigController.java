@@ -64,7 +64,6 @@ public class CollectorConfigController {
         .collect(Collectors.toList());
   }
 
-  // TODO
   @GetMapping(value = "/configs/list")
   public @ResponseBody CollectorConfigPaginatedVo getPaginatedConfigs(
       @RequestParam(value = REQUEST_PARAM_FIELD, required = false) final String field,

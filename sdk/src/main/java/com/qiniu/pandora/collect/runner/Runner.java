@@ -1,5 +1,6 @@
 package com.qiniu.pandora.collect.runner;
 
+import com.qiniu.pandora.collect.State;
 import java.util.Map;
 
 public interface Runner {
@@ -13,4 +14,10 @@ public interface Runner {
   void stop();
 
   void delete();
+
+  Map<String, String> getProperties();
+
+  String getName();
+
+  State getState();
 }

@@ -2,6 +2,8 @@ package io.qiniu.exception;
 
 import com.qiniu.pandora.common.QiniuException;
 import io.qiniu.utils.ExceptionUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -10,15 +12,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class ResponseExceptionHandler {
+
+  private static final Logger logger = LogManager.getLogger(ResponseExceptionHandler.class);
+
   /**
    * Handle {@link QiniuException}.
    *
-   * @param e NacosException
+   * @param ex NacosException
    * @return ResponseEntity
    */
   @ExceptionHandler(QiniuException.class)
-  public ResponseEntity<String> handlePandoraException(QiniuException e) {
-    return ResponseEntity.status(e.getErrCode()).body(e.getErrMsg());
+  public ResponseEntity<String> handlePandoraException(QiniuException ex) {
+    logger.error(ex.getMessage());
+    return ResponseEntity.status(ex.getErrCode()).body(ex.getErrMsg());
   }
 
   /**
@@ -29,6 +35,7 @@ public class ResponseExceptionHandler {
    */
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<String> handleParameterError(IllegalArgumentException ex) {
+    logger.error(ex.getMessage());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
 
@@ -41,6 +48,9 @@ public class ResponseExceptionHandler {
   @ExceptionHandler(MissingServletRequestParameterException.class)
   public ResponseEntity<String> handleMissingParams(MissingServletRequestParameterException ex) {
     String name = ex.getParameterName();
+
+    logger.error("Parameter '" + name + "' is missing");
+
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body("Parameter '" + name + "' is missing");
   }
@@ -48,12 +58,13 @@ public class ResponseExceptionHandler {
   /**
    * Handle other exception.
    *
-   * @param e other exception
+   * @param ex other exception
    * @return ResponseEntity
    */
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<String> handleException(Exception e) {
+  public ResponseEntity<String> handleException(Exception ex) {
+    logger.error(ex.getMessage());
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(ExceptionUtils.getAllExceptionMsg(e));
+        .body(ExceptionUtils.getAllExceptionMsg(ex));
   }
 }

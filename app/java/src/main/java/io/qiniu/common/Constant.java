@@ -6,4 +6,6 @@ public class Constant {
   public static final String APP_NAME = "{{app_name}}";
 
   public static final String APP_TABLE_NAME_COLLECTOR_CONFIG = "app_collector_config";
+
+  public static final String APP_TABLE_NAME_COLLECTOR_TASK = "app_collector_task";
 }

@@ -3,9 +3,8 @@ package com.qiniu.pandora.collect.runner;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import java.io.IOException;
+import com.qiniu.pandora.util.NetUtils;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class CollectRunnerTests {
   public void setUp() throws Exception {
     body = "this is a test log".getBytes(Charsets.UTF_8);
 
-    int port = findFreePort();
+    int port = NetUtils.findFreePort();
     eventCollector = new EventCollector();
     Responder responderSink = new SpecificResponder(AvroSourceProtocol.class, eventCollector);
     nettyServer = new NettyServer(responderSink, new InetSocketAddress(HOSTNAME, port));
@@ -129,11 +128,5 @@ public class CollectRunnerTests {
       stringMap.put(entry.getKey().toString(), entry.getValue().toString());
     }
     return stringMap;
-  }
-
-  private static int findFreePort() throws IOException {
-    try (ServerSocket socket = new ServerSocket(0)) {
-      return socket.getLocalPort();
-    }
   }
 }
