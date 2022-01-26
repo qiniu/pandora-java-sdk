@@ -20,4 +20,6 @@ public interface Runner {
   String getName();
 
   State getState();
+
+  String getMetadata();
 }

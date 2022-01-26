@@ -1,10 +1,11 @@
 package io.qiniu;
 
 import com.qiniu.pandora.common.QiniuException;
+import com.qiniu.pandora.util.StringUtils;
 import io.qiniu.configuration.PandoraProperties;
 import io.qiniu.service.PandoraService;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -20,6 +21,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 @Component
 @Order(1)
@@ -94,11 +96,9 @@ public class StartUpApplicationRunner implements ApplicationRunner {
     Path idPath = Paths.get(ID_PATH);
 
     String id = properties.getId();
-    BufferedReader reader = Files.newBufferedReader(idPath);
-    String content = reader.readLine();
-
-    if (id != null) {
-      content = id;
+    File file = idPath.toFile();
+    if (file.exists() && ObjectUtils.isEmpty(id)) {
+      id = StringUtils.utf8String(Files.readAllBytes(idPath));
     }
 
     // generate a new id and save it to file
@@ -112,7 +112,7 @@ public class StartUpApplicationRunner implements ApplicationRunner {
                 properties.getServerAddress(),
                 properties.getServerPort(),
                 properties.getPandoraToken(),
-                content);
+                id);
 
     if (id == null) {
       throw new QiniuException("start failed, worker id is null");

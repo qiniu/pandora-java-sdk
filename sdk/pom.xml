@@ -33,12 +33,15 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-version>1.5.4.RELEASE</spring-version>
+    <spring-version>2.6.3</spring-version>
+    <spring-boot-starter-log4j-version>1.3.8.RELEASE</spring-boot-starter-log4j-version>
     <jackson-version>2.12.3</jackson-version>
     <log4j-version>2.17.1</log4j-version>
     <http-client-version>4.5.13</http-client-version>
     <http-core-version>4.4.9</http-core-version>
+    <flume-version>1.9.0</flume-version>
     <junit-version>4.13.1</junit-version>
+    <mockwebserver-version>4.9.3</mockwebserver-version>
   </properties>
 
     <build>
@@ -155,9 +158,37 @@
     </build>
 
     <dependencies>
+      <!-- springboot -->
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring-version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <!--log4j-slf4j-impl与 logback-classic包不兼容，删除这个包 -->
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-log4j</artifactId>
+        <version>${spring-boot-starter-log4j-version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
         <version>${spring-version}</version>
       </dependency>
       <dependency>
@@ -200,18 +231,37 @@
       <dependency>
         <groupId>org.apache.flume</groupId>
         <artifactId>flume-ng-core</artifactId>
-        <version>1.9.0</version>
+        <version>${flume-version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.flume</groupId>
         <artifactId>flume-ng-node</artifactId>
-        <version>1.9.0</version>
+        <version>${flume-version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
+      <!-- unit test -->
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit-version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>mockwebserver</artifactId>
+        <version>${mockwebserver-version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

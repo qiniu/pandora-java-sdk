@@ -1,14 +1,18 @@
 package io.qiniu.service.collector;
 
 import com.qiniu.pandora.collect.Collector;
+import com.qiniu.pandora.collect.CollectorConfig;
+import com.qiniu.pandora.collect.CollectorContext;
 import com.qiniu.pandora.collect.DefaultCollector;
 import com.qiniu.pandora.collect.State;
-import com.qiniu.pandora.collect.runner.config.CollectorConfig;
+import com.qiniu.pandora.collect.runner.config.RunnerConfig;
 import com.qiniu.pandora.common.QiniuException;
 import com.qiniu.pandora.common.QiniuExceptions;
 import io.qiniu.common.entity.collector.CollectorTask;
+import io.qiniu.configuration.CollectorProperties;
 import io.qiniu.configuration.PandoraProperties;
 import io.qiniu.dao.collector.ICollectorTaskDao;
+import io.qiniu.service.PandoraService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,13 +37,17 @@ public class CollectorTaskService {
   @Autowired
   public CollectorTaskService(
       PandoraProperties properties,
-      ICollectorTaskDao collectorTaskDao,
-      PandoraProperties pandoraProperties) {
+      CollectorProperties collectorProperties,
+      PandoraService pandoraService,
+      ICollectorTaskDao collectorTaskDao) {
     this.workerId = properties.getId();
     this.collectorTaskDao = collectorTaskDao;
-    this.properties = pandoraProperties;
-
-    this.collector = new DefaultCollector();
+    this.properties = properties;
+    this.collector =
+        new DefaultCollector(
+            new CollectorConfig(collectorProperties.getMetaPath()),
+            new CollectorContext(
+                pandoraService.getTokenService(), pandoraService.getPostDataService()));
   }
 
   @PostConstruct
@@ -50,7 +58,7 @@ public class CollectorTaskService {
 
   public List<CollectorTask> queryTasks() throws QiniuException {
     List<CollectorTask> tasks = new ArrayList<>();
-    for (CollectorConfig config : this.collector.getAllRunners()) {
+    for (RunnerConfig config : this.collector.getAllRunners()) {
       CollectorTask task = convertConfigToTask(config);
       task.setWorkerId(this.workerId);
       tasks.add(task);
@@ -60,7 +68,7 @@ public class CollectorTaskService {
 
   public List<CollectorTask> queryTasks(List<String> taskIds) throws QiniuException {
     List<CollectorTask> tasks = new ArrayList<>();
-    for (CollectorConfig config : this.collector.getRunners(taskIds)) {
+    for (RunnerConfig config : this.collector.getRunners(taskIds)) {
       CollectorTask task = convertConfigToTask(config);
       task.setWorkerId(this.workerId);
       tasks.add(task);
@@ -69,7 +77,7 @@ public class CollectorTaskService {
   }
 
   public CollectorTask queryTask(String taskId) throws QiniuException {
-    CollectorConfig config = this.collector.getRunner(taskId);
+    RunnerConfig config = this.collector.getRunner(taskId);
     if (config == null) {
       return null;
     }
@@ -173,15 +181,16 @@ public class CollectorTaskService {
     }
   }
 
-  private static CollectorConfig convertTaskToConfig(CollectorTask task) throws QiniuException {
-    return new CollectorConfig(
+  private static RunnerConfig convertTaskToConfig(CollectorTask task) throws QiniuException {
+    return new RunnerConfig(
         task.getTaskId(),
         task.getName(),
         task.isEnabled() ? State.STARTED : State.STOPPED,
+        task.getMeta(),
         convertConfigToProperties(task.getConfig()));
   }
 
-  private static CollectorTask convertConfigToTask(CollectorConfig config) throws QiniuException {
+  private static CollectorTask convertConfigToTask(RunnerConfig config) throws QiniuException {
     CollectorTask task = new CollectorTask();
 
     task.setTaskId(config.getId());

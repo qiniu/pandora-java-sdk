@@ -1,6 +1,6 @@
 package com.qiniu.pandora.collect;
 
-import com.qiniu.pandora.collect.runner.config.CollectorConfig;
+import com.qiniu.pandora.collect.runner.config.RunnerConfig;
 import java.util.List;
 
 public interface Collector {
@@ -9,9 +9,9 @@ public interface Collector {
 
   void stop();
 
-  void addRunner(CollectorConfig config);
+  void addRunner(RunnerConfig config);
 
-  void addRunners(List<CollectorConfig> configs);
+  void addRunners(List<RunnerConfig> configs);
 
   void deleteRunner(String id);
 
@@ -21,17 +21,17 @@ public interface Collector {
 
   void resetRunners(List<String> id);
 
-  void updateRunner(CollectorConfig config);
+  void updateRunner(RunnerConfig config);
 
-  void updateRunners(List<CollectorConfig> configs);
+  void updateRunners(List<RunnerConfig> configs);
 
   void stopRunners(List<String> ids);
 
   void startRunners(List<String> ids);
 
-  List<CollectorConfig> getAllRunners();
+  List<RunnerConfig> getAllRunners();
 
-  List<CollectorConfig> getRunners(List<String> ids);
+  List<RunnerConfig> getRunners(List<String> ids);
 
-  CollectorConfig getRunner(String id);
+  RunnerConfig getRunner(String id);
 }

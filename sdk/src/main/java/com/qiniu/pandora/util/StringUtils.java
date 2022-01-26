@@ -2,6 +2,7 @@ package com.qiniu.pandora.util;
 
 import com.qiniu.pandora.common.Constants;
 import java.util.Collection;
+import org.springframework.util.ObjectUtils;
 
 /** 字符串连接工具类 */
 public final class StringUtils {
@@ -115,5 +116,9 @@ public final class StringUtils {
 
   public static String utf8String(byte[] data) {
     return new String(data, Constants.UTF_8);
+  }
+
+  public static String getStringOrDefault(String value, String defaultValue) {
+    return !ObjectUtils.isEmpty(value) ? value : defaultValue;
   }
 }

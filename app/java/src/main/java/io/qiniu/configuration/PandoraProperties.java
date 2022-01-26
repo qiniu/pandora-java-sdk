@@ -1,5 +1,6 @@
 package io.qiniu.configuration;
 
+import io.qiniu.common.Constant;
 import io.qiniu.common.entity.pandora.PandoraMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,10 +28,10 @@ public class PandoraProperties {
   @Value("${server.port:8088}")
   private String serverPort;
 
-  @Value("${pandora.app:demo}")
+  @Value("${pandora.app:" + Constant.APP_NAME + "}")
   private String appName;
 
-  @Value("${pandora.service:demo}")
+  @Value("${pandora.service:" + Constant.APP_NAME + "}")
   private String serviceName;
 
   @Value("${pandora.id:}")

@@ -34,6 +34,14 @@ public class EmbeddedRunnerConfiguration {
   /** Space delimited list of sink names: e.g. sink1 sink2 sink3 */
   public static final String SINKS = "sinks";
 
+  /** Meta content for source */
+  public static final String METADATA = "metadata";
+
+  public static final String META_PATH = "meta_path";
+
+  public static final String SOURCE_METADATA = join(SOURCE, METADATA);
+  public static final String SOURCE_META_PATH = join(SOURCE, META_PATH);
+
   public static final String SINKS_PREFIX = join(SINKS, "");
   /** Source type, choices are `embedded' */
   public static final String SOURCE_TYPE = join(SOURCE, TYPE);
@@ -122,18 +130,19 @@ public class EmbeddedRunnerConfiguration {
    * @param properties - embedded agent configuration
    * @return configuration applicable to a flume agent
    */
-  public static Map<String, String> configure(String name, Map<String, String> properties)
+  public static Map<String, String> configure(
+      String name, Map<String, String> properties, String metadata, String metaPath)
       throws FlumeException {
     validate(name, properties);
     // we are going to modify the properties as we parse the config
     properties = new HashMap<String, String>(properties);
+    // set source meta
+    properties.put(SOURCE_METADATA, metadata);
+    properties.put(SOURCE_META_PATH, metaPath);
     adapterCustomSourceAndSink(properties);
     String sinkNames = properties.remove(SINKS);
 
     String strippedName = name.replaceAll("\\s+", "");
-    String sourceName = "source-" + strippedName;
-    String channelName = "channel-" + strippedName;
-    String sinkGroupName = "sink-group-" + strippedName;
 
     /*
      * Now we are going to process the user supplied configuration
@@ -149,24 +158,24 @@ public class EmbeddedRunnerConfiguration {
      * source at the channel.
      */
     // point agent at source
-    result.put(join(name, BasicConfigurationConstants.CONFIG_SOURCES), sourceName);
+    result.put(join(name, BasicConfigurationConstants.CONFIG_SOURCES), strippedName);
     // point agent at channel
-    result.put(join(name, BasicConfigurationConstants.CONFIG_CHANNELS), channelName);
+    result.put(join(name, BasicConfigurationConstants.CONFIG_CHANNELS), strippedName);
     // point agent at sinks
     result.put(join(name, BasicConfigurationConstants.CONFIG_SINKS), sinkNames);
     // points the agent at the sinkgroup
-    result.put(join(name, BasicConfigurationConstants.CONFIG_SINKGROUPS), sinkGroupName);
+    result.put(join(name, BasicConfigurationConstants.CONFIG_SINKGROUPS), strippedName);
     // points the sinkgroup at the sinks
     result.put(
-        join(name, BasicConfigurationConstants.CONFIG_SINKGROUPS, sinkGroupName, SINKS), sinkNames);
+        join(name, BasicConfigurationConstants.CONFIG_SINKGROUPS, strippedName, SINKS), sinkNames);
     // points the source at the channel
     result.put(
         join(
             name,
             BasicConfigurationConstants.CONFIG_SOURCES,
-            sourceName,
+            strippedName,
             BasicConfigurationConstants.CONFIG_CHANNELS),
-        channelName);
+        strippedName);
 
     // Properties will be modified during iteration so we need a
     // copy of the keys.
@@ -191,7 +200,7 @@ public class EmbeddedRunnerConfiguration {
               BasicConfigurationConstants.CONFIG_SINKS,
               sink,
               BasicConfigurationConstants.CONFIG_CHANNEL),
-          channelName);
+          strippedName);
     }
     /*
      * Third, process all remaining configuration items, prefixing them
@@ -202,16 +211,16 @@ public class EmbeddedRunnerConfiguration {
       String value = properties.get(key);
       if (key.startsWith(SOURCE_PREFIX)) {
         // users use `source' but agent needs the actual source name
-        key = key.replaceFirst(SOURCE, sourceName);
+        key = key.replaceFirst(SOURCE, strippedName);
         result.put(join(name, BasicConfigurationConstants.CONFIG_SOURCES, key), value);
       } else if (key.startsWith(CHANNEL_PREFIX)) {
         // users use `channel' but agent needs the actual channel name
-        key = key.replaceFirst(CHANNEL, channelName);
+        key = key.replaceFirst(CHANNEL, strippedName);
         result.put(join(name, BasicConfigurationConstants.CONFIG_CHANNELS, key), value);
       } else if (key.startsWith(SINK_PROCESSOR_PREFIX)) {
         // agent.sinkgroups.sinkgroup.processor.*
         result.put(
-            join(name, BasicConfigurationConstants.CONFIG_SINKGROUPS, sinkGroupName, key), value);
+            join(name, BasicConfigurationConstants.CONFIG_SINKGROUPS, strippedName, key), value);
       } else {
         // XXX should we simply ignore this?
         throw new FlumeException("Unknown configuration " + key);
@@ -274,7 +283,7 @@ public class EmbeddedRunnerConfiguration {
     }
     String[] sinks = properties.get(EmbeddedRunnerConfiguration.SINKS).split("\\s+");
     for (String sink : sinks) {
-      String key = join(sink, SEPERATOR, TYPE);
+      String key = join(sink, TYPE);
       com.qiniu.pandora.collect.runner.sinks.SinkType sinkType =
           com.qiniu.pandora.collect.runner.sinks.SinkType.fromString(properties.get(key));
       if (sinkType != null) {
