@@ -1,5 +1,5 @@
 <v-form>
-<input-control>
+  <input-control>
     <label-col>
       <span>6</span>
     </label-col>
@@ -7,8 +7,15 @@
       <span>18</span>
     </input-col>
   </input-control>
-  <v-input type="text" token="username">
-    <label>用户名</label>
+  <v-input type="text" token="black">
+    <label>黑名单</label>
+    <rule>
+      <required>true</required>
+      <message>不能为空</message>
+    </rule>
+  </v-input>
+  <v-input type="text" token="white">
+    <label>白名单</label>
     <rule>
       <required>true</required>
       <message>不能为空</message>
