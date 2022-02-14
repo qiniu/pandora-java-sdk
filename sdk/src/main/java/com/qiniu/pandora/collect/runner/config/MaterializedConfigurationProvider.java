@@ -1,5 +1,6 @@
 package com.qiniu.pandora.collect.runner.config;
 
+import com.qiniu.pandora.collect.CollectorContext;
 import java.util.Map;
 import org.apache.flume.node.MaterializedConfiguration;
 
@@ -10,7 +11,8 @@ import org.apache.flume.node.MaterializedConfiguration;
  */
 public class MaterializedConfigurationProvider {
 
-  public MaterializedConfiguration get(String name, Map<String, String> properties) {
-    return new MemoryConfigurationProvider(name, properties).getConfiguration();
+  public MaterializedConfiguration get(
+      String name, Map<String, String> properties, CollectorContext context) {
+    return new MemoryConfigurationProvider(name, properties, context).getConfiguration();
   }
 }

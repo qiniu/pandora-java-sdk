@@ -42,6 +42,10 @@ public class DefaultPandoraClient implements PandoraClient {
     return new PostDataService(this);
   }
 
+  public PostDataService NewPostDataService(TokenService tokenService, String token) {
+    return new PostDataService(this, tokenService, token);
+  }
+
   public TokenService NewTokenService() {
     return new TokenService(this);
   }

@@ -2,11 +2,12 @@ package com.qiniu.pandora.collect;
 
 import com.qiniu.pandora.collect.runner.CollectRunner;
 import com.qiniu.pandora.collect.runner.Runner;
-import com.qiniu.pandora.collect.runner.config.CollectorConfig;
+import com.qiniu.pandora.collect.runner.config.RunnerConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.flume.lifecycle.LifecycleSupervisor;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -14,11 +15,17 @@ public class DefaultCollector implements Collector {
 
   private static final Logger logger = LogManager.getLogger(DefaultCollector.class);
 
-  private State state;
+  private final LifecycleSupervisor supervisor;
   private Map<String, Runner> runners = new ConcurrentHashMap<>();
+  private State state;
+  private CollectorConfig collectorConfig;
+  private CollectorContext context;
 
-  public DefaultCollector() {
+  public DefaultCollector(CollectorConfig collectorConfig, CollectorContext context) {
+    this.collectorConfig = collectorConfig;
+    this.context = context;
     state = State.NEW;
+    supervisor = new LifecycleSupervisor();
   }
 
   @Override
@@ -27,6 +34,7 @@ public class DefaultCollector implements Collector {
       throw new IllegalStateException("Cannot be started while started");
     }
     state = State.STARTED;
+    supervisor.start();
     runners.values().forEach(Runner::start);
   }
 
@@ -37,15 +45,18 @@ public class DefaultCollector implements Collector {
     }
     state = State.STOPPED;
     runners.values().forEach(Runner::stop);
+    supervisor.stop();
   }
 
   @Override
-  public void addRunner(CollectorConfig config) {
+  public void addRunner(RunnerConfig config) {
     if (runners.containsKey(config.getId())) {
       throw new IllegalArgumentException("already add task: " + config.getId());
     }
     runners.putIfAbsent(
-        config.getId(), new CollectRunner(config.getName(), config.getProperties()));
+        config.getId(),
+        new CollectRunner(
+            config.getName(), config.getProperties(), null, collectorConfig, context, supervisor));
     Runner runner = runners.get(config.getId());
     if (config.getState() != null && config.getState().equals(State.STARTED.toString())) {
       runner.start();
@@ -53,7 +64,7 @@ public class DefaultCollector implements Collector {
   }
 
   @Override
-  public void addRunners(List<CollectorConfig> configs) {
+  public void addRunners(List<RunnerConfig> configs) {
     if (configs == null || configs.isEmpty()) {
       return;
     }
@@ -96,13 +107,13 @@ public class DefaultCollector implements Collector {
   }
 
   @Override
-  public void updateRunner(CollectorConfig config) {
+  public void updateRunner(RunnerConfig config) {
     Runner runner = runners.get(config.getId());
     runner.update(config.getProperties());
   }
 
   @Override
-  public void updateRunners(List<CollectorConfig> configs) {
+  public void updateRunners(List<RunnerConfig> configs) {
     if (configs == null || configs.isEmpty()) {
       return;
     }
@@ -138,28 +149,36 @@ public class DefaultCollector implements Collector {
   }
 
   @Override
-  public List<CollectorConfig> getAllRunners() {
-    List<CollectorConfig> configs = new ArrayList<>(runners.size());
+  public List<RunnerConfig> getAllRunners() {
+    List<RunnerConfig> configs = new ArrayList<>(runners.size());
 
     runners.forEach(
         (id, runner) ->
             configs.add(
-                new CollectorConfig(
-                    id, runner.getName(), runner.getState(), runner.getProperties())));
+                new RunnerConfig(
+                    id,
+                    runner.getName(),
+                    runner.getState(),
+                    runner.getMetadata(),
+                    runner.getProperties())));
 
     return configs;
   }
 
   @Override
-  public List<CollectorConfig> getRunners(List<String> ids) {
-    List<CollectorConfig> configs = new ArrayList<>(ids.size());
+  public List<RunnerConfig> getRunners(List<String> ids) {
+    List<RunnerConfig> configs = new ArrayList<>(ids.size());
 
     runners.forEach(
         (id, runner) -> {
           if (ids.contains(id)) {
             configs.add(
-                new CollectorConfig(
-                    id, runner.getName(), runner.getState(), runner.getProperties()));
+                new RunnerConfig(
+                    id,
+                    runner.getName(),
+                    runner.getState(),
+                    runner.getMetadata(),
+                    runner.getProperties()));
           }
         });
 
@@ -167,11 +186,12 @@ public class DefaultCollector implements Collector {
   }
 
   @Override
-  public CollectorConfig getRunner(String id) {
+  public RunnerConfig getRunner(String id) {
     Runner runner = runners.get(id);
     if (runner == null) {
       return null;
     }
-    return new CollectorConfig(id, runner.getName(), runner.getState(), runner.getProperties());
+    return new RunnerConfig(
+        id, runner.getName(), runner.getState(), runner.getMetadata(), runner.getProperties());
   }
 }

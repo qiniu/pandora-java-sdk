@@ -1,24 +1,20 @@
 package com.qiniu.pandora.collect.runner;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Maps;
+import com.qiniu.pandora.DefaultPandoraClient;
+import com.qiniu.pandora.collect.CollectorConfig;
+import com.qiniu.pandora.collect.CollectorContext;
+import com.qiniu.pandora.service.token.TokenService;
+import com.qiniu.pandora.service.upload.PostDataService;
+import com.qiniu.pandora.util.JsonHelper;
 import com.qiniu.pandora.util.NetUtils;
-import java.net.InetSocketAddress;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.NettyServer;
-import org.apache.avro.ipc.Responder;
-import org.apache.avro.ipc.specific.SpecificResponder;
-import org.apache.flume.Event;
-import org.apache.flume.event.EventBuilder;
-import org.apache.flume.source.avro.AvroFlumeEvent;
-import org.apache.flume.source.avro.AvroSourceProtocol;
-import org.apache.flume.source.avro.Status;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.apache.flume.lifecycle.LifecycleSupervisor;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,20 +24,17 @@ public class CollectRunnerTests {
   private static final String HOSTNAME = "localhost";
   private CollectRunner runner;
   private Map<String, String> properties;
-  private EventCollector eventCollector;
-  private NettyServer nettyServer;
-  private byte[] body;
+  private LifecycleSupervisor supervisor;
+  private CollectorConfig collectorConfig;
+  private CollectorContext context;
+  private MockWebServer server;
 
   @Before
   public void setUp() throws Exception {
-    body = "this is a test log".getBytes(Charsets.UTF_8);
-
     int port = NetUtils.findFreePort();
-    eventCollector = new EventCollector();
-    Responder responderSink = new SpecificResponder(AvroSourceProtocol.class, eventCollector);
-    nettyServer = new NettyServer(responderSink, new InetSocketAddress(HOSTNAME, port));
-    nettyServer.start();
-
+    supervisor = new LifecycleSupervisor();
+    server = new MockWebServer();
+    server.start(port);
     // give the server a second to start
     Thread.sleep(1000L);
 
@@ -51,82 +44,104 @@ public class CollectRunnerTests {
     properties.put("channel.type", "memory");
     properties.put("channel.capacity", "200");
     properties.put("sinks", "sink1");
-    properties.put("sink1.type", "avro");
+    properties.put("sink1.type", "pandora");
     properties.put("sink1.hostname", HOSTNAME);
-    properties.put("sink1.port", String.valueOf(port));
+    properties.put("sink1.source_type", "json");
+    properties.put("sink1.repo", "test");
     properties.put("processor.type", "default");
 
-    runner = new CollectRunner("test", properties);
+    collectorConfig = new CollectorConfig(this.getClass().getResource("/").getPath());
+    DefaultPandoraClient client = new DefaultPandoraClient(String.format("127.0.0.1:%d", port));
+    TokenService tokenService = client.NewTokenService();
+    context =
+        new CollectorContext(
+            tokenService, new PostDataService(client, tokenService, "this is a fake token"));
+    runner = new CollectRunner("test", properties, null, collectorConfig, context, supervisor);
   }
 
   @After
   public void tearDown() throws Exception {
     if (runner != null) {
-      runner.stop();
+      runner.delete();
     }
-    if (nettyServer != null) {
-      nettyServer.close();
+    if (server != null) {
+      server.shutdown();
+    }
+    if (supervisor != null) {
+      supervisor.stop();
     }
   }
 
   @Test(timeout = 30000L)
   public void testPut() throws Exception {
     runner.start();
-    Event event;
-    while ((event = eventCollector.poll()) == null) {
-      Thread.sleep(500L);
-    }
-    Assert.assertNotNull(event);
-    Assert.assertArrayEquals(body, event.getBody());
+
+    // refresh token response
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{\"token\":\"new token\"}"));
+    RecordedRequest tokenRequest = server.takeRequest();
+
+    // upload data response
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{}"));
+    RecordedRequest request = server.takeRequest();
+    Assert.assertNotNull(request);
+    List<Map<String, Object>> body =
+        JsonHelper.readValue(
+            new TypeReference<List<Map<String, Object>>>() {}, request.getBody().readByteArray());
+    Assert.assertNotNull(body);
+    Assert.assertEquals(1, body.size());
+    Assert.assertEquals("this is a test log", body.get(0).get("raw"));
+    Assert.assertEquals(
+        this.getClass().getResource("/test.log").getPath(), body.get(0).get("origin"));
+    Assert.assertNotNull(request.getRequestUrl());
+    Assert.assertEquals("json", request.getRequestUrl().queryParameter("sourcetype"));
+    Assert.assertEquals("localhost", request.getRequestUrl().queryParameter("host"));
+    Assert.assertEquals("test", request.getRequestUrl().queryParameter("repo"));
   }
 
   @Test(timeout = 30000L)
-  public void testPutWithInterceptors() throws Exception {
-    properties.put("source.interceptors", "i1");
-    properties.put("source.interceptors.i1.type", "static");
-    properties.put("source.interceptors.i1.key", "key2");
-    properties.put("source.interceptors.i1.value", "value2");
-
+  public void testPutWithMeta() throws Exception {
+    runner = new CollectRunner("test", properties, "5", collectorConfig, context, supervisor);
     runner.start();
 
-    Event event;
-    while ((event = eventCollector.poll()) == null) {
-      Thread.sleep(500L);
-    }
-    Assert.assertNotNull(event);
-    Assert.assertArrayEquals(body, event.getBody());
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{\"token\":\"new token\"}"));
+    RecordedRequest tokenRequest = server.takeRequest();
+
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{}"));
+    RecordedRequest request = server.takeRequest();
+    Assert.assertNotNull(request);
+    List<Map<String, Object>> body =
+        JsonHelper.readValue(
+            new TypeReference<List<Map<String, Object>>>() {}, request.getBody().readByteArray());
+    Assert.assertNotNull(body);
+    Assert.assertEquals(1, body.size());
+    Assert.assertEquals("is a test log", body.get(0).get("raw"));
   }
 
-  static class EventCollector implements AvroSourceProtocol {
-    private final Queue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<AvroFlumeEvent>();
+  @Test(timeout = 30000L)
+  public void testPutWithFailed() throws Exception {
+    runner.start();
 
-    public Event poll() {
-      AvroFlumeEvent avroEvent = eventQueue.poll();
-      if (avroEvent != null) {
-        return EventBuilder.withBody(
-            avroEvent.getBody().array(), toStringMap(avroEvent.getHeaders()));
-      }
-      return null;
-    }
+    server.enqueue(new MockResponse().setResponseCode(200).setBody("{\"token\":\"new token\"}"));
+    RecordedRequest request = server.takeRequest();
 
-    @Override
-    public Status appendBatch(List<AvroFlumeEvent> events) throws AvroRemoteException {
-      Preconditions.checkState(eventQueue.addAll(events));
-      return Status.OK;
-    }
-
-    @Override
-    public Status append(AvroFlumeEvent avroFlumeEvent) throws AvroRemoteException {
-      eventQueue.add(avroFlumeEvent);
-      return Status.OK;
-    }
-  }
-
-  private static Map<String, String> toStringMap(Map<CharSequence, CharSequence> charSeqMap) {
-    Map<String, String> stringMap = new HashMap<String, String>();
-    for (Map.Entry<CharSequence, CharSequence> entry : charSeqMap.entrySet()) {
-      stringMap.put(entry.getKey().toString(), entry.getValue().toString());
-    }
-    return stringMap;
+    server.enqueue(
+        new MockResponse()
+            .setResponseCode(200)
+            .setBody(
+                "{\"total\":1,\"success\":0,\"failure\":1,\"details\":[{\"startPos\":0,\"endPos\":1,\"status\":401,\"message\":\"test\"}]}"));
+    server.enqueue(
+        new MockResponse()
+            .setResponseCode(200)
+            .setBody("{\"total\":1,\"success\":1,\"failure\":0}"));
+    RecordedRequest firstRequest = server.takeRequest();
+    Assert.assertNotNull(firstRequest);
+    RecordedRequest secondRequest = server.takeRequest();
+    Assert.assertNotNull(secondRequest);
+    List<Map<String, Object>> body =
+        JsonHelper.readValue(
+            new TypeReference<List<Map<String, Object>>>() {},
+            secondRequest.getBody().readByteArray());
+    Assert.assertNotNull(body);
+    Assert.assertEquals(1, body.size());
   }
 }

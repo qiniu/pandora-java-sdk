@@ -4,26 +4,26 @@ import com.qiniu.pandora.collect.State;
 import java.util.Map;
 import java.util.Objects;
 
-public class CollectorConfig {
+public class RunnerConfig {
 
   private String id;
   private String name;
+  private String metadata;
   private State state;
   private Map<String, String> properties;
 
-  public CollectorConfig() {}
+  public RunnerConfig() {}
 
-  public CollectorConfig(String id, String name, Map<String, String> properties) {
-    this.id = id;
-    this.name = name;
-    this.properties = properties;
-    this.state = State.NEW;
+  public RunnerConfig(String id, String name, String metadata, Map<String, String> properties) {
+    this(id, name, State.NEW, metadata, properties);
   }
 
-  public CollectorConfig(String id, String name, State state, Map<String, String> properties) {
+  public RunnerConfig(
+      String id, String name, State state, String metadata, Map<String, String> properties) {
     this.id = id;
     this.name = name;
     this.state = state;
+    this.metadata = metadata;
     this.properties = properties;
   }
 
@@ -39,19 +39,24 @@ public class CollectorConfig {
     return properties;
   }
 
+  public String getMetadata() {
+    return metadata;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    CollectorConfig that = (CollectorConfig) o;
+    RunnerConfig that = (RunnerConfig) o;
     return Objects.equals(id, that.id)
         && Objects.equals(name, that.name)
-        && Objects.equals(properties, that.properties);
+        && Objects.equals(properties, that.properties)
+        && Objects.equals(metadata, that.metadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, properties);
+    return Objects.hash(id, name, properties, metadata);
   }
 
   public String getState() {

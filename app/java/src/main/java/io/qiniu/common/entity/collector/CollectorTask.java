@@ -26,7 +26,7 @@ public class CollectorTask {
 
   private Map<String, Object> config; // collector config
 
-  private Map<String, Object> meta; // ex. runner meta data
+  private String meta; // ex. runner meta data
 
   private long createTime;
 
@@ -61,7 +61,7 @@ public class CollectorTask {
       boolean enabled,
       boolean status,
       Map<String, Object> config,
-      Map<String, Object> meta,
+      String meta,
       long createTime,
       long updateTime) {
     this.id = id;
@@ -174,11 +174,11 @@ public class CollectorTask {
     this.config = config;
   }
 
-  public Map<String, Object> getMeta() {
+  public String getMeta() {
     return meta;
   }
 
-  public void setMeta(Map<String, Object> meta) {
+  public void setMeta(String meta) {
     this.meta = meta;
   }
 
@@ -237,7 +237,7 @@ public class CollectorTask {
       task.setStatus(status == 1);
       task.setConfig(JsonHelper.readValueAsMap(config.getBytes()));
       if (this.meta != null) {
-        task.setMeta(JsonHelper.readValueAsMap(meta.getBytes()));
+        task.setMeta(meta);
       }
       task.setCreateTime(df.parse(createTime).getTime());
       task.setUpdateTime(df.parse(updateTime).getTime());
